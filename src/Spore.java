@@ -9,8 +9,13 @@ public class Spore {
         tekton.removeSpore(this);
         Logger.exit("consumed", "");
     }
-    public Spore(){
+    public Spore(Tekton t1){
         Logger.enter("Spore", "");
+        tekton = t1;
         Logger.exit("Spore", "");
+    }
+
+    public Spore(){
+
     }
 }

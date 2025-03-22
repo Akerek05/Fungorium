@@ -18,7 +18,9 @@ public class Insect implements TurnControl{
         Logger.exit("moveToTekton", "");
     }
     public Insect(Tekton tekton) {
+        Logger.enter("Insect ctor", "");
         this.tekton = tekton;
+        Logger.exit("Insect ctor", "");
     }
     public void upgradeInsect() {}
     public void addPoints(int points) {

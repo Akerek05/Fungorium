@@ -7,8 +7,9 @@ public class ParalyzeSpore extends Spore {
         tekton.removeSpore(this);
         Logger.exit("consumed", "");
     }
-    public ParalyzeSpore(){
+    public ParalyzeSpore(Tekton t1){
         Logger.enter("ParalyzeSpore", "");
+        tekton = t1;
         Logger.exit("ParalyzeSpore", "");
     }
 }

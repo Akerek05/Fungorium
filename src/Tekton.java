@@ -68,20 +68,17 @@ public class Tekton implements TurnControl{
 
         Logger.exit("addString", "");
     }
-
-
-
     public void addSpore() {
         Logger.enter("addSpore", "");
         Random random = new Random();
         int type = random.nextInt(6);
         switch (type) {
-            case 0 -> arrayOfSpore.add(new KillerSpore());
-            case 1 -> arrayOfSpore.add(new NoCutSpore());
-            case 2 -> arrayOfSpore.add(new DebuffSpore());
-            case 3 -> arrayOfSpore.add(new ParalyzeSpore());
-            case 4 -> arrayOfSpore.add(new BuffSpore());
-            case 5 -> {arrayOfSpore.add(new Spore());}
+            case 0 -> arrayOfSpore.add(new KillerSpore(this));
+            case 1 -> arrayOfSpore.add(new NoCutSpore(this));
+            case 2 -> arrayOfSpore.add(new DebuffSpore(this));
+            case 3 -> arrayOfSpore.add(new ParalyzeSpore(this));
+            case 4 -> arrayOfSpore.add(new BuffSpore(this));
+            case 5 -> {arrayOfSpore.add(new Spore(this));}
         }
         Logger.exit("addSpore", "");
     }
@@ -131,6 +128,13 @@ public class Tekton implements TurnControl{
     }
     public List<Tekton> getNeighbours(){
         return neighbours;
+    }
+    public Spore getSpore(){
+        return arrayOfSpore.get(0);
+    }
+    public void setArrayOfSpore(Spore spore){
+        arrayOfSpore.clear();
+        arrayOfSpore.add(spore);
     }
 
     @Override

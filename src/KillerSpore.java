@@ -6,8 +6,9 @@ public class KillerSpore extends Spore {
         tekton.removeSpore(this);
         Logger.exit("consumed", "");
     }
-    public KillerSpore(){
+    public KillerSpore(Tekton t1){;
         Logger.enter("KillerSpore", "");
+        tekton = t1;
         Logger.exit("KillerSpore", "");
     }
 }

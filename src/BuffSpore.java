@@ -7,8 +7,9 @@ public class BuffSpore extends Spore {
         tekton.removeSpore(this);
         Logger.exit("consumed", "");
     }
-    public BuffSpore() {
+    public BuffSpore(Tekton t1) {
         Logger.enter("BuffSpore", "");
+        tekton = t1;
         Logger.exit("BuffSpore", "");
     }
 }
