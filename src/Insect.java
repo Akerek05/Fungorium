@@ -5,12 +5,16 @@ public class Insect implements TurnControl{
     protected int buffTimer;
     protected boolean canCut;
 
+    protected String id;
     protected Tekton tekton;
 
-    public void moveToTekton(Tekton tekton) {
+    public void moveToTekton(Tekton tekton2) {
         //Rovar mozgatása két tekton között
         Logger.enter("moveToTekton", "");
-
+        if(Logger.askUser("Is actionPoint != 0?")){
+            setActionPoints(0);
+        }
+        tekton.moveInsect(this, tekton2);
         Logger.exit("moveToTekton", "");
     }
     public Insect(Tekton tekton) {
@@ -41,8 +45,13 @@ public class Insect implements TurnControl{
     }
     public int getActionPoints(){ return actionPoints;}
 
+
+
     public void cutString(ShroomString string) {
         Logger.enter("cutString", "");
+        if(!Logger.askUser("Can the insect cut?")){
+            setCutting(false);
+        }
         string.gotCut();
         string.timeElapsed();
         Logger.exit("cutString", "");
@@ -55,7 +64,9 @@ public class Insect implements TurnControl{
 
     @Override
     public void die(){
+        Logger.enter("die", "");
         tekton.removeInsect(this);
+        Logger.exit("die", "");
     }
     @Override
     public void timeElapsed() {}

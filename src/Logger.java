@@ -16,7 +16,7 @@ public class Logger {
     //Megkérdezi a felhasználót és a válaszának megfelelően visszatér True(y) vagy False(n) értékekkel
     public static boolean askUser(String message){
         Scanner scanner = new Scanner (System.in);
-        System.out.println(message + "[y/n]");
+        System.out.println(indent() + message + "[y/n]");
         String response = scanner.nextLine().trim().toLowerCase();
         return response.equals("y");
     }

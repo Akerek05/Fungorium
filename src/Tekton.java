@@ -3,43 +3,47 @@ import java.util.List;
 import java.util.Random;
 
 public class Tekton implements TurnControl{
+
     protected List<ShroomString> arrayOfString = new ArrayList<>();
     protected List<Mushroom> arrayOfMushroom = new ArrayList<>();
     protected List<Insect> arrayOfInsect = new ArrayList<>();
     protected List<Spore> arrayOfSpore = new ArrayList<>();
     protected List<Tekton> neighbours = new ArrayList<Tekton>();
     protected List<Tekton> stringNeighbours= new ArrayList<Tekton>();
-
+    /// Csak a loggerhez id
+    protected String id;
     /// Tekton törése
     /// Ekkor töröljük a tektonról a rovarokat, gombát, spórákat, fonalakat és fonalas szomszédokat
     /// És létrehoz egy új tektont
     public Tekton breakTekton() {
         Logger.enter("breakTekton", "");
         /// Rovarok törlése
-        for (Insect insect : arrayOfInsect) {
-            insect.die();
+        for (int i = arrayOfInsect.size() - 1; i >= 0; i--)  {
+            arrayOfInsect.get(i).die();
         }
         /// Gomba törlése
         if (!arrayOfMushroom.isEmpty()){
             arrayOfMushroom.get(0).die();
         }
-        for (ShroomString shroomString : arrayOfString) {
-            shroomString.die();
+        for (int i = arrayOfString.size() - 1; i >= 0; i--)  {
+            arrayOfString.get(i).die();
         }
         /// Spóra törlése
         arrayOfSpore.clear();
         /// Fonalas szomszédok törlése
         stringNeighbours.clear();
         /// Új tekton létrehozása
+        Logger.enter("Create", "Tekton");
         Tekton newTekton = new Tekton();
+        Logger.exit("Create", "Tekton");
         Logger.exit("breakTekton", "");
         return newTekton;
     }
     /// Egy rovar tektonra lépése és felvéttele az arraysOfInsectbe
     public void accept(Insect insect) {
-        Logger.enter("accept", "");
+        Logger.enter("accept", insect.id);
         arrayOfInsect.add(insect);
-        Logger.enter("accept", "");
+        Logger.exit("accept", insect.id);
     }
     /// Gombatest növesztése a tektonra, csak egy gomba lehet egy tektonon
     public void growBody() {
@@ -114,6 +118,19 @@ public class Tekton implements TurnControl{
         Logger.exit("create", "g2: UpgradedMushroom");
         arrayOfMushroom.get(0).die();
         Logger.exit("addUpgradedBody", "");
+    }
+
+    public List<Insect> getInsect(){
+        return  arrayOfInsect;
+    }
+    public List<Mushroom> getMushroom(){
+        return arrayOfMushroom;
+    }
+    public List<ShroomString> getShroomString(){
+        return arrayOfString;
+    }
+    public List<Tekton> getNeighbours(){
+        return neighbours;
     }
 
     @Override

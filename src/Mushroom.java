@@ -4,7 +4,16 @@ public class Mushroom implements TurnControl{
     protected int lifetime;
     protected int resources;
     protected Tekton position;
-    public void upgradeMushroom(Tekton tekton) {}
+    /// Csak a loggernek
+    protected String id;
+    public void upgradeMushroom() {
+        Logger.enter("upgradeMushroom", "");
+        if(!Logger.askUser("Is there enough resource for upgrade?")){
+
+        }
+        position.addUpgradedBody();
+        Logger.exit("upgradeMushroom", "");
+    }
     public void spreadSpore(Tekton tekton) {
         Logger.enter("spreadSpore", "");
         if(Logger.askUser("Is SporeSpawnTimer at least 4")) {
@@ -23,7 +32,7 @@ public class Mushroom implements TurnControl{
     }
     @Override
     public void die(){
-        Logger.exit("die","");
+        Logger.enter("die","");
         position.removeBody(this);
         Logger.exit("die","");
     }

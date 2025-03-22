@@ -19,7 +19,12 @@ public class ShroomString implements TurnControl{
     @Override
     public void timeElapsed() {}
     @Override
-    public void die() {}
+    public void die() {
+        Logger.enter("die", "");
+        startTek.removeString(this);
+        disTek.removeString(this);
+        Logger.exit("die","");
+    }
     public void growMushroom() {
         Logger.enter("growMushroom", "");
         if (Logger.askUser("Is the string mot growing?")) {
