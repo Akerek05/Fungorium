@@ -6,7 +6,14 @@ public class Mushroom implements TurnControl{
     protected Tekton position;
     public void upgradeMushroom(Tekton tekton) {}
     public void spreadSpore(Tekton tekton) {
-        tekton.addSpore();
+        Logger.enter("spreadSpore", "");
+        if(Logger.askUser("Is SporeSpawnTimer at least 4")) {
+            if (position.getNeighbours().contains(tekton))
+            {
+                tekton.addSpore();
+            }
+        }
+        Logger.exit("spreadSpore", "");
     }
     public void growString() {
 

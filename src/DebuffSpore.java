@@ -7,4 +7,8 @@ public class DebuffSpore extends Spore {
         tekton.removeSpore(this);
         Logger.exit("consumed", "");
     }
+    public DebuffSpore() {
+        Logger.enter("DebuffSpore", "");
+        Logger.exit("DebuffSpore", "");
+    }
 }

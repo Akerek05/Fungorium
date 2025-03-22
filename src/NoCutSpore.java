@@ -7,4 +7,8 @@ public class NoCutSpore extends Spore {
         tekton.removeSpore(this);
         Logger.exit("consumed", "");
     }
+    public NoCutSpore() {
+        Logger.enter("NoCutSpore", "");
+        Logger.exit("NoCutSpore", "");
+    }
 }

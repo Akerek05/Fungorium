@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Tekton implements TurnControl{
     protected List<ShroomString> arrayOfString = new ArrayList<>();
@@ -68,7 +69,16 @@ public class Tekton implements TurnControl{
 
     public void addSpore() {
         Logger.enter("addSpore", "");
-        arrayOfSpore.add(new Spore());
+        Random random = new Random();
+        int type = random.nextInt(6);
+        switch (type) {
+            case 0 -> arrayOfSpore.add(new KillerSpore());
+            case 1 -> arrayOfSpore.add(new NoCutSpore());
+            case 2 -> arrayOfSpore.add(new DebuffSpore());
+            case 3 -> arrayOfSpore.add(new ParalyzeSpore());
+            case 4 -> arrayOfSpore.add(new BuffSpore());
+            case 5 -> {arrayOfSpore.add(new Spore());}
+        }
         Logger.exit("addSpore", "");
     }
     public void moveInsect(Insect insect, Tekton tekton) {
