@@ -60,12 +60,22 @@ public class Insect implements TurnControl {
         Logger.exit("eatSpore", ""+spore);
     }
 
+    /**
+     * Fonal elvágása paraméter átállítása.
+     *
+     * @param cutting A fonalvágás tulajdonásga
+     */
     public void setCutting(boolean cutting) {
         Logger.enter("setCutting", "" + cutting);
         canCut = cutting;
         Logger.exit("setCutting", ""+canCut);
     }
 
+    /**
+     * A rovar action pontjának átállítása
+     *
+     * @param points A leendő action pont
+     */
     public void setActionPoints(int points) {
         Logger.enter("setActionPoint", ""+points);
         actionPoints = points;
