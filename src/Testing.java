@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 /**
  * Tesztosztály a játék fő funkcióinak ellenőrzésére manuálisan és logikai lépések követésével.
  */
@@ -7,7 +9,7 @@ public class Testing {
      * Teszteli a Tekton törését és a hozzá kapcsolódó elemek (rovar, gomba, fonal) eltávolítását.
      */
     static void tektonBreak() {
-        System.out.println("tektonBreak teszt.");
+        System.out.println("tektonBreak test.");
         Map map = new Map();
         map.addTekton();
         map.addTekton();
@@ -30,7 +32,7 @@ public class Testing {
      * Teszteli a gomba spóra szórását szomszédos Tektonra.
      */
     static void spreadSpore() {
-        System.out.println("spreadSpore teszt.");
+        System.out.println("spreadSpore test.");
         Map map = new Map();
         map.addTekton();
         map.addTekton();
@@ -44,7 +46,7 @@ public class Testing {
      * Teszteli egy rovar mozgatását egyik Tektonról a másikra.
      */
     static void insectMove() {
-        System.out.println("insectMove teszt.");
+        System.out.println("insectMove test.");
         Map map = new Map();
         map.addTekton();
         map.addTekton();
@@ -57,7 +59,7 @@ public class Testing {
      * Teszteli, hogy a rovar képes-e fonalat elvágni.
      */
     static void stringCut() {
-        System.out.println("stringCut teszt.");
+        System.out.println("stringCut test.");
         Map map = new Map();
         map.addTekton();
         map.addTekton();
@@ -72,7 +74,7 @@ public class Testing {
      * Teszteli a gomba fejlesztését UpgradedMushroom-ra.
      */
     static void upgradeMushroom() {
-        System.out.println("upgradeMushroom teszt.");
+        System.out.println("upgradeMushroom test.");
         Map map = new Map();
         map.addTekton();
         Mushroom m1 = new Mushroom(map.tektons.get(0));
@@ -85,7 +87,7 @@ public class Testing {
      * Teszteli az alapértelmezett Spore elfogyasztásának hatását.
      */
     static void defaultSporeConsume() {
-        System.out.println("defaultSporeConsume teszt.");
+        System.out.println("defaultSporeConsume test.");
         Map map = new Map();
         map.addTekton();
         Insect i1 = new Insect(map.tektons.get(0));
@@ -100,7 +102,7 @@ public class Testing {
      * Teszteli a KillerSpore elfogyasztásának hatását (rovar halála).
      */
     static void killerSporeConsume() {
-        System.out.println("killerSporeConsume teszt.");
+        System.out.println("killerSporeConsume test.");
         Map map = new Map();
         map.addTekton();
         Insect i1 = new Insect(map.tektons.get(0));
@@ -115,7 +117,7 @@ public class Testing {
      * Teszteli a ParalyzeSpore bénító hatását.
      */
     static void paralyzeSporeConsume() {
-        System.out.println("paralyzeSporeConsume teszt.");
+        System.out.println("paralyzeSporeConsume test.");
         Map map = new Map();
         map.addTekton();
         Insect i1 = new Insect(map.tektons.get(0));
@@ -130,7 +132,7 @@ public class Testing {
      * Teszteli a NoCutSpore hatását: vágás tiltása.
      */
     static void noCutSporeConsume() {
-        System.out.println("noCutSporeConsume teszt.");
+        System.out.println("noCutSporeConsume test.");
         Map map = new Map();
         map.addTekton();
         Insect i1 = new Insect(map.tektons.get(0));
@@ -145,7 +147,7 @@ public class Testing {
      * Teszteli a BuffSpore hatását: akciópont növelése.
      */
     static void buffSporeConsume() {
-        System.out.println("buffSporeConsume teszt.");
+        System.out.println("buffSporeConsume test.");
         Map map = new Map();
         map.addTekton();
         Insect i1 = new Insect(map.tektons.get(0));
@@ -160,7 +162,7 @@ public class Testing {
      * Teszteli a DebuffSpore hatását: akciópont csökkentése.
      */
     static void debuffSporeConsume() {
-        System.out.println("debuffSporeConsume teszt.");
+        System.out.println("debuffSporeConsume test.");
         Map map = new Map();
         map.addTekton();
         Insect i1 = new Insect(map.tektons.get(0));
@@ -175,7 +177,7 @@ public class Testing {
      * Teszteli az UpgradedMushroom BFS-alapú spóra szórását.
      */
     static void SpreadSporeWithUpgraded() {
-        System.out.println("SpreadSporeWithUpgraded teszt.");
+        System.out.println("SpreadSporeWithUpgraded test.");
         Map map = new Map();
         map.tektons.add(new Tekton());
         map.tektons.add(new Tekton());
@@ -193,7 +195,7 @@ public class Testing {
      * Teszteli, hogy fonal végén gomba nőhet-e.
      */
     static void GrowMushroom() {
-        System.out.println("GrowMushroom teszt.");
+        System.out.println("GrowMushroom test.");
         Map map = new Map();
         map.addTekton();
         map.addTekton();
@@ -210,7 +212,7 @@ public class Testing {
      * Teszt: fonal növesztése MultipleStringTektonra.
      */
     static void GrowStringOnMultipleTekton() {
-        System.out.println("GrowStringOnMultiple teszt.");
+        System.out.println("GrowStringOnMultiple test.");
         Map map = new Map();
         Tekton t1 = new Tekton();
         Tekton t2 = new MultipleStringTekton();
@@ -226,7 +228,7 @@ public class Testing {
      * Teszt: nem élhető Tektonon nőhet-e gomba.
      */
     static void GrowMushroomOnUnlivableTekton() {
-        System.out.println("GrowMushroomOnLifelessTekton teszt.");
+        System.out.println("GrowMushroomOnLifelessTekton test.");
         Map map = new Map();
         Tekton t1 = new UnlivableTekton();
         Tekton t2 = new Tekton();
@@ -243,7 +245,7 @@ public class Testing {
      * Teszt: gombafonal növesztése Mushroom által.
      */
     static void GrowStringTest() {
-        System.out.println("GrowString teszt.");
+        System.out.println("GrowString test.");
         Map map = new Map();
         map.tektons.add(new Tekton());
         map.tektons.add(new Tekton());
@@ -256,22 +258,71 @@ public class Testing {
      * A tesztprogram belépési pontja.
      */
     public static void main(String[] args) {
-        tektonBreak();
-        insectMove();
-        stringCut();
-        spreadSpore();
-        upgradeMushroom();
-        defaultSporeConsume();
-        killerSporeConsume();
-        paralyzeSporeConsume();
-        noCutSporeConsume();
-        buffSporeConsume();
-        debuffSporeConsume();
-        SpreadSporeWithUpgraded();
-        GrowMushroomOnUnlivableTekton();
-        GrowMushroom();
-        GrowStringTest();
-        GrowStringOnMultipleTekton();
+        boolean run = true;
+        Scanner sc = new Scanner(System.in);
+        while(run) {
+            System.out.println("Choose a testing mode:" +
+                    "\n(1) TektonBreak test \n(2) InsectMove test \n(3) StringCut test \n(4) SpreadSpore \n(5) UpgradeMushroom test" +
+                    "\n(6) DefaultSporeConsume test \n(7) KillerSporeConsume test \n(8) ParalyzeSporeConsume test \n(9) NoCutSporeConsume test" +
+                    "\n(10) BuffSporeConsume test \n(11) DebuffSporeConsume test \n(12) SpreadSporeWithUpgrade test \n(13) GrowMushroomOnUnlivableTekton test" +
+                    "\n(14) GrowMushroom test \n(15) GrowString test \n(16) GrowStringOnMultipleTekton test \n(0) Exit");
+            String input = sc.nextLine();
+            switch (input) {
+                case "1" :
+                    tektonBreak();
+                    break;
+                case "2" :
+                    insectMove();
+                    break;
+                case "3" :
+                    stringCut();
+                    break;
+                case "4" :
+                    spreadSpore();
+                    break;
+                case "5" :
+                    upgradeMushroom();
+                    break;
+                case "6" :
+                    defaultSporeConsume();
+                    break;
+                case "7":
+                    killerSporeConsume();
+                    break;
+                case "8" :
+                    paralyzeSporeConsume();
+                    break;
+                case "9" :
+                    noCutSporeConsume();
+                    break;
+                case "10":
+                    buffSporeConsume();
+                    break;
+                case "11" :
+                    debuffSporeConsume();
+                    break;
+                case "12" :
+                    SpreadSporeWithUpgraded();
+                    break;
+                case "13" :
+                    GrowMushroomOnUnlivableTekton();
+                    break;
+                case "14" :
+                    GrowMushroom();
+                    break;
+                case "15" :
+                    GrowStringTest();
+                    break;
+                case "16" :
+                    GrowStringOnMultipleTekton();
+                    break;
+                case "0" :
+                    run = false;
+                    break;
+                default :
+                    break;
+
+            }
+        }
     }
 }
-

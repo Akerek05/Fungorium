@@ -14,8 +14,10 @@ public class Mushroom implements TurnControl {
      */
     public void upgradeMushroom() {
         Logger.enter("upgradeMushroom", "");
-        if(!Logger.askUser("Is there enough resource for upgrade?")){}
-        position.addUpgradedBody();
+        if(Logger.askUser("Is there enough resource for upgrade?")) {
+            position.addUpgradedBody();
+        }
+
         Logger.exit("upgradeMushroom", "");
     }
 

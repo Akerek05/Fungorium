@@ -18,10 +18,9 @@ public class Insect implements TurnControl {
      */
     public void moveToTekton(Tekton tekton2) {
         Logger.enter("moveToTekton", "");
-        if(Logger.askUser("Is actionPoint != 0?")){
-            setActionPoints(0);
+        if(Logger.askUser("Is actionPoint != 0?")) {
+            tekton.moveInsect(this, tekton2);
         }
-        tekton.moveInsect(this, tekton2);
         Logger.exit("moveToTekton", "");
     }
 
@@ -91,11 +90,11 @@ public class Insect implements TurnControl {
      */
     public void cutString(ShroomString string) {
         Logger.enter("cutString", ""+string);
-        if(!Logger.askUser("Can the insect cut?")){
-            setCutting(false);
+        if(Logger.askUser("Can the insect cut?")){
+            string.die();
+            string.timeElapsed();
         }
-        string.die();
-        string.timeElapsed();
+
         Logger.exit("cutString", ""+string);
     }
 
