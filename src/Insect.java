@@ -1,16 +1,22 @@
-public class Insect implements TurnControl{
+/**
+ * A játékban szereplő rovar entitás.
+ * Tud mozogni, spórát fogyasztani, és fonalat vágni.
+ */
+public class Insect implements TurnControl {
+
     protected int resources;
     protected int actionPoints;
     protected int playerID;
     protected int buffTimer;
     protected boolean canCut;
-
-
-
     protected Tekton tekton;
 
+    /**
+     * Rovar mozgatása egyik Tektonról a másikra.
+     *
+     * @param tekton2 A cél Tekton
+     */
     public void moveToTekton(Tekton tekton2) {
-        //Rovar mozgatása két tekton között
         Logger.enter("moveToTekton", "");
         if(Logger.askUser("Is actionPoint != 0?")){
             setActionPoints(0);
@@ -18,40 +24,61 @@ public class Insect implements TurnControl{
         tekton.moveInsect(this, tekton2);
         Logger.exit("moveToTekton", "");
     }
+
+    /**
+     * Rovar konstruktor adott Tektonra helyezéssel.
+     *
+     * @param tekton A kezdeti pozíció
+     */
     public Insect(Tekton tekton) {
         Logger.enter("Insect ctor", "");
         this.tekton = tekton;
         Logger.exit("Insect ctor", "");
     }
+
     public void upgradeInsect() {}
+
+    /**
+     * Pontok (erőforrás) hozzáadása a rovarhoz.
+     *
+     * @param points Az adott pontszám
+     */
     public void addPoints(int points) {
         Logger.enter("addPoints", "" + points);
         resources += points;
         Logger.exit("addPoints", "" + resources);
     }
+
+    /**
+     * Spóra elfogyasztása rovar által.
+     *
+     * @param spore A spóra objektum
+     */
     public void eatSpore(Spore spore) {
-        //Spóra elfogyasztása rovar által
         Logger.enter("eatSpore", ""+spore);
-        spore.consumed(this); //Spóra megevése
+        spore.consumed(this);
         Logger.exit("eatSpore", ""+spore);
     }
+
     public void setCutting(boolean cutting) {
-        //Rovar fonalvágó képességének beállítása
         Logger.enter("setCutting", "" + cutting);
         canCut = cutting;
         Logger.exit("setCutting", ""+canCut);
-
     }
+
     public void setActionPoints(int points) {
-        //Rovar akciópontjainak átállítása
         Logger.enter("setActionPoint", ""+points);
         actionPoints = points;
         Logger.exit("setActionPoint", ""+actionPoints);
     }
+
     public int getActionPoints(){ return actionPoints;}
 
-
-
+    /**
+     * Fonal elvágása rovar által.
+     *
+     * @param string A vágandó fonal
+     */
     public void cutString(ShroomString string) {
         Logger.enter("cutString", ""+string);
         if(!Logger.askUser("Can the insect cut?")){
@@ -64,12 +91,17 @@ public class Insect implements TurnControl{
 
     public void setBuffTimer(int t){ buffTimer = t;}
 
+    /**
+     * A rovar halálát reprezentáló metódus.
+     * Eltávolítja a rovart a Tektonról.
+     */
     @Override
     public void die(){
         Logger.enter("die", "");
         tekton.removeInsect(this);
         Logger.exit("die", "");
     }
+
     @Override
     public void timeElapsed() {}
 }
