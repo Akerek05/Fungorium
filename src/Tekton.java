@@ -10,11 +10,14 @@ public class Tekton implements TurnControl{
     protected List<Spore> arrayOfSpore = new ArrayList<>();
     protected List<Tekton> neighbours = new ArrayList<Tekton>();
     protected List<Tekton> stringNeighbours= new ArrayList<Tekton>();
-    /// Csak a loggerhez id
-    protected String id;
     /// Tekton törése
     /// Ekkor töröljük a tektonról a rovarokat, gombát, spórákat, fonalakat és fonalas szomszédokat
     /// És létrehoz egy új tektont
+
+    public Tekton() {
+        Logger.enter("Tekton ctor", "");
+        Logger.exit("Tekton ctor", "");
+    }
     public Tekton breakTekton() {
         Logger.enter("breakTekton", "");
         /// Rovarok törlése
@@ -33,17 +36,15 @@ public class Tekton implements TurnControl{
         /// Fonalas szomszédok törlése
         stringNeighbours.clear();
         /// Új tekton létrehozása
-        Logger.enter("Create", "Tekton");
         Tekton newTekton = new Tekton();
-        Logger.exit("Create", "Tekton");
         Logger.exit("breakTekton", "");
         return newTekton;
     }
     /// Egy rovar tektonra lépése és felvéttele az arraysOfInsectbe
     public void accept(Insect insect) {
-        Logger.enter("accept", insect.id);
+        Logger.enter("accept", ""+insect);
         arrayOfInsect.add(insect);
-        Logger.exit("accept", insect.id);
+        Logger.exit("accept", ""+insect);
     }
     /// Gombatest növesztése a tektonra, csak egy gomba lehet egy tektonon
     public void growBody() {
@@ -55,18 +56,23 @@ public class Tekton implements TurnControl{
     }
     /// Fonalhozzáadása a tektonhoz
     /// A
-    public void addString(ShroomString shroomString) {
-        Logger.enter("addString", "");
-        arrayOfString.add(shroomString);
-        if (shroomString.startTek.equals(this) ){
-            stringNeighbours.add(shroomString.disTek);
+    public void addString(Tekton t2) {
+        Logger.enter("addString", ""+t2);
+        ShroomString s1 = new ShroomString(this,t2);
+        arrayOfString.add(s1);
+        t2.arrayOfString.add(s1);
+        if (s1.startTek.equals(this) ){
+            stringNeighbours.add(s1.disTek);
+            t2.stringNeighbours.add(s1.disTek);
+
         }
-        else if (shroomString.disTek.equals(this)){
-            stringNeighbours.add(shroomString.startTek);
+        else if (s1.disTek.equals(this)){
+            stringNeighbours.add(s1.startTek);
+            t2.stringNeighbours.add(s1.startTek);
         };
 
 
-        Logger.exit("addString", "");
+        Logger.exit("addString", ""+t2);
     }
     public void addSpore() {
         Logger.enter("addSpore", "");
@@ -83,36 +89,34 @@ public class Tekton implements TurnControl{
         Logger.exit("addSpore", "");
     }
     public void moveInsect(Insect insect, Tekton tekton) {
-        Logger.enter("moveInsect", "");
+        Logger.enter("moveInsect", ""+insect+ ","+tekton);
         tekton.accept(insect);
         this.removeInsect(insect);
-        Logger.exit("moveInsect", "");
+        Logger.exit("moveInsect", ""+insect+ ","+tekton);
     }
     public void removeInsect(Insect insect) {
-        Logger.enter("removeInsect", "");
+        Logger.enter("removeInsect", ""+insect);
         arrayOfInsect.remove(insect);
-        Logger.exit("removeInsect", "");
+        Logger.exit("removeInsect", ""+insect);
     }
     public void removeString(ShroomString string) {
-        Logger.enter("removeString", "");
+        Logger.enter("removeString", ""+string);
         arrayOfString.remove(string);
-        Logger.exit("removeString", "");
+        Logger.exit("removeString", ""+string);
     }
     public void removeBody(Mushroom mushroom) {
-        Logger.enter("removeBody", "");
+        Logger.enter("removeBody", ""+mushroom);
         arrayOfMushroom.remove(mushroom);
-        Logger.exit("removeBody", "");
+        Logger.exit("removeBody", ""+mushroom);
     }
     public void removeSpore(Spore spore) {
-        Logger.enter("removeSpore", "");
+        Logger.enter("removeSpore", ""+spore);
         arrayOfSpore.remove(spore);
-        Logger.exit("removeSpore", "");
+        Logger.exit("removeSpore", ""+spore);
     }
     public void addUpgradedBody() {
         Logger.enter("addUpgradedBody", "");
-        Logger.enter("create","g2: UpgradedMushroom");
         arrayOfMushroom.add(new UpgradedMushroom(this));
-        Logger.exit("create", "g2: UpgradedMushroom");
         arrayOfMushroom.get(0).die();
         Logger.exit("addUpgradedBody", "");
     }

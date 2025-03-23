@@ -14,9 +14,9 @@ public class Map {
 //            case 3 -> tektons.add(new Tekton());
 //        }
         tektons.add(new Tekton());
-    if(tektons.size() != 1) {
-        addNeighbours();
-    }
+        if(tektons.size() != 1) {
+            addNeighbours();
+        }
     }
 
 

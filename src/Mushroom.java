@@ -15,20 +15,27 @@ public class Mushroom implements TurnControl{
         Logger.exit("upgradeMushroom", "");
     }
     public void spreadSpore(Tekton tekton) {
-        Logger.enter("spreadSpore", "");
+        Logger.enter("spreadSpore", ""+tekton);
         if(Logger.askUser("Is SporeSpawnTimer at least 4")) {
             if (position.getNeighbours().contains(tekton))
             {
                 tekton.addSpore();
             }
         }
-        Logger.exit("spreadSpore", "");
+        Logger.exit("spreadSpore", ""+tekton);
     }
-    public void growString() {
+    public void growString(Tekton tekton1, Tekton tekton2) {
+        Logger.enter("growString", tekton1+","+tekton2);
+        tekton1.addString(tekton2);
+        tekton2.stringNeighbours.add(tekton1);
+        Logger.exit("growString", "");
 
     }
     public Mushroom(Tekton position) {
+        Logger.enter("Mushroom ctor", "");
+
         this.position = position;
+        Logger.exit("Mushroom ctor", "");
     }
     @Override
     public void die(){

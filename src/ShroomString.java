@@ -4,16 +4,16 @@ public class ShroomString implements TurnControl{
     protected Tekton startTek;
     protected Tekton disTek;
 
+    protected Mushroom parentSrhoom;
+
     public ShroomString(Tekton startTek, Tekton disTek) {
+        Logger.enter("ShroomString ctor", "");
         this.startTek = startTek;
         this.disTek = disTek;
         boolean growing = true;
-        startTek.addString(this);
-        disTek.addString(this);
-    }
-    public void gotCut(){
-        startTek.removeString(this);
-        disTek.removeString(this);
+        //startTek.addString(this);
+        //disTek.addString(this);
+        Logger.exit("ShroomString ctor", "");
     }
 
     @Override

@@ -4,10 +4,10 @@ public class Spore {
     /// Csak a loggernek
     protected String id;
     public void consumed(Insect insect) {
-        Logger.enter("consumed", "");
+        Logger.enter("consumed", ""+insect);
         insect.addPoints(calories);
         tekton.removeSpore(this);
-        Logger.exit("consumed", "");
+        Logger.exit("consumed", ""+insect);
     }
     public Spore(Tekton t1){
         Logger.enter("Spore", "");
