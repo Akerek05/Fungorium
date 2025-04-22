@@ -12,4 +12,9 @@ public interface TurnControl {
      * Az objektum megsemmisítését végző metódus.
      */
     void die();
+
+    /**
+     * A kiíratásért felelős.
+     */
+    String toString();
 }

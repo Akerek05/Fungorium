@@ -19,13 +19,12 @@ public class BuffSpore extends Spore {
     }
 
     /**
-     * Konstruktor egy új BuffSpore példány létrehozásához.
-     *
-     * @param t1 A Tekton, amelyen a spóra található
+     * Minden paraméteres konstruktor
+     * @param tekton position
+     * @param playerID playerid
+     * @param actionPoints actionpoints
      */
-    public BuffSpore(Tekton t1) {
-        Logger.enter("BuffSpore", "");
-        tekton = t1;
-        Logger.exit("BuffSpore", "");
+    public BuffSpore(Tekton tekton, int playerID, int actionPoints) {
+        super(tekton, playerID, actionPoints);
     }
 }

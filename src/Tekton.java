@@ -8,6 +8,7 @@ import java.util.Random;
  */
 public class Tekton implements TurnControl {
 
+    public int id;
     protected List<ShroomString> arrayOfString = new ArrayList<>();
     protected List<Mushroom> arrayOfMushroom = new ArrayList<>();
     protected List<Insect> arrayOfInsect = new ArrayList<>();
@@ -103,7 +104,7 @@ public class Tekton implements TurnControl {
             case 2 -> arrayOfSpore.add(new DebuffSpore(this));
             case 3 -> arrayOfSpore.add(new ParalyzeSpore(this));
             case 4 -> arrayOfSpore.add(new BuffSpore(this));
-            case 5 -> arrayOfSpore.add(new Spore(this));
+            case 5 -> arrayOfSpore.add(new Spore(this, 1, -1));
         }
         Logger.exit("addSpore", "");
     }

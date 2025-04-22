@@ -91,7 +91,7 @@ public class Testing {
         Map map = new Map();
         map.addTekton();
         Insect i1 = new Insect(map.tektons.get(0));
-        Spore s1 = new Spore(map.tektons.get(0));
+        Spore s1 = new Spore(map.tektons.get(0), 1, -1);
         map.tektons.get(0).arrayOfInsect.add(i1);
         map.tektons.get(0).arrayOfSpore.add(s1);
         i1.eatSpore(s1);

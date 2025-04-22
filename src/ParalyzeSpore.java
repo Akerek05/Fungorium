@@ -18,13 +18,12 @@ public class ParalyzeSpore extends Spore {
     }
 
     /**
-     * Konstruktor új ParalyzeSpore létrehozásához.
-     *
-     * @param t1 A tekton, amelyen a spóra megjelenik
+     * Minden paraméteres konstruktor
+     * @param tekton position
+     * @param playerID playerid
+     * @param actionPoints actionpoints
      */
-    public ParalyzeSpore(Tekton t1){
-        Logger.enter("ParalyzeSpore", "");
-        tekton = t1;
-        Logger.exit("ParalyzeSpore", "");
+    public ParalyzeSpore(Tekton tekton, int playerID, int actionPoints) {
+        super(tekton, playerID, actionPoints);
     }
 }

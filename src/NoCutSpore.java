@@ -18,13 +18,12 @@ public class NoCutSpore extends Spore {
     }
 
     /**
-     * Konstruktor egy új NoCutSpore létrehozásához.
-     *
-     * @param t1 A Tekton, amelyen a spóra megjelenik
+     * Minden paraméteres konstruktor
+     * @param tekton position
+     * @param playerID playerid
+     * @param actionPoints actionpoints
      */
-    public NoCutSpore(Tekton t1) {
-        Logger.enter("NoCutSpore", "");
-        tekton = t1;
-        Logger.exit("NoCutSpore", "");
+    public NoCutSpore(Tekton tekton, int playerID, int actionPoints) {
+        super(tekton, playerID, actionPoints);
     }
 }

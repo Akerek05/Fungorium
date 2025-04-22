@@ -17,13 +17,12 @@ public class KillerSpore extends Spore {
     }
 
     /**
-     * Konstruktor a KillerSpore létrehozásához.
-     *
-     * @param t1 A tekton, amelyre elhelyezzük
+     * Minden paraméteres konstruktor
+     * @param tekton position
+     * @param playerID playerid
+     * @param actionPoints actionpoints
      */
-    public KillerSpore(Tekton t1){
-        Logger.enter("KillerSpore", "");
-        tekton = t1;
-        Logger.exit("KillerSpore", "");
+    public KillerSpore(Tekton tekton, int playerID, int actionPoints) {
+        super(tekton, playerID, actionPoints);
     }
 }

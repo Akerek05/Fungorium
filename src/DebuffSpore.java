@@ -19,13 +19,12 @@ public class DebuffSpore extends Spore {
     }
 
     /**
-     * Konstruktor a DebuffSpore példányhoz.
-     *
-     * @param t1 A Tekton, amelyen a spóra megjelenik
+     * Minden paraméteres konstruktor
+     * @param tekton position
+     * @param playerID playerid
+     * @param actionPoints actionpoints
      */
-    public DebuffSpore(Tekton t1) {
-        Logger.enter("DebuffSpore", "");
-        tekton = t1;
-        Logger.exit("DebuffSpore", "");
+    public DebuffSpore(Tekton tekton, int playerID, int actionPoints) {
+        super(tekton, playerID, actionPoints);
     }
 }

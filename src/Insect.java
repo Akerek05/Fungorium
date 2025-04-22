@@ -3,13 +3,13 @@
  * Tud mozogni, spórát fogyasztani, és fonalat vágni.
  */
 public class Insect implements TurnControl {
-
+    public String id;
     protected int resources;
     protected int actionPoints;
     protected int playerID;
     protected int buffTimer;
-    protected boolean canCut;
     protected Tekton tekton;
+    public Effect effectType = Effect.DEFAULT;
 
     /**
      * Rovar mozgatása egyik Tektonról a másikra.
@@ -17,11 +17,9 @@ public class Insect implements TurnControl {
      * @param tekton2 A cél Tekton
      */
     public void moveToTekton(Tekton tekton2) {
-        Logger.enter("moveToTekton", "");
-        if(Logger.askUser("Is actionPoint != 0?")) {
+        if(actionPoints > 0) {
             tekton.moveInsect(this, tekton2);
         }
-        Logger.exit("moveToTekton", "");
     }
 
     /**
@@ -29,10 +27,27 @@ public class Insect implements TurnControl {
      *
      * @param tekton A kezdeti pozíció
      */
-    public Insect(Tekton tekton) {
-        Logger.enter("Insect ctor", "");
+    public Insect(Tekton tekton, int pid) {
+        this.playerID = pid;
         this.tekton = tekton;
-        Logger.exit("Insect ctor", "");
+        this.actionPoints = 3;
+        this.buffTimer = 0;
+        this.resources = 0;
+        this.effectType = effectType.DEFAULT;
+    }
+
+    /**
+     *Rovar konstruktora minden adatra
+     *
+     *
+     */
+    public Insect (int playerID, Tekton tekton, int actionPoints, int buffTimer,int resources, Effect effectType) {
+        this.playerID = playerID;
+        this.tekton = tekton;
+        this.actionPoints = actionPoints;
+        this.buffTimer = buffTimer;
+        this.resources = resources;
+        this.effectType = effectType;
     }
 
     public void upgradeInsect() {}
@@ -43,9 +58,7 @@ public class Insect implements TurnControl {
      * @param points Az adott pontszám
      */
     public void addPoints(int points) {
-        Logger.enter("addPoints", "" + points);
         resources += points;
-        Logger.exit("addPoints", "" + resources);
     }
 
     /**
@@ -54,20 +67,25 @@ public class Insect implements TurnControl {
      * @param spore A spóra objektum
      */
     public void eatSpore(Spore spore) {
-        Logger.enter("eatSpore", ""+spore);
         spore.consumed(this);
-        Logger.exit("eatSpore", ""+spore);
     }
 
     /**
      * Fonal elvágása paraméter átállítása.
      *
      * @param cutting A fonalvágás tulajdonásga
+     *                Ez alapjan allitja be az effectType-t
+     *                ha cutting akkor NOCUT -> DEFAULT
+     *                ha !cutting akkor nem NOCUTBOL -> NOCUT
+     *                vagy semmi
      */
     public void setCutting(boolean cutting) {
-        Logger.enter("setCutting", "" + cutting);
-        canCut = cutting;
-        Logger.exit("setCutting", ""+canCut);
+        if (cutting && effectType == Effect.NOCUT) {
+            effectType = Effect.DEFAULT;
+        }
+        else if (!cutting) {
+            effectType = effectType.NOCUT;
+        }
     }
 
     /**
@@ -76,9 +94,7 @@ public class Insect implements TurnControl {
      * @param points A leendő action pont
      */
     public void setActionPoints(int points) {
-        Logger.enter("setActionPoint", ""+points);
         actionPoints = points;
-        Logger.exit("setActionPoint", ""+actionPoints);
     }
 
     public int getActionPoints(){ return actionPoints;}
@@ -89,13 +105,11 @@ public class Insect implements TurnControl {
      * @param string A vágandó fonal
      */
     public void cutString(ShroomString string) {
-        Logger.enter("cutString", ""+string);
-        if(Logger.askUser("Can the insect cut?")){
+        if (this.effectType != Effect.NOCUT) {
             string.die();
             string.timeElapsed();
         }
 
-        Logger.exit("cutString", ""+string);
     }
 
     public void setBuffTimer(int t){ buffTimer = t;}
@@ -106,11 +120,35 @@ public class Insect implements TurnControl {
      */
     @Override
     public void die(){
-        Logger.enter("die", "");
         tekton.removeInsect(this);
-        Logger.exit("die", "");
     }
 
     @Override
-    public void timeElapsed() {}
+    public void timeElapsed() {
+        switch (effectType) {
+            case Effect.DEFAULT:
+                this.actionPoints = 3;
+                return;
+            case Effect.BUFF:
+                this.actionPoints = 5;
+                break;
+            case Effect.DEBUFF:
+                this.actionPoints = 2;
+                break;
+            case Effect.PARALYZE:
+                this.actionPoints = 0;
+                break;
+
+        }
+        buffTimer--;
+        if (buffTimer <= 0) {
+            effectType = Effect.DEFAULT;
+        }
+    }
+
+    @Override
+    public String toString() {
+        String out = "";
+        return out + id + ": Owner: " + playerID;
+    }
 }
