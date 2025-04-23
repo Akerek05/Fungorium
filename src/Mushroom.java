@@ -2,12 +2,44 @@
  * Gomba entitás, amely spórát képes szórni, fonalat növeszteni, és fejleszthető.
  */
 public class Mushroom implements TurnControl {
-    protected int sporeSpawnTime;
+    protected int sporeSpawnTime = 0;
     protected int playerID;
-    protected int lifetime;
-    protected int resources;
+    protected int lifetime = 100;
+    protected int resources = 0;
     protected Tekton position;
-    protected String id;
+    public int id;
+    public static int mushroomCount = 0;
+
+    /**
+     * Konstruktor, amely elhelyezi a gombát egy adott Tektonra.
+     *
+     * @param position A pozíció Tekton
+     * @param pid playerID
+     */
+    public Mushroom(Tekton position, int pid) {
+        this.position = position;
+        this.playerID = pid;
+
+        this.id = mushroomCount++;
+    }
+
+    /**
+     * Minden paraméteres konstruktor
+     * @param position tekton
+     * @param pid playerid
+     * @param lifetime élettartam vagy pont
+     * @param resources mennyi nyersanyaga van
+     * @param sporeSpawnTime spóra szórása lehet-e
+     */
+    public Mushroom(int pid, Tekton position, int sporeSpawnTime, int lifetime, int resources) {
+        this.position = position;
+        this.playerID = pid;
+        this.lifetime = lifetime;
+        this.resources = resources;
+        this.sporeSpawnTime = sporeSpawnTime;
+
+        this.id = mushroomCount++;
+    }
 
     /**
      * Gomba fejlesztése egy új, erősebb változatra.
@@ -25,15 +57,14 @@ public class Mushroom implements TurnControl {
      * Spóra szórása egy szomszédos Tektonra.
      *
      * @param tekton A cél Tekton
+     * @param rnd A random szórásért felelős
      */
-    public void spreadSpore(Tekton tekton) {
-        Logger.enter("spreadSpore", ""+tekton);
-        if(Logger.askUser("Is SporeSpawnTimer at least 4")) {
+    public void spreadSpore(Tekton tekton, int rnd) {
+        if(sporeSpawnTime > 4) {
             if (position.getNeighbours().contains(tekton)) {
-                tekton.addSpore();
+                tekton.addSpore(playerID, rnd);
             }
         }
-        Logger.exit("spreadSpore", ""+tekton);
     }
 
     /**
@@ -43,33 +74,20 @@ public class Mushroom implements TurnControl {
      * @param tekton2 A másik Tekton
      */
     public void growString(Tekton tekton1, Tekton tekton2) {
-        Logger.enter("growString", tekton1+","+tekton2);
         tekton1.addString(tekton2);
         tekton2.stringNeighbours.add(tekton1);
-        Logger.exit("growString", "");
-    }
-
-    /**
-     * Konstruktor, amely elhelyezi a gombát egy adott Tektonra.
-     *
-     * @param position A pozíció Tekton
-     */
-    public Mushroom(Tekton position) {
-        Logger.enter("Mushroom ctor", "");
-        this.position = position;
-        Logger.exit("Mushroom ctor", "");
     }
 
     /**
      * Gomba eltávolítása a Tektonról.
      */
-    @Override
     public void die(){
-        Logger.enter("die","");
         position.removeBody(this);
-        Logger.exit("die","");
     }
 
-    @Override
     public void timeElapsed() {}
+
+    public String toString() {
+        return "Mushroom";
+    }
 }

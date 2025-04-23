@@ -2,14 +2,45 @@
  * A játékban szereplő rovar entitás.
  * Tud mozogni, spórát fogyasztani, és fonalat vágni.
  */
+
 public class Insect implements TurnControl {
-    public String id;
-    protected int resources;
-    protected int actionPoints;
+    public static int insectCount = 0;
+    public int id = 0;
+    protected int resources = 0;
+    protected int actionPoints = 3;
     protected int playerID;
-    protected int buffTimer;
+    protected int buffTimer = 0;
     protected Tekton tekton;
     public Effect effectType = Effect.DEFAULT;
+
+    /**
+     * Rovar konstruktor adott Tektonra helyezéssel.
+     *
+     * @param tekton A kezdeti pozíció
+     * @param pid playerid
+     */
+    public Insect(Tekton tekton, int pid) {
+        this.playerID = pid;
+        this.tekton = tekton;
+
+        this.id = insectCount++;
+    }
+
+    /**
+     *Rovar konstruktora minden adatra
+     *
+     *
+     */
+    public Insect (int playerID, Tekton tekton, int actionPoints, int resources, int buffTimer, Effect effectType) {
+        this.playerID = playerID;
+        this.tekton = tekton;
+        this.actionPoints = actionPoints;
+        this.buffTimer = buffTimer;
+        this.resources = resources;
+        this.effectType = effectType;
+
+        this.id = insectCount++;
+    }
 
     /**
      * Rovar mozgatása egyik Tektonról a másikra.
@@ -21,36 +52,6 @@ public class Insect implements TurnControl {
             tekton.moveInsect(this, tekton2);
         }
     }
-
-    /**
-     * Rovar konstruktor adott Tektonra helyezéssel.
-     *
-     * @param tekton A kezdeti pozíció
-     */
-    public Insect(Tekton tekton, int pid) {
-        this.playerID = pid;
-        this.tekton = tekton;
-        this.actionPoints = 3;
-        this.buffTimer = 0;
-        this.resources = 0;
-        this.effectType = effectType.DEFAULT;
-    }
-
-    /**
-     *Rovar konstruktora minden adatra
-     *
-     *
-     */
-    public Insect (int playerID, Tekton tekton, int actionPoints, int buffTimer,int resources, Effect effectType) {
-        this.playerID = playerID;
-        this.tekton = tekton;
-        this.actionPoints = actionPoints;
-        this.buffTimer = buffTimer;
-        this.resources = resources;
-        this.effectType = effectType;
-    }
-
-    public void upgradeInsect() {}
 
     /**
      * Pontok (erőforrás) hozzáadása a rovarhoz.
@@ -71,24 +72,6 @@ public class Insect implements TurnControl {
     }
 
     /**
-     * Fonal elvágása paraméter átállítása.
-     *
-     * @param cutting A fonalvágás tulajdonásga
-     *                Ez alapjan allitja be az effectType-t
-     *                ha cutting akkor NOCUT -> DEFAULT
-     *                ha !cutting akkor nem NOCUTBOL -> NOCUT
-     *                vagy semmi
-     */
-    public void setCutting(boolean cutting) {
-        if (cutting && effectType == Effect.NOCUT) {
-            effectType = Effect.DEFAULT;
-        }
-        else if (!cutting) {
-            effectType = effectType.NOCUT;
-        }
-    }
-
-    /**
      * A rovar action pontjának átállítása
      *
      * @param points A leendő action pont
@@ -96,8 +79,6 @@ public class Insect implements TurnControl {
     public void setActionPoints(int points) {
         actionPoints = points;
     }
-
-    public int getActionPoints(){ return actionPoints;}
 
     /**
      * Fonal elvágása rovar által.
@@ -112,18 +93,23 @@ public class Insect implements TurnControl {
 
     }
 
+    /**
+     * Az effect idejét állítja be
+     * @param t hátralévő idő
+     */
     public void setBuffTimer(int t){ buffTimer = t;}
 
     /**
      * A rovar halálát reprezentáló metódus.
      * Eltávolítja a rovart a Tektonról.
      */
-    @Override
     public void die(){
         tekton.removeInsect(this);
     }
 
-    @Override
+    /**
+     * Az idő telése
+     */
     public void timeElapsed() {
         switch (effectType) {
             case Effect.DEFAULT:
@@ -146,7 +132,10 @@ public class Insect implements TurnControl {
         }
     }
 
-    @Override
+    /**
+     * Kiírja a paramétereket
+     * @return szöveg
+     */
     public String toString() {
         String out = "";
         return out + id + ": Owner: " + playerID;

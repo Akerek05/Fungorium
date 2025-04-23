@@ -6,21 +6,10 @@ import java.util.Random;
  */
 public class Spore {
     public int id;
+    public static int sporeCount = 0;
     protected int calories;
     protected Tekton tekton;
     protected int playerid;
-
-    /**
-     * Elfogyasztási művelet – erőforrás növelése és spóra eltávolítása.
-     *
-     * @param insect A rovar, amely elfogyasztja
-     */
-    public void consumed(Insect insect) {
-        Logger.enter("consumed", "" + insect);
-        insect.addPoints(calories);
-        tekton.removeSpore(this);
-        Logger.exit("consumed", "" + insect);
-    }
 
     /**
      * Spóra létrehozása adott Tektonhoz.
@@ -38,5 +27,27 @@ public class Spore {
         }
         else
             calories = rand;
+
+        this.id = sporeCount++;
     }
+
+    /**
+     * Elfogyasztási művelet – erőforrás növelése és spóra eltávolítása.
+     *
+     * @param insect A rovar, amely elfogyasztja
+     */
+    public void consumed(Insect insect) {
+
+        insect.addPoints(calories);
+        tekton.removeSpore(this);
+
+    }
+
+    /**
+     *A spóra paramétereit írja le
+     * @return szöveg
+     */
+    public String toString(){return "Spore " + calories;};
+
+
 }

@@ -19,7 +19,7 @@ public class BirthSpore extends Spore{
      *A spóra paramétereit írja le
      * @return szöveg
      */
-    public String toString(){return "a";};
+    public String toString(){return "BirthSpore";};
 
 
 }

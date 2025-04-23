@@ -4,6 +4,16 @@
 public class ParalyzeSpore extends Spore {
 
     /**
+     * Minden paraméteres konstruktor
+     * @param tekton position
+     * @param playerID playerid
+     * @param actionPoints actionpoints
+     */
+    public ParalyzeSpore(Tekton tekton, int playerID, int actionPoints) {
+        super(tekton, playerID, actionPoints);
+    }
+
+    /**
      * A spóra elfogyasztása után a rovar cselekvésképtelenné válik egy körre.
      *
      * @param insect A cél rovar
@@ -18,12 +28,8 @@ public class ParalyzeSpore extends Spore {
     }
 
     /**
-     * Minden paraméteres konstruktor
-     * @param tekton position
-     * @param playerID playerid
-     * @param actionPoints actionpoints
+     *A spóra paramétereit írja le
+     * @return szöveg
      */
-    public ParalyzeSpore(Tekton tekton, int playerID, int actionPoints) {
-        super(tekton, playerID, actionPoints);
-    }
+    public String toString(){return "ParalyzeSpore";};
 }

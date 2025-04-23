@@ -4,21 +4,6 @@
 public class DebuffSpore extends Spore {
 
     /**
-     * A spóra elfogyasztásának hatása.
-     * Csökkenti az akciópontokat 1-re, és beállítja a buff időtartamát 1-re.
-     *
-     * @param insect A rovar, amely elfogyasztja a spórát
-     */
-    public void consumed(Insect insect) {
-        Logger.enter("consumed", ""+insect);
-        insect.addPoints(calories);
-        insect.setActionPoints(1);       // Rovar gyengítése
-        insect.setBuffTimer(1);         // 1 időegységre gyengít
-        tekton.removeSpore(this);
-        Logger.exit("consumed", ""+insect);
-    }
-
-    /**
      * Minden paraméteres konstruktor
      * @param tekton position
      * @param playerID playerid
@@ -27,4 +12,23 @@ public class DebuffSpore extends Spore {
     public DebuffSpore(Tekton tekton, int playerID, int actionPoints) {
         super(tekton, playerID, actionPoints);
     }
+
+    /**
+     * A spóra elfogyasztásának hatása.
+     * Csökkenti az akciópontokat 1-re, és beállítja a buff időtartamát 1-re.
+     *
+     * @param insect A rovar, amely elfogyasztja a spórát
+     */
+    public void consumed(Insect insect) {
+        insect.addPoints(calories);
+        insect.setActionPoints(1);       // Rovar gyengítése
+        insect.setBuffTimer(1);         // 1 időegységre gyengít
+        tekton.removeSpore(this);
+    }
+
+    /**
+     *A spóra paramétereit írja le
+     * @return szöveg
+     */
+    public String toString(){return "DebuffSpore";};
 }
