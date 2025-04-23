@@ -150,6 +150,31 @@ public class Tekton implements TurnControl {
     public void addInsect(int pid) {}
 
 
+    /** @return A Tektonon lévő rovarok listája */
+    public List<Insect> getInsect() {
+        return arrayOfInsect;
+    }
+
+    /** @return A Tektonon lévő gombák listája */
+    public List<Mushroom> getMushroom() {
+        return arrayOfMushroom;
+    }
+
+    /** @return A Tektonon lévő fonalak listája */
+    public List<ShroomString> getShroomString() {
+        return arrayOfString;
+    }
+
+    /** @return A Tekton szomszédos mezői */
+    public List<Tekton> getNeighbours() {
+        return neighbours;
+    }
+
+    /** @return A Tekton első spórája */
+    public Spore getSpore() {
+        return arrayOfSpore.get(0);
+    }
+
     /** Beállítja az aktuális spórát (minden korábbit töröl). */
     public void setArrayOfSpore(Spore spore) {
         arrayOfSpore.clear();
