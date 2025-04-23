@@ -112,16 +112,16 @@ public class Insect implements TurnControl {
      */
     public void timeElapsed() {
         switch (effectType) {
-            case Effect.DEFAULT:
+            case DEFAULT:
                 this.actionPoints = 3;
                 return;
-            case Effect.BUFF:
+            case BUFF:
                 this.actionPoints = 5;
                 break;
-            case Effect.DEBUFF:
+            case DEBUFF:
                 this.actionPoints = 2;
                 break;
-            case Effect.PARALYZE:
+            case PARALYZE:
                 this.actionPoints = 0;
                 break;
 

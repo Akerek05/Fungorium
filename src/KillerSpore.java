@@ -19,11 +19,9 @@ public class KillerSpore extends Spore {
      * @param insect A cél rovar
      */
     public void consumed(Insect insect) {
-        Logger.enter("consumed", "" + insect);
         insect.addPoints(calories);
         insect.die();               // Rovar megölése
         tekton.removeSpore(this);
-        Logger.exit("consumed", "" + insect);
     }
 
     /**

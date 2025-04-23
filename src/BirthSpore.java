@@ -13,7 +13,12 @@ public class BirthSpore extends Spore{
      * Az elfogyasztás felülírása
      * @param insect A rovar, amely elfogyasztja
      */
-    public void consumed(Insect insect) {}
+    public void consumed(Insect insect) {
+        insect.addPoints(calories);
+        Insect newInsect = new Insect(insect.playerID, insect.tekton, insect.actionPoints, insect.resources, insect.buffTimer, insect.effectType);
+        newInsect.moveToTekton(insect.tekton);
+        tekton.removeSpore(this);
+    }
 
     /**
      *A spóra paramétereit írja le

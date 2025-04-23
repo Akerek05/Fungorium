@@ -185,7 +185,7 @@ public class Map {
                                 System.out.println("Kevés paraméter!");
                             break;
                         default:
-                            System.out.println("Error! Could not create <"+command[1]+">:(<PlayerID: "+command[2]+">), at Tekton:<"+command[3]+">");
+                            System.out.println("Error! Could not create <" + command[1] + ">:(<PlayerID: " + command[2] + ">), at Tekton:<" + command[3] + ">");
                             break;
                     }
                     break;
