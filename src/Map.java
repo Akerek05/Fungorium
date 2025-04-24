@@ -81,6 +81,24 @@ public class Map {
             return null;
         }
     }
+    public boolean tryParseBoolean(String text) {
+        try {
+            return Boolean.parseBoolean(text);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+    public void addScore(int playerID, int score){
+        scores.add(playerID,score);
+    }
+    public boolean isInTektons (int id) {
+        for (Tekton tekton : tektons) {
+            if (tekton.id == id) {
+                return true;
+            }
+        }
+        return false;
+    }
     public void command(String inputCommand) {
         if (inputCommand == null || inputCommand.isEmpty())
             return; //nem megyünk el a switch case-ig, csak akkor, ha a beolvasott sor nem üres.
@@ -112,7 +130,7 @@ public class Map {
                                 String effect = command[7].toUpperCase();
                                 Effect effectstatus = tryParseEffect(effect);
                                 if (playerID != null && tektonID != null && actionPoints != null
-                                        && resources != null && buffTimer != null && effectstatus != null) {
+                                        && resources != null && buffTimer != null && effectstatus != null && isInTektons(tektonID)) {
                                     Insect i1 = new Insect(playerID, this.getTekton(tektonID), actionPoints, resources, buffTimer, effectstatus);
                                     this.insects.add(i1);
                                     this.getTekton(tektonID).accept(i1);
@@ -125,29 +143,40 @@ public class Map {
                             break;
                         case "MUSHROOM":
                             if(command.length == 7) {
-                                int playerID = Integer.parseInt(command[2]);
-                                int tektonID = Integer.parseInt(command[3]);
-                                int sporeSpawnTimer = Integer.parseInt(command[4]);
-                                int lifeTime = Integer.parseInt(command[5]);
-                                int resources = Integer.parseInt(command[6]);
-                                Mushroom m1 = new Mushroom(playerID, this.getTekton(tektonID),sporeSpawnTimer, lifeTime, resources);
-                                this.mushrooms.add(m1);
+                                Integer playerID = tryParseInt(command[2]);
+                                Integer tektonID = tryParseInt(command[3]);
+                                Integer sporeSpawnTimer = tryParseInt(command[4]);
+                                Integer lifeTime = tryParseInt(command[5]);
+                                Integer resources = tryParseInt(command[6]);
+                                if (playerID != null && tektonID != null && sporeSpawnTimer != null) {
+                                    Mushroom m1 = new Mushroom(playerID, this.getTekton(tektonID), sporeSpawnTimer, lifeTime, resources);
+                                    this.mushrooms.add(m1);
+                                } else {
+                                    System.out.println(errorString + "Mushroom");
+                                }
                             }
                             else
                                 System.out.println(errorString + "Mushroom");
                             break;
                         case "STRING":
                             if (command.length == 9){
-                                int mushroomID = Integer.parseInt(command[2]);
-                                int startTektonID = Integer.parseInt(command[3]);
-                                int endTektonID = Integer.parseInt(command[4]);
-                                boolean growing = Boolean.parseBoolean(command[5]);
-                                int lifetime = Integer.parseInt(command[6]);
-                                boolean isCut = Boolean.parseBoolean(command[7]);
-                                boolean isConnected = Boolean.parseBoolean(command[8]);
-                                ShroomString s1 = new ShroomString(this.getMushroom(mushroomID),this.getTekton(startTektonID),this.getTekton(endTektonID),growing,lifetime,isCut,isConnected);
-                                this.shroomStrings.add(s1);
-                                System.out.println("STRING CREATED");
+                                Integer mushroomID = tryParseInt(command[2]);
+                                Integer startTektonID = tryParseInt(command[3]);
+                                Integer endTektonID = tryParseInt(command[4]);
+                                Boolean growing = tryParseBoolean(command[5]);
+                                Integer lifetime = tryParseInt(command[6]);
+                                Boolean isCut = tryParseBoolean(command[7]);
+                                Boolean isConnected = tryParseBoolean(command[8]);
+                                if (mushroomID != null && startTektonID != null && endTektonID != null &&
+                                    growing != null && lifetime != null && isCut != null && isConnected != null &&
+                                        isInTektons(startTektonID) && isInTektons(endTektonID) ) {
+                                    ShroomString s1 = new ShroomString(this.getMushroom(mushroomID), this.getTekton(startTektonID), this.getTekton(endTektonID), growing, lifetime, isCut, isConnected);
+                                    this.shroomStrings.add(s1);
+                                    System.out.println("STRING CREATED");
+                                }
+                                else {
+                                    System.out.println(errorString + "String");
+                                }
                             }
                             else
                                 System.out.println(errorString + "String");
@@ -155,42 +184,47 @@ public class Map {
 
                         case "SPORE":
                             if(command.length == 6) {
-                                int tektonID = Integer.parseInt(command[4]);
-                                int playerID = Integer.parseInt(command[3]);
-                                int rand = Integer.parseInt(command[5]);
-                                Spore s1;
-                                switch (command[2].toUpperCase()) {
-                                    case "BASIC":
-                                        s1 = new Spore(this.getTekton(tektonID),playerID,rand);
-                                        this.spores.add(s1);
-                                        break;
-                                    case "BUFF":
-                                        s1 = new BuffSpore(this.getTekton(tektonID),playerID,rand);
-                                        this.spores.add(s1);
-                                        break;
-                                    case "DEBUFF":
-                                        s1 = new DebuffSpore(this.getTekton(tektonID),playerID,rand);
-                                        this.spores.add(s1);
-                                        break;
-                                    case "BIRTH":
-                                        s1 = new BirthSpore(this.getTekton(tektonID),playerID,rand);
-                                        this.spores.add(s1);
-                                        break;
-                                    case "KILLER":
-                                        s1 = new KillerSpore(this.getTekton(tektonID),playerID,rand);
-                                        this.spores.add(s1);
-                                        break;
-                                    case "NOCUT":
-                                        s1 = new NoCutSpore(this.getTekton(tektonID),playerID,rand);
-                                        this.spores.add(s1);
-                                        break;
-                                    case "PARALYZE":
-                                        s1 = new ParalyzeSpore(this.getTekton(tektonID),playerID,rand);
-                                        this.spores.add(s1);
-                                        break;
-                                    default:
-                                        System.out.println(errorString + "Spore");
-                                        break;
+                                Integer tektonID = tryParseInt(command[4]);
+                                Integer playerID = tryParseInt(command[3]);
+                                Integer rand = tryParseInt(command[5]);
+                                if (tektonID != null && playerID != null && rand != null && isInTektons(tektonID)) {
+                                    Spore s1;
+                                    switch (command[2].toUpperCase()) {
+                                        case "BASIC":
+                                            s1 = new Spore(this.getTekton(tektonID), playerID, rand);
+                                            this.spores.add(s1);
+                                            break;
+                                        case "BUFF":
+                                            s1 = new BuffSpore(this.getTekton(tektonID), playerID, rand);
+                                            this.spores.add(s1);
+                                            break;
+                                        case "DEBUFF":
+                                            s1 = new DebuffSpore(this.getTekton(tektonID), playerID, rand);
+                                            this.spores.add(s1);
+                                            break;
+                                        case "BIRTH":
+                                            s1 = new BirthSpore(this.getTekton(tektonID), playerID, rand);
+                                            this.spores.add(s1);
+                                            break;
+                                        case "KILLER":
+                                            s1 = new KillerSpore(this.getTekton(tektonID), playerID, rand);
+                                            this.spores.add(s1);
+                                            break;
+                                        case "NOCUT":
+                                            s1 = new NoCutSpore(this.getTekton(tektonID), playerID, rand);
+                                            this.spores.add(s1);
+                                            break;
+                                        case "PARALYZE":
+                                            s1 = new ParalyzeSpore(this.getTekton(tektonID), playerID, rand);
+                                            this.spores.add(s1);
+                                            break;
+                                        default:
+                                            System.out.println(errorString + "Spore");
+                                            break;
+                                    }
+                                }
+                                else {
+                                    System.out.println(errorString + "Spore");
                                 }
                             }
                             else
