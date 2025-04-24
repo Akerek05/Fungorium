@@ -37,17 +37,17 @@ public class Spore {
      * @param insect A rovar, amely elfogyasztja
      */
     public void consumed(Insect insect) {
-
         insect.addPoints(calories);
         tekton.removeSpore(this);
-
     }
 
     /**
      *A spóra paramétereit írja le
      * @return szöveg
      */
-    public String toString(){return "Spore " + calories;};
+    public String toString(){
+        String type = "Basic";
+        return id+ ": Type: " + type +", Position: "+ tekton.id + ", Owner: " + playerid + ", Calories:"+ calories;};
 
 
 }

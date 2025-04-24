@@ -59,10 +59,12 @@ public class Tekton implements TurnControl {
     /**
      * Gomba növesztése erre a Tektonra (csak ha még nincs rajta).
      */
-    public void growBody() {
+    public void growBody(int pid) {
         if (arrayOfMushroom.isEmpty()) {
-            //arrayOfMushroom.add(new Mushroom(this));
+            arrayOfMushroom.add(new Mushroom(this, pid));
+            return;
         }
+        throw new IllegalArgumentException("Can't grow mushroom, tekton already has mushroom");
     }
 
     /**
@@ -90,18 +92,19 @@ public class Tekton implements TurnControl {
      * Véletlenszerű típusú spóra generálása és hozzáadása ehhez a Tektonhoz.
      */
     public void addSpore(int pid, int rnd) {
-//        Logger.enter("addSpore", "");
-//        Random random = new Random();
-//        int type = random.nextInt(6);
-//        switch (type) {
-//            case 0 -> arrayOfSpore.add(new KillerSpore(this));
-//            case 1 -> arrayOfSpore.add(new NoCutSpore(this));
-//            case 2 -> arrayOfSpore.add(new DebuffSpore(this));
-//            case 3 -> arrayOfSpore.add(new ParalyzeSpore(this));
-//            case 4 -> arrayOfSpore.add(new BuffSpore(this));
-//            case 5 -> arrayOfSpore.add(new Spore(this, 1, -1));
-//        }
-//        Logger.exit("addSpore", "");
+        if (rnd > 7 && rnd < 1) {
+            Random random = new Random();
+            rnd = random.nextInt(7) + 1;
+        }
+        switch (rnd) {
+            case 1 -> arrayOfSpore.add(new Spore(this, pid, -1));
+            case 2 -> arrayOfSpore.add(new BirthSpore(this, pid, -1));
+            case 3 -> arrayOfSpore.add(new KillerSpore(this, pid, -1));
+            case 4 -> arrayOfSpore.add(new NoCutSpore(this, pid, -1));
+            case 5 -> arrayOfSpore.add(new DebuffSpore(this, pid, -1)) ;
+            case 6 -> arrayOfSpore.add(new ParalyzeSpore(this, pid, -1));
+            case 7 -> arrayOfSpore.add(new BuffSpore(this, pid, -1));
+        }
     }
 
     /**
@@ -139,15 +142,22 @@ public class Tekton implements TurnControl {
      * Egy fejlesztett gomba hozzáadása a Tektonhoz, a meglévő gomba lecserélésével.
      */
     public void addUpgradedBody() {
-        //arrayOfMushroom.add(new UpgradedMushroom(this));
-        arrayOfMushroom.get(0).die();
+        Mushroom mushroom = arrayOfMushroom.get(0);
+        UpgradedMushroom upgradedMushroom = new UpgradedMushroom(this, mushroom.playerID, mushroom.id);
+        upgradedMushroom.lifeTime = 200;
+        arrayOfMushroom.add(upgradedMushroom);
+
+        mushroom.die();
     }
 
     /**
      * Egy új rovarat hoz létre az adott tektonra
      * @param pid playerid
      */
-    public void addInsect(int pid) {}
+    public void addInsect(int pid) {
+        Insect insect = new Insect(this, pid);
+        arrayOfInsect.add(insect);
+    }
 
 
     /** @return A Tektonon lévő rovarok listája */
@@ -191,10 +201,47 @@ public class Tekton implements TurnControl {
         arrayOfSpore.clear();
     }
 
-    public void timeElapsed() {}
-
-    public String toString() {
-        String out = "Tekton";
-        return out + id;
+    /**
+     * A Tekton timeElapsed-je, meghivja a rajta levo fonalak gombak es rovarak timeelapsed-t,
+     * ha a gomba vagy fonal lifeTimeja <= 0 akkor meghal.
+     */
+    public void timeElapsed() {
+        for (int i = arrayOfString.size() - 1; i >= 0 ; i--) {
+            ShroomString string = arrayOfString.get(i);
+            string.timeElapsed();
+            if (string.lifeTime <= 0) {
+                string.die();
+            }
+        }
+        for (int i = arrayOfMushroom.size() - 1; i >= 0 ; i-- ) {
+            Mushroom mushroom = arrayOfMushroom.get(i);
+            mushroom.timeElapsed();
+            if (mushroom.lifeTime <= 0) {
+                mushroom.die();
+            }
+        }
+        for (Insect insect : arrayOfInsect){
+            insect.timeElapsed();
+        }
     }
+
+    public String toString(){
+        String type = "Basic";
+
+        String  output= id+ ": ";
+        output += "Neighbours: ";
+        for(Tekton t : neighbours){
+            output += t.id + ", ";
+        }
+        if(neighbours.isEmpty()) output += ", ";
+
+        output += "StringNeighbours: ";
+        for (Tekton t : stringNeighbours){
+            output += t.id + ", ";
+        }
+        if(stringNeighbours.isEmpty()) output += ", ";
+
+        output+= "Type: "+type;
+        return output;
+    };
 }

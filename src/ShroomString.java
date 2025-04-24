@@ -2,8 +2,8 @@
  * Gombafonalat reprezentáló osztály, amely két Tekton között húzódik.
  */
 public class ShroomString implements TurnControl {
-    private boolean growing = true;
-    private int lifeTime = 100;
+    protected boolean growing = true;
+    protected int lifeTime = 100;
     protected Tekton startTek;
     protected Tekton disTek;
     protected Mushroom parentSrhoom;
@@ -37,7 +37,8 @@ public class ShroomString implements TurnControl {
      * @param isCut Elvan-e vágva
      * @param isConnected Összefüggő-e
      */
-    public ShroomString(Mushroom parentSrhoom, Tekton startTek, Tekton disTek, boolean growing, int lifeTime, boolean isCut, boolean isConnected) {
+    public ShroomString(Mushroom parentSrhoom, Tekton startTek, Tekton disTek, boolean growing
+            ,int lifeTime, boolean isCut, boolean isConnected) {
         this.parentSrhoom = parentSrhoom;
         this.startTek = startTek;
         this.disTek = disTek;
@@ -49,7 +50,14 @@ public class ShroomString implements TurnControl {
         this.id = stringCount++;
     }
 
-    public void timeElapsed() {}
+    public void timeElapsed() {
+        if (isCut) {
+            lifeTime-= 40;
+        }
+        if (!isConnected) {
+            lifeTime -= 10;
+        }
+    }
 
     /**
      * A fonal "halála" – eltávolítás a kapcsolódó Tektonokról.
@@ -61,21 +69,41 @@ public class ShroomString implements TurnControl {
     }
 
     public String toString() {
-        return "String";
+        return id+": ParentShroom: "+ parentSrhoom.id+ ", Start: "+startTek.id+ ", End: "+disTek.id
+                + ", Growing: " + growing +", LifeTime: "+lifeTime
+                + ", isCut: "+isCut+", isConnected: "+isConnected;
     }
 
     /**
      * Gomba növesztése a fonal végén lévő Tektonra.
      */
     public void growMushroom() {
+        String error = "Error! Could not grow mushroom by String:" + id + "at " + startTek.id + " " + disTek.id + " Tektons.";
         if (!growing) {
-            disTek.growBody();
+            try {
+                disTek.growBody(this.parentSrhoom.playerID);
+            } catch (Exception e) {
+                System.out.println(error);
+            }
+            return;
+        }
+        System.out.println(error);
+    }
+
+    public void eatInsect(Insect insect){
+        if (insect.effectType == Effect.PARALYZE) {
+            insect.die();
+            growMushroom();
         }
     }
 
-    public void eatInsect(){}
+    public void getDamaged(int i) {
+        lifeTime -= i;
+    }
 
-    public void getDamaged(int i) {}
-
-    public void getDecayDamage() {}
+    public void getDecayDamage() {
+        if (isCut) {
+            lifeTime -= 30;
+        }
+    }
 }

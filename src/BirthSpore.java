@@ -3,10 +3,10 @@ public class BirthSpore extends Spore{
      * Minden paraméteres konstruktor
      * @param tekton position
      * @param playerID playerid
-     * @param actionPoints actionpoints
+     * @param rand random
      */
-    public BirthSpore(Tekton tekton, int playerID, int actionPoints) {
-        super(tekton, playerID, actionPoints);
+    public BirthSpore(Tekton tekton, int playerID, int rand) {
+        super(tekton, playerID, rand);
     }
 
     /**
@@ -15,8 +15,7 @@ public class BirthSpore extends Spore{
      */
     public void consumed(Insect insect) {
         insect.addPoints(calories);
-        Insect newInsect = new Insect(insect.playerID, insect.tekton, insect.actionPoints, insect.resources, insect.buffTimer, insect.effectType);
-        newInsect.moveToTekton(insect.tekton);
+        insect.tekton.addInsect(insect.playerID);
         tekton.removeSpore(this);
     }
 
@@ -24,7 +23,9 @@ public class BirthSpore extends Spore{
      *A spóra paramétereit írja le
      * @return szöveg
      */
-    public String toString(){return "BirthSpore";};
+    public String toString(){
+        String type = "Birth";
+        return id + ": Type: " + type +", Position: "+ tekton.id + ", Owner: " + playerid + ", Calories:"+ calories;};
 
 
 }

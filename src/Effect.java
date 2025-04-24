@@ -3,4 +3,5 @@ public enum Effect {
     BUFF,
     DEBUFF,
     PARALYZE,
-    NOCUT}
+    NOCUT
+}

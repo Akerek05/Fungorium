@@ -11,6 +11,22 @@ public class UnlivableTekton extends Tekton {
     }
 
     public String toString(){
-        return "UnlivableTekton";
-    }
+        String type = "Unlivable";
+
+        String  output= id+ ": ";
+        output += "Neighbours: ";
+        for(Tekton t : neighbours){
+            output += t.id + ", ";
+        }
+        if(neighbours.isEmpty()) output += ", ";
+
+        output += "StringNeighbours: ";
+        for (Tekton t : stringNeighbours){
+            output += t.id + ", ";
+        }
+        if(stringNeighbours.isEmpty()) output += ", ";
+
+        output+= "Type: "+type;
+        return output;
+    };
 }

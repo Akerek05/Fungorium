@@ -7,10 +7,10 @@ public class NoCutSpore extends Spore {
      * Minden paraméteres konstruktor
      * @param tekton position
      * @param playerID playerid
-     * @param actionPoints actionpoints
+     * @param rand random
      */
-    public NoCutSpore(Tekton tekton, int playerID, int actionPoints) {
-        super(tekton, playerID, actionPoints);
+    public NoCutSpore(Tekton tekton, int playerID, int rand) {
+        super(tekton, playerID, rand);
     }
 
     /**
@@ -20,8 +20,7 @@ public class NoCutSpore extends Spore {
      */
     public void consumed(Insect insect) {
         insect.addPoints(calories);
-        //insect.setCutting(false);  // Vágás kikapcsolása
-        insect.setBuffTimer(2);    // Vágás kikapcsolásának időtartama: 2 időegység
+        insect.effectType = Effect.NOCUT;
         tekton.removeSpore(this);
     }
 
@@ -29,5 +28,7 @@ public class NoCutSpore extends Spore {
      *A spóra paramétereit írja le
      * @return szöveg
      */
-    public String toString(){return "NoCutSpore";};
+    public String toString(){
+        String type = "NoCut";
+        return id + ": Type: " + type +", Position: "+ tekton.id + ", Owner: " + playerid + ", Calories:"+ calories;};
 }

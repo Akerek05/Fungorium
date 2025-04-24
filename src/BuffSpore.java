@@ -7,10 +7,10 @@ public class BuffSpore extends Spore {
      * Minden paraméteres konstruktor
      * @param tekton position
      * @param playerID playerid
-     * @param actionPoints actionpoints
+     * @param rand random
      */
-    public BuffSpore(Tekton tekton, int playerID, int actionPoints) {
-        super(tekton, playerID, actionPoints);
+    public BuffSpore(Tekton tekton, int playerID, int rand) {
+        super(tekton, playerID, rand);
     }
 
     /**
@@ -21,8 +21,7 @@ public class BuffSpore extends Spore {
      */
     public void consumed(Insect insect) {
         insect.addPoints(calories);
-        insect.setActionPoints(3);      // Action pontok 3-ra állítása - rovar erősítése
-        insect.setBuffTimer(1);         // Erősítés időtartama: 1 időegység
+        insect.effectType = Effect.BUFF;
         tekton.removeSpore(this);
     }
 
@@ -30,5 +29,7 @@ public class BuffSpore extends Spore {
      *A spóra paramétereit írja le
      * @return szöveg
      */
-    public String toString(){return "BuffSpore";};
+    public String toString(){
+        String type = "Buff";
+        return id + ": Type: " + type +", Position: "+ tekton.id + ", Owner: " + playerid + ", Calories:"+ calories;};
 }

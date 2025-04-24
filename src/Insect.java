@@ -68,7 +68,12 @@ public class Insect implements TurnControl {
      * @param spore A spóra objektum
      */
     public void eatSpore(Spore spore) {
-        spore.consumed(this);
+        if (actionPoints > 0) {
+            spore.consumed(this);
+            actionPoints--;
+            return;
+        }
+        System.out.println("Error! Could not eat Spore:"+spore.id+"at Tekton:"+tekton.id);
     }
 
     /**
@@ -137,7 +142,7 @@ public class Insect implements TurnControl {
      * @return szöveg
      */
     public String toString() {
-        String out = "";
-        return out + id + ": Owner: " + playerID;
+        return id + ": Owner: " + playerID + ", Position: "+ tekton.id + ", ActionPoints: "+ actionPoints+ ", Timer: "+buffTimer
+                +", effectType: " + effectType;
     }
 }

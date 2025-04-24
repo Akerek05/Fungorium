@@ -11,10 +11,23 @@ public class MultipleStringTekton extends Tekton {
      * Kiírja a tekton típusát, valamint szomszédjait
      * @return összefűzött szöveg
      */
-    public String toString(){return "MultipleStringTekton";};
+    public String toString(){
+        String type = "MultipleString";
 
-    /**
-     * A tekton halálát valósítja meg
-     */
-    public void die(){};
+        String  output= id+ ": ";
+        output += "Neighbours: ";
+        for(Tekton t : neighbours){
+            output += t.id + ", ";
+        }
+        if(neighbours.isEmpty()) output += ", ";
+
+        output += "StringNeighbours: ";
+        for (Tekton t : stringNeighbours){
+            output += t.id + ", ";
+        }
+        if(stringNeighbours.isEmpty()) output += ", ";
+
+        output+= "Type: "+type;
+        return output;
+    };
 }

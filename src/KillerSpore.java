@@ -7,10 +7,10 @@ public class KillerSpore extends Spore {
      * Minden paraméteres konstruktor
      * @param tekton position
      * @param playerID playerid
-     * @param actionPoints actionpoints
+     * @param rand random
      */
-    public KillerSpore(Tekton tekton, int playerID, int actionPoints) {
-        super(tekton, playerID, actionPoints);
+    public KillerSpore(Tekton tekton, int playerID, int rand) {
+        super(tekton, playerID, rand);
     }
 
     /**
@@ -28,5 +28,7 @@ public class KillerSpore extends Spore {
      *A spóra paramétereit írja le
      * @return szöveg
      */
-    public String toString(){return "KillerSpore";};
+    public String toString(){
+        String type = "Killer";
+        return id + ": Type: " + type +", Position: "+ tekton.id + ", Owner: " + playerid + ", Calories:"+ calories;};
 }

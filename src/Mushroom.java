@@ -4,11 +4,16 @@
 public class Mushroom implements TurnControl {
     protected int sporeSpawnTime = 0;
     protected int playerID;
-    protected int lifetime = 100;
+    protected int lifeTime = 100;
     protected int resources = 0;
     protected Tekton position;
     public int id;
     public static int mushroomCount = 0;
+
+    /**
+     * Default konstruktor -- CSAK AZ UPGRADED MUSHROOMNAK
+     */
+    public Mushroom(){}
 
     /**
      * Konstruktor, amely elhelyezi a gombát egy adott Tektonra.
@@ -16,6 +21,7 @@ public class Mushroom implements TurnControl {
      * @param position A pozíció Tekton
      * @param pid playerID
      */
+
     public Mushroom(Tekton position, int pid) {
         this.position = position;
         this.playerID = pid;
@@ -27,14 +33,14 @@ public class Mushroom implements TurnControl {
      * Minden paraméteres konstruktor
      * @param position tekton
      * @param pid playerid
-     * @param lifetime élettartam vagy pont
+     * @param lifeTime élettartam vagy pont
      * @param resources mennyi nyersanyaga van
      * @param sporeSpawnTime spóra szórása lehet-e
      */
-    public Mushroom(int pid, Tekton position, int sporeSpawnTime, int lifetime, int resources) {
+    public Mushroom(int pid, Tekton position, int sporeSpawnTime, int lifeTime, int resources) {
         this.position = position;
         this.playerID = pid;
-        this.lifetime = lifetime;
+        this.lifeTime = lifeTime;
         this.resources = resources;
         this.sporeSpawnTime = sporeSpawnTime;
 
@@ -45,12 +51,9 @@ public class Mushroom implements TurnControl {
      * Gomba fejlesztése egy új, erősebb változatra.
      */
     public void upgradeMushroom() {
-        Logger.enter("upgradeMushroom", "");
-        if(Logger.askUser("Is there enough resource for upgrade?")) {
+        if(resources > 80) {
             position.addUpgradedBody();
         }
-
-        Logger.exit("upgradeMushroom", "");
     }
 
     /**
@@ -85,9 +88,18 @@ public class Mushroom implements TurnControl {
         position.removeBody(this);
     }
 
-    public void timeElapsed() {}
+    public void timeElapsed() {
+        resources += 10;
+        sporeSpawnTime += 10;
+        lifeTime -= 10;
+    }
 
+    /**
+     * Kiírja a paramétereket
+     * @return szöveg
+     */
     public String toString() {
-        return "Mushroom";
+        return id + ": Owner: "+ playerID+ ", Position: "+ position+ ", Timer: "+ sporeSpawnTime
+        +", HP: "+lifeTime+", Resources: "+resources + ", Type: Basic";
     }
 }

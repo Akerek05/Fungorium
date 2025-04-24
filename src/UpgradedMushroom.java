@@ -14,20 +14,10 @@ public class UpgradedMushroom extends Mushroom {
      * @param position tekton
      * @param pid playerid
      */
-    public UpgradedMushroom(Tekton position, int pid) {
-        super(position,pid);
-    }
-
-    /**
-     * Minden paraméteres konstruktor
-     * @param position tekton
-     * @param pid playerid
-     * @param lifetime élettartam vagy pont
-     * @param resources mennyi nyersanyaga van
-     * @param sporeSpawnTime spóra szórása lehet-e
-     */
-    public UpgradedMushroom(int pid, Tekton position,  int sporeSpawnTime, int lifetime, int resources) {
-        super(pid,position,sporeSpawnTime,lifetime,resources);
+    public UpgradedMushroom(Tekton position, int pid, int id) {
+        this.position = position;
+        this.playerID = pid;
+        this.id = id;
     }
 
     /**
@@ -37,8 +27,7 @@ public class UpgradedMushroom extends Mushroom {
      * @param rnd A spóra fajtáját valósítja meg (-1 esetén random)
      */
     public void spreadSpore(Tekton tekton, int rnd) {
-        Logger.enter("spreadSpore", "" + tekton);
-        if (Logger.askUser("Is SporeSpawnTimer at least 4")) {
+        if (sporeSpawnTime > 4) {
             Set<Tekton> visited = new HashSet<>();
             Queue<Tekton> queue = new LinkedList<>();
 
@@ -57,6 +46,14 @@ public class UpgradedMushroom extends Mushroom {
                 }
             }
         }
-        Logger.exit("spreadSpore", "" + tekton);
+    }
+
+    /**
+     * Kiírja a paramétereket
+     * @return szöveg
+     */
+    public String toString() {
+        return id + ": Owner: "+ playerID+ ", Position: "+ position+ ", Timer: "+ sporeSpawnTime
+                +", HP: "+lifeTime+", Resources: "+resources + ", Type: Upgraded";
     }
 }

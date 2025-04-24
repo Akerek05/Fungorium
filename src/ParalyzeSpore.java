@@ -7,10 +7,10 @@ public class ParalyzeSpore extends Spore {
      * Minden paraméteres konstruktor
      * @param tekton position
      * @param playerID playerid
-     * @param actionPoints actionpoints
+     * @param rand random
      */
-    public ParalyzeSpore(Tekton tekton, int playerID, int actionPoints) {
-        super(tekton, playerID, actionPoints);
+    public ParalyzeSpore(Tekton tekton, int playerID, int rand) {
+        super(tekton, playerID, rand);
     }
 
     /**
@@ -19,17 +19,16 @@ public class ParalyzeSpore extends Spore {
      * @param insect A cél rovar
      */
     public void consumed(Insect insect) {
-        Logger.enter("consumed", "" + insect);
         insect.addPoints(calories);
-        insect.setActionPoints(0);   // Akciópont lenullázása
-        insect.setBuffTimer(1);      // Hatás időtartama: 1 időegység
+        insect.effectType = Effect.PARALYZE;
         tekton.removeSpore(this);
-        Logger.exit("consumed", "" + insect);
     }
 
     /**
      *A spóra paramétereit írja le
      * @return szöveg
      */
-    public String toString(){return "ParalyzeSpore";};
+    public String toString(){
+        String type = "Paralyze";
+        return id + ": Type: " + type +", Position: "+ tekton.id + ", Owner: " + playerid + ", Calories:"+ calories;};
 }
