@@ -23,7 +23,10 @@ public class Tekton implements TurnControl {
     public Tekton() {
         this.id = tektonCount++;
     }
-
+    public void addNeighbour(Tekton tekton){
+        this.neighbours.add(tekton);
+        tekton.neighbours.add(this);
+    }
     /**
      * Törli a jelenlegi Tekton tartalmát (rovarokat, gombát, spórákat, fonalakat),
      * majd létrehoz egy új, üres Tekton objektumot.
@@ -72,36 +75,69 @@ public class Tekton implements TurnControl {
      *
      * @param t2 A másik Tekton, amelyhez a fonalat hozzákötjük
      */
-    public void addString(Tekton t2,Mushroom m1) {
+    public void addString(Tekton t2, Mushroom m1) {
+        // Check if a string already exists between this and t2
+        for (ShroomString s : arrayOfString) {
+            if ((s.startTek.equals(this) && s.disTek.equals(t2)) ||
+                    (s.startTek.equals(t2) && s.disTek.equals(this))) {
+                return; // String already exists, do not add another
+            }
+        }
 
-        ShroomString s1 = new ShroomString(this, t2,m1);
+        // Create and add new ShroomString
+        ShroomString s1 = new ShroomString(this, t2, m1);
         arrayOfString.add(s1);
         t2.arrayOfString.add(s1);
 
+        // Add stringNeighbours only if not already present
         if (s1.startTek.equals(this)) {
-            stringNeighbours.add(s1.disTek);
-            t2.stringNeighbours.add(s1.disTek);
+            if (!stringNeighbours.contains(s1.disTek)) {
+                stringNeighbours.add(s1.disTek);
+            }
+            if (!t2.stringNeighbours.contains(s1.disTek)) {
+                t2.stringNeighbours.add(s1.disTek);
+            }
         } else if (s1.disTek.equals(this)) {
-            stringNeighbours.add(s1.startTek);
-            t2.stringNeighbours.add(s1.startTek);
+            if (!stringNeighbours.contains(s1.startTek)) {
+                stringNeighbours.add(s1.startTek);
+            }
+            if (!t2.stringNeighbours.contains(s1.startTek)) {
+                t2.stringNeighbours.add(s1.startTek);
+            }
+        }
+    }
+
+    public void addSpecialString(Tekton t2, Mushroom m1, ShroomString specialString) {
+        // Check if a string already exists between this and t2
+        for (ShroomString s : arrayOfString) {
+            if ((s.startTek.equals(this) && s.disTek.equals(t2)) ||
+                    (s.startTek.equals(t2) && s.disTek.equals(this))) {
+                return; // A string already exists between these Tektons
+            }
         }
 
-    }
-    public void addSpecialString(Tekton t2,Mushroom m1,ShroomString specialString) {
-
-
+        // Add the special string to both Tektons
         arrayOfString.add(specialString);
         t2.arrayOfString.add(specialString);
 
+        // Add neighbours only if not already present
         if (specialString.startTek.equals(this)) {
-            stringNeighbours.add(specialString.disTek);
-            t2.stringNeighbours.add(specialString.disTek);
+            if (!stringNeighbours.contains(specialString.disTek)) {
+                stringNeighbours.add(specialString.disTek);
+            }
+            if (!t2.stringNeighbours.contains(specialString.disTek)) {
+                t2.stringNeighbours.add(specialString.disTek);
+            }
         } else if (specialString.disTek.equals(this)) {
-            stringNeighbours.add(specialString.startTek);
-            t2.stringNeighbours.add(specialString.startTek);
+            if (!stringNeighbours.contains(specialString.startTek)) {
+                stringNeighbours.add(specialString.startTek);
+            }
+            if (!t2.stringNeighbours.contains(specialString.startTek)) {
+                t2.stringNeighbours.add(specialString.startTek);
+            }
         }
-        ;
     }
+
 
     /**
      * Véletlenszerű típusú spóra generálása és hozzáadása ehhez a Tektonhoz.

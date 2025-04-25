@@ -1,10 +1,7 @@
 import jdk.jshell.ImportSnippet;
 
 import java.sql.Array;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * A játékban használt térképet reprezentáló osztály,
@@ -30,16 +27,60 @@ public class Map {
     }*/
 
     private void update() {
-        insects.clear();
-        spores.clear();
-        mushrooms.clear();
-
         for (Tekton tekton : tektons) {
-            insects.addAll(tekton.arrayOfInsect);
-            spores.addAll(tekton.arrayOfSpore);
-            mushrooms.addAll(tekton.arrayOfMushroom);
+            for (Insect insect : tekton.arrayOfInsect) {
+                if (!containsInsectById(insects, insect.id)) {
+                    insects.add(insect);
+                }
+            }
+
+            for (Spore spore : tekton.arrayOfSpore) {
+                if (!containsSporeById(spores, spore.id)) {
+                    spores.add(spore);
+                }
+            }
+
+            for (Mushroom mushroom : tekton.arrayOfMushroom) {
+                if (!containsMushroomById(mushrooms, mushroom.id)) {
+                    mushrooms.add(mushroom);
+                }
+            }
+
+            for (ShroomString shroomString : tekton.arrayOfString) {
+                if (!containsShroomStringById(shroomStrings, shroomString.id)) {
+                    shroomStrings.add(shroomString);
+                }
+            }
         }
     }
+    private boolean containsInsectById(List<Insect> list, int id) {
+        for (Insect i : list) {
+            if (i.id == id) return true;
+        }
+        return false;
+    }
+
+    private boolean containsSporeById(List<Spore> list, int id) {
+        for (Spore s : list) {
+            if (s.id == id) return true;
+        }
+        return false;
+    }
+
+    private boolean containsMushroomById(List<Mushroom> list, int id) {
+        for (Mushroom m : list) {
+            if (m.id == id) return true;
+        }
+        return false;
+    }
+
+    private boolean containsShroomStringById(List<ShroomString> list, int id) {
+        for (ShroomString s : list) {
+            if (s.id == id) return true;
+        }
+        return false;
+    }
+
 
 
     /**
@@ -217,7 +258,7 @@ public class Map {
                                     ShroomString s1 = new ShroomString(this.getMushroom(mushroomID), this.getTekton(startTektonID), this.getTekton(endTektonID), growing, lifetime, isCut, isConnected);
                                     this.getTekton(startTektonID).addSpecialString(this.getTekton(endTektonID),this.getMushroom(mushroomID),s1);
                                     update();
-                                    System.out.println("STRING CREATED");
+
                                 }
                                 else {
                                     System.out.println(errorString + "String");
@@ -229,8 +270,8 @@ public class Map {
 
                         case "SPORE":
                             if(command.length == 6) {
-                                Integer tektonID = tryParseInt(command[4]);
                                 Integer playerID = tryParseInt(command[3]);
+                                Integer tektonID = tryParseInt(command[4]);
                                 Integer rand = tryParseInt(command[5]);
                                 if (tektonID != null && playerID != null && rand != null && isInTektons(tektonID)) {
                                     Spore s1;
@@ -402,10 +443,55 @@ public class Map {
 
                 case "GROW":
                     System.out.println("GROW");
+                    if(command.length == 1){
+                        System.out.println("Too few arguments");
+                        break;
+                    };
+
+                        switch (command[1].toUpperCase()) {
+                            case "MUSHROOM":
+                                if(command.length == 3) {
+                                    Integer stringID = tryParseInt(command[2]);
+                                    shroomStrings.get(stringID).growMushroom();
+                                    update();
+                                }
+                                break;
+                            case "STRING":
+                                if(command.length == 5) {
+                                    Integer mushroomID = tryParseInt(command[2]);
+                                    Integer StartTekID = tryParseInt(command[3]);
+                                    Integer EndTekID = tryParseInt(command[4]);
+                                    if (tektons.get(StartTekID).getNeighbours().contains(tektons.get(EndTekID))) {
+                                        mushrooms.get(mushroomID).growString(tektons.get(StartTekID), tektons.get(EndTekID));
+                                        update();
+                                    } else
+                                        System.out.println("Error! Could not grow String from Mushroom: " + mushroomID + " by Tekton: " + StartTekID + " and EndTekID: " + EndTekID);
+                                }
+                                break;
+                        }
+
                     break;
 
                 case "SPREAD":
                     System.out.println("SPREAD");
+                    if(command.length < 4){
+                        System.out.println("Too few arguments");
+                        break;
+                    };
+                    Integer shroomID = tryParseInt(command[1]);
+                    Integer tektonID = tryParseInt(command[2]);
+                    if(this.isInTektons(tektonID)){
+                        if(this.containsMushroomById(mushrooms,shroomID)){
+                            mushrooms.get(shroomID).spreadSpore(tektons.get(tektonID),tryParseInt(command[3]));
+                            update();
+                        }
+                        else{
+                            System.out.println("Error! Could not spread spore  by Mushroom: "+shroomID +"at Tekton: "+tektonID);
+                        }
+                    }
+                    else{
+                        System.out.println("Error! Could not spread spore  by Mushroom: "+shroomID +"at Tekton: "+tektonID);
+                    }
                     break;
 
                 case "ENDGAME":
@@ -427,6 +513,12 @@ public class Map {
 
                 case "ADDNEIGHBOURS":
                     System.out.println("ADDNEIGHBOURS");
+                    if(command.length == 3) {
+                        Integer tekton1 = tryParseInt(command[1]);
+                        Integer tekton2 = tryParseInt(command[2]);
+                        tektons.get(tekton1).addNeighbour(tektons.get(tekton2));
+                        update();
+                    }
                     break;
 
                 default:
