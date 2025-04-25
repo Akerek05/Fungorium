@@ -46,8 +46,11 @@ public class Tekton implements TurnControl {
         }
         arrayOfSpore.clear();
         stringNeighbours.clear();
+
+        //TODO random tekton
         Tekton newTekton = new Tekton();
 
+        this.addNeighbour(newTekton);
     }
 
     /**
@@ -57,6 +60,7 @@ public class Tekton implements TurnControl {
      */
     public void accept(Insect insect) {
         arrayOfInsect.add(insect);
+        insect.tekton = this;
     }
 
     /**
@@ -67,7 +71,7 @@ public class Tekton implements TurnControl {
             arrayOfMushroom.add(new Mushroom(this, pid));
             return;
         }
-        throw new IllegalArgumentException("Can't grow mushroom, tekton already has mushroom");
+        throw new IllegalArgumentException("");
     }
 
     /**
@@ -75,6 +79,7 @@ public class Tekton implements TurnControl {
      *
      * @param t2 A másik Tekton, amelyhez a fonalat hozzákötjük
      */
+    //TODO: EZT IS MAJD EZ A SEGÉDFÜGGVÉNYE growstring
     public void addString(Tekton t2, Mushroom m1) {
         // Check if a string already exists between this and t2
         for (ShroomString s : arrayOfString) {
@@ -107,6 +112,7 @@ public class Tekton implements TurnControl {
         }
     }
 
+    //TODO: EZ KB GATYA
     public void addSpecialString(Tekton t2, Mushroom m1, ShroomString specialString) {
         // Check if a string already exists between this and t2
         for (ShroomString s : arrayOfString) {
@@ -165,8 +171,12 @@ public class Tekton implements TurnControl {
      * @param tekton A cél Tekton
      */
     public void moveInsect(Insect insect, Tekton tekton) {
-        tekton.accept(insect);
-        this.removeInsect(insect);
+        if(this.stringNeighbours.contains(tekton) && tekton.stringNeighbours.contains(this)){
+            tekton.accept(insect);
+            this.removeInsect(insect);
+            return;
+        }
+        throw new IllegalArgumentException("");
     }
 
     /** Rovar eltávolítása a Tektonról. */
@@ -210,41 +220,10 @@ public class Tekton implements TurnControl {
         arrayOfInsect.add(insect);
     }
 
-
-    /** @return A Tektonon lévő rovarok listája */
-    public List<Insect> getInsect() {
-        return arrayOfInsect;
-    }
-
-    /** @return A Tektonon lévő gombák listája */
-    public List<Mushroom> getMushroom() {
-        return arrayOfMushroom;
-    }
-
-    /** @return A Tektonon lévő fonalak listája */
-    public List<ShroomString> getShroomString() {
-        return arrayOfString;
-    }
-
-    /** @return A Tekton szomszédos mezői */
-    public List<Tekton> getNeighbours() {
-        return neighbours;
-    }
-
-    /** @return A Tekton első spórája */
-    public Spore getSpore() {
-        return arrayOfSpore.get(0);
-    }
-
-    /** Beállítja az aktuális spórát (minden korábbit töröl). */
-    public void setArrayOfSpore(Spore spore) {
-        arrayOfSpore.clear();
-        arrayOfSpore.add(spore);
-    }
-
     /**
      * A Tekton "halála", minden rajta lévő objektum törlése.
      */
+    //TODO szerintem nem kell
     public void die() {
         arrayOfString.clear();
         arrayOfMushroom.clear();

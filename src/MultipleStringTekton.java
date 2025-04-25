@@ -5,6 +5,7 @@ public class MultipleStringTekton extends Tekton {
     /**
      * Fonal hozzáadása, jelenleg üres implementációval.
      */
+    // TODO
     public void addString() {}
 
     /**

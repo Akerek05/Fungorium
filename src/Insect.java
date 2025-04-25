@@ -48,9 +48,18 @@ public class Insect implements TurnControl {
      * @param tekton2 A cél Tekton
      */
     public void moveToTekton(Tekton tekton2) {
+        String error = "Error! Could not move Insect:"+ id + " to Tekton:" + tekton2.id;
         if(actionPoints > 0) {
-            tekton.moveInsect(this, tekton2);
+            try {
+                tekton.moveInsect(this, tekton2);
+            } catch (Exception e) {
+                System.out.println(error);
+                return;
+            }
+            actionPoints--;
+            return;
         }
+        System.out.println(error);
     }
 
     /**
@@ -93,7 +102,7 @@ public class Insect implements TurnControl {
     public void cutString(ShroomString string) {
         if (this.effectType != Effect.NOCUT) {
             string.cut();
-            string.timeElapsed();
+            //string.timeElapsed();
             actionPoints--;
             return;
         }

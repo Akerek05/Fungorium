@@ -26,7 +26,9 @@ public class UpgradedMushroom extends Mushroom {
      * @param tekton Kiindulási pont a terjesztéshez
      * @param rnd A spóra fajtáját valósítja meg (-1 esetén random)
      */
+    //TODO az error megvan, algoritmus jó-e
     public void spreadSpore(Tekton tekton, int rnd) {
+        String error = "Error! Could not spread Spore to Tekton:"+tekton.id+" from Mushroom:"+id;
         if (sporeSpawnTime > 4) {
             Set<Tekton> visited = new HashSet<>();
             Queue<Tekton> queue = new LinkedList<>();
@@ -39,13 +41,18 @@ public class UpgradedMushroom extends Mushroom {
 
                 for (Tekton neighbour : current.neighbours) {
                     if (!visited.contains(neighbour)) {
-                        //neighbour.addSpore();
+                        neighbour.addSpore(playerID, rnd);
                         visited.add(neighbour);
                         queue.add(neighbour);
+                        return;
                     }
                 }
+                System.out.println(error);
             }
         }
+        else
+            System.out.println(error);
+
     }
 
     /**

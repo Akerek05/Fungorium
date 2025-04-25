@@ -50,6 +50,9 @@ public class ShroomString implements TurnControl {
         this.id = stringCount++;
     }
 
+    /**
+     * Idő telése
+     */
     public void timeElapsed() {
         if (isCut) {
             lifeTime-= 40;
@@ -66,10 +69,11 @@ public class ShroomString implements TurnControl {
     /**
      * A fonal "halála" – eltávolítás a kapcsolódó Tektonokról.
      */
-
     public void die() {
         startTek.removeString(this);
         disTek.removeString(this);
+
+        //TODO: SZOMSZÉDOKRA IS ISCONNECTED false
     }
 
     public String toString() {
@@ -99,11 +103,14 @@ public class ShroomString implements TurnControl {
             insect.die();
             growMushroom();
         }
+
     }
 
     public void cut(){
         isCut = true;
         isConnected = false;
+
+        //TODO: SZOMSZÉDOKRA IS ISCONNECTED false
     }
 
     public void getDamaged(int i) {

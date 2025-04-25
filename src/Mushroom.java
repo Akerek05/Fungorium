@@ -67,13 +67,13 @@ public class Mushroom implements TurnControl {
      */
     public void spreadSpore(Tekton tekton, int rnd) {
         if(sporeSpawnTime > 4) {
-            if (position.getNeighbours().contains(tekton)) {
+            if (position.neighbours.contains(tekton)) {
                 tekton.addSpore(playerID, rnd);
                 sporeSpawnTime-=4;
                 return;
             }
         }
-        System.out.println("Error! Could not spread spore");
+        System.out.println("Error! Could not spread Spore to Tekton:"+tekton.id+" from Mushroom:"+id);
     }
 
     /**
@@ -82,6 +82,7 @@ public class Mushroom implements TurnControl {
      * @param tekton1 Az egyik Tekton
      * @param tekton2 A másik Tekton
      */
+    //TODO: Fonal növesztése
     public void growString(Tekton tekton1, Tekton tekton2) {
         tekton1.addString(tekton2,this);
         tekton2.stringNeighbours.add(tekton1);
@@ -90,6 +91,7 @@ public class Mushroom implements TurnControl {
     /**
      * Gomba eltávolítása a Tektonról.
      */
+    //TODO: A fonalakra beállítani hogy isConnected false
     public void die(){
         position.removeBody(this);
     }
