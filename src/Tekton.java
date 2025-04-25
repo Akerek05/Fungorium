@@ -72,20 +72,35 @@ public class Tekton implements TurnControl {
      *
      * @param t2 A másik Tekton, amelyhez a fonalat hozzákötjük
      */
-    public void addString(Tekton t2) {
-//        Logger.enter("addString", "" + t2);
-//        ShroomString s1 = new ShroomString(this, t2);
-//        arrayOfString.add(s1);
-//        t2.arrayOfString.add(s1);
-//
-//        if (s1.startTek.equals(this)) {
-//            stringNeighbours.add(s1.disTek);
-//            t2.stringNeighbours.add(s1.disTek);
-//        } else if (s1.disTek.equals(this)) {
-//            stringNeighbours.add(s1.startTek);
-//            t2.stringNeighbours.add(s1.startTek);
-//        }
-//        Logger.exit("addString", "" + t2);
+    public void addString(Tekton t2,Mushroom m1) {
+
+        ShroomString s1 = new ShroomString(this, t2,m1);
+        arrayOfString.add(s1);
+        t2.arrayOfString.add(s1);
+
+        if (s1.startTek.equals(this)) {
+            stringNeighbours.add(s1.disTek);
+            t2.stringNeighbours.add(s1.disTek);
+        } else if (s1.disTek.equals(this)) {
+            stringNeighbours.add(s1.startTek);
+            t2.stringNeighbours.add(s1.startTek);
+        }
+
+    }
+    public void addSpecialString(Tekton t2,Mushroom m1,ShroomString specialString) {
+
+
+        arrayOfString.add(specialString);
+        t2.arrayOfString.add(specialString);
+
+        if (specialString.startTek.equals(this)) {
+            stringNeighbours.add(specialString.disTek);
+            t2.stringNeighbours.add(specialString.disTek);
+        } else if (specialString.disTek.equals(this)) {
+            stringNeighbours.add(specialString.startTek);
+            t2.stringNeighbours.add(specialString.startTek);
+        }
+        ;
     }
 
     /**

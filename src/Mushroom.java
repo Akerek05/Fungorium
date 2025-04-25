@@ -77,7 +77,7 @@ public class Mushroom implements TurnControl {
      * @param tekton2 A másik Tekton
      */
     public void growString(Tekton tekton1, Tekton tekton2) {
-        tekton1.addString(tekton2);
+        tekton1.addString(tekton2,this);
         tekton2.stringNeighbours.add(tekton1);
     }
 
