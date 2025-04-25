@@ -53,7 +53,10 @@ public class Mushroom implements TurnControl {
     public void upgradeMushroom() {
         if(resources > 80) {
             position.addUpgradedBody();
+            resources -= 80;
+            return;
         }
+        System.out.println("Error! Could not upgrade mushroom");
     }
 
     /**
@@ -66,8 +69,11 @@ public class Mushroom implements TurnControl {
         if(sporeSpawnTime > 4) {
             if (position.getNeighbours().contains(tekton)) {
                 tekton.addSpore(playerID, rnd);
+                sporeSpawnTime-=4;
+                return;
             }
         }
+        System.out.println("Error! Could not spread spore");
     }
 
     /**
