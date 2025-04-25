@@ -1,3 +1,5 @@
+import jdk.jshell.ImportSnippet;
+
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +28,9 @@ public class Map {
         }
     }*/
 
+    private void update(){
+        for (Tekton tektons : tektons) {}
+    }
     /**
      * Frissíti a szomszédsági kapcsolatokat minden Tekton között.
      */
@@ -52,6 +57,33 @@ public class Map {
         for (Mushroom mushroom : mushrooms) {
             if (mushroom.id == mushroomID) {
                 return mushroom;
+            }
+        }
+        return null;
+    }
+
+    private Spore getSpore(int sporeID){
+        for (Spore spore : spores) {
+            if (spore.id == sporeID) {
+                return spore;
+            }
+        }
+        return null;
+    }
+
+    private Insect getInsect(int insectID){
+        for (Insect insect : insects) {
+            if (insect.id == insectID) {
+                return insect;
+            }
+        }
+        return null;
+    }
+
+    private ShroomString getShroomString(int shroomStringID){
+        for (ShroomString shroomString : shroomStrings) {
+            if (shroomString.id == shroomStringID) {
+                return shroomString;
             }
         }
         return null;
@@ -192,30 +224,37 @@ public class Map {
                                     switch (command[2].toUpperCase()) {
                                         case "BASIC":
                                             s1 = new Spore(this.getTekton(tektonID), playerID, rand);
+                                            this.getTekton(tektonID).arrayOfSpore.add(s1);
                                             this.spores.add(s1);
                                             break;
                                         case "BUFF":
                                             s1 = new BuffSpore(this.getTekton(tektonID), playerID, rand);
+                                            this.getTekton(tektonID).arrayOfSpore.add(s1);
                                             this.spores.add(s1);
                                             break;
                                         case "DEBUFF":
                                             s1 = new DebuffSpore(this.getTekton(tektonID), playerID, rand);
+                                            this.getTekton(tektonID).arrayOfSpore.add(s1);
                                             this.spores.add(s1);
                                             break;
                                         case "BIRTH":
                                             s1 = new BirthSpore(this.getTekton(tektonID), playerID, rand);
+                                            this.getTekton(tektonID).arrayOfSpore.add(s1);
                                             this.spores.add(s1);
                                             break;
                                         case "KILLER":
                                             s1 = new KillerSpore(this.getTekton(tektonID), playerID, rand);
+                                            this.getTekton(tektonID).arrayOfSpore.add(s1);
                                             this.spores.add(s1);
                                             break;
                                         case "NOCUT":
                                             s1 = new NoCutSpore(this.getTekton(tektonID), playerID, rand);
+                                            this.getTekton(tektonID).arrayOfSpore.add(s1);
                                             this.spores.add(s1);
                                             break;
                                         case "PARALYZE":
                                             s1 = new ParalyzeSpore(this.getTekton(tektonID), playerID, rand);
+                                            this.getTekton(tektonID).arrayOfSpore.add(s1);
                                             this.spores.add(s1);
                                             break;
                                         default:
@@ -295,12 +334,55 @@ public class Map {
                     }
                     break;
 
+                //Paraméterezés: EAT <SPORE> <insectID> <sporeID>
+                //               EAT <INSECT> <stringID> <insectID>
                 case "EAT":
-                    System.out.println("EAT");
+                    if (command.length == 4) {
+                        if (command[1].toUpperCase().equals("SPORE")) {
+                            Integer insectID = tryParseInt(command[2]);
+                            Integer sporeID = tryParseInt(command[3]);
+                            Tekton t = getInsect(insectID).tekton;
+
+                            if (!t.arrayOfSpore.contains(getSpore(sporeID))) {
+                                System.out.println("Error! Could not eat Spore: " + sporeID + " by Insect: " + insectID);
+                            } else {
+                                getInsect(insectID).eatSpore(getSpore(sporeID));
+                                spores.remove(getSpore(sporeID));
+                            }
+                        } else if (command[1].toUpperCase().equals("INSECT")) {
+                            int stringID = Integer.parseInt(command[2]);
+                            int insectID = Integer.parseInt(command[3]);
+                            Tekton t = getShroomString(stringID).disTek;
+                            if (!t.arrayOfInsect.contains(getInsect(insectID)) || getInsect(insectID).effectType != Effect.PARALYZE) {
+                                System.out.println("Error! Could not eat Insect: " + insectID + " by String: " + stringID);
+                            } else {
+                                System.out.println("INSECT EVES");
+                                getShroomString(stringID).eatInsect(getInsect(insectID));
+                                insects.remove(getInsect(insectID));
+                            }
+                        }
+                    }
                     break;
 
                 case "CUT":
-                    System.out.println("CUT");
+                    if (command.length == 3){
+                        Integer stringID = tryParseInt(command[1]);
+                        Integer insectID = tryParseInt(command[2]);
+                        Tekton startT = getShroomString(stringID).startTek;
+                        Tekton endT = getShroomString(stringID).disTek;
+                        if (startT.arrayOfInsect.contains(getInsect(insectID))){
+                            System.out.println("StartTekton vágás");
+                            getInsect(insectID).cutString(getShroomString(stringID));
+                        }
+                        else if (endT.arrayOfInsect.contains(getInsect(insectID)))
+                        {
+                            System.out.println("EndTekton vágás");
+                            getInsect(insectID).cutString(getShroomString(stringID));
+                        }
+                        else{
+                            System.out.println("Error! Could not cut String: "+stringID+" by Insect: "+insectID);
+                        }
+                    }
                     break;
 
                 case "GROW":

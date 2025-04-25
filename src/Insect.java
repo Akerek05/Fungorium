@@ -92,10 +92,12 @@ public class Insect implements TurnControl {
      */
     public void cutString(ShroomString string) {
         if (this.effectType != Effect.NOCUT) {
-            string.die();
+            string.cut();
             string.timeElapsed();
+            actionPoints--;
+            return;
         }
-
+        System.out.println("Error! Could not cut String: "+string.id+" by Insect: "+id);
     }
 
     /**

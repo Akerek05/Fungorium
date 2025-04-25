@@ -57,6 +57,10 @@ public class ShroomString implements TurnControl {
         if (!isConnected) {
             lifeTime -= 10;
         }
+        if (lifeTime <= 0)
+        {
+            die();
+        }
     }
 
     /**
@@ -95,6 +99,11 @@ public class ShroomString implements TurnControl {
             insect.die();
             growMushroom();
         }
+    }
+
+    public void cut(){
+        isCut = true;
+        isConnected = false;
     }
 
     public void getDamaged(int i) {
