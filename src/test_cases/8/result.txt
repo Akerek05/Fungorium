@@ -1,6 +1,3 @@
-ADDNEIGHBOURS
-MOVE
-Error! Could not move insect:0 to Tekton:1
 Players:
 Player:0, Score: 0
 Player:1, Score: 10
@@ -8,9 +5,9 @@ Tektons:
     0: Neighbours: 1, StringNeighbours: 1, Type: Basic
     1: Neighbours: 0, StringNeighbours: 0, Type: Basic
 Insects:
-    0: Owner: 0, Position: 0, ActionPoints: 3, Timer: 1, effectType: DEFAULT
+    0: Owner: 0, Position: 1, ActionPoints: 2, Timer: 1, effectType: DEFAULT
 Mushrooms:
-    0: Owner: 1, Position: 0: Neighbours: 1, StringNeighbours: 1, Type: Basic, Timer: 1, HP: 100, Resources: 10, Type: Basic
+    0: Owner: 1, Position: 0, Timer: 1, HP: 100, Resources: 10, Type: Basic
 Strings:
     0: ParentShroom: 0, Start: 0, End: 1, Growing: false, LifeTime: 100, isCut: false, isConnected: true
 Spores:

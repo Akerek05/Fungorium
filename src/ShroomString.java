@@ -113,7 +113,7 @@ public class ShroomString implements TurnControl {
      * Gomba növesztése a fonal végén lévő Tektonra.
      */
     public void growMushroom() {
-        String error = "Error! Could not grow mushroom by String:" + id + "at " + disTek.id + " Tekton.";
+        String error = "Error! Could not grow mushroom by String:" + id + " at Tekton:" + disTek.id;
         if (!growing && isConnected) {
             try {
                 disTek.growBody(this.parentSrhoom.playerID);

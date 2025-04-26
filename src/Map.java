@@ -31,30 +31,56 @@ public class Map {
 
     }
     /**
-     * Új Tekton hozzáadása a térképhez, és szomszédság frissítése.
+     * Beallitja egy gomba osszes fonalara, az isConnected-t
      */
-    /*public void addTekton() {
-        tektons.add(new Tekton());
-        if (tektons.size() != 1) {
-            addNeighbours();
-        }
-    }*/
+    protected void setStringIsConnected (Mushroom mushroom){
+        /// Ha nem lenne elvagva, akkor elvagjuk
 
-    /**
-     * Beallitja az isConnected-t az osszes fonalra
-     */
-    protected void setStringIsConnected (ShroomString cuttedString){
+        /// stringWithSameShroom: az osszes olyan fonal aminek a parentShrommja ugyaaz mint a cuttedStringnek
         List<ShroomString> stringWithSameShroom = new ArrayList<ShroomString>();
+        /// reachedTektons: az osszes tekton, amelyiket elerjuk, nem pontosan, de nagyjabol, csak azok lesznek benne
+        List<Tekton> reachedTektons = new ArrayList<Tekton>();
+        /// kezdo Tektonja, az a tekton, amelyiken a kezdo gomba van
+        reachedTektons.add(mushroom.position);
+        /// feltolti a stringWithSameShroom-t az osszes olyan fonallal, aminek ugyanaz a parentShroomja
         for (ShroomString shroomString : shroomStrings) {
-            if (shroomString.parentSrhoom.equals(cuttedString.parentSrhoom)) {
+            if (shroomString.parentSrhoom.equals(mushroom)) {
                 stringWithSameShroom.add(shroomString);
             }
         }
-        Tekton startTekton = cuttedString.parentSrhoom.position;
-        for (ShroomString shroomString : startTekton.arrayOfString) {
-            if (shroomString.parentSrhoom.equals(cuttedString.parentSrhoom) && shroomString.isConnected && !shroomString.isCut) {
+        /// amig reachedTektons nem ures, reachedTektons szellesegi bejaras, mindig csak az ujjonan felfedezettek vannak rajta
+        while (!reachedTektons.isEmpty()) {
+            /// Iteratorok, azert, mert kell majd törölni is azt a tektont amin voltam
+            Iterator<Tekton> tektonIterator = reachedTektons.iterator();
+            while (tektonIterator.hasNext()) {
+                Tekton tekton = tektonIterator.next();
+                Iterator<ShroomString> shroomStringIterator = stringWithSameShroom.iterator();
+                /**
+                 * törli a stringWithSameShroom-ból az összes olyan fonalat,aminek a disTek-je vagy startTek-je a tekton,
+                 * igy ha végez akkor törli az összes olyan fonalat, amelyikig eljutottunk és
+                 * igy a vegen csak azokat a fonalakat fogja tartalmayni amelyikig nem tudunk eljutni a gombatol
+                 */
+                while (shroomStringIterator.hasNext()) {
 
+                    ShroomString shroomString = shroomStringIterator.next();
+                    if (shroomString.disTek.equals(tekton) && !shroomString.isCut) {
+
+                        reachedTektons.add(shroomString.startTek);
+                        shroomString.isConnected = true;
+                        shroomStringIterator.remove();
+                    } else if (shroomString.startTek.equals(tekton) && !shroomString.isCut) {
+
+                        reachedTektons.add(shroomString.disTek);
+                        shroomString.isConnected = true;
+                        shroomStringIterator.remove();
+                    }
+                }
+                tektonIterator.remove();
             }
+        }
+        /// Beallitja a maradek fonalra, amelyekig nem ertunk el, hogy isConnected = false
+        for (ShroomString shroomString : stringWithSameShroom) {
+            shroomString.isConnected = false;
         }
     }
 
@@ -214,14 +240,12 @@ public class Map {
                     break;
 
                 case "LOAD":
-                    System.out.println("LOAD");
                     if(command.length == 2){
                         load(command[1]);
                     }
                     break;
 
                 case "SAVE":
-                    System.out.println("SAVE");
                     if(command.length == 2){
                         save(command[1]);
                     }
@@ -485,13 +509,13 @@ public class Map {
                         Tekton startT = s.startTek;
                         Tekton endT = s.disTek;
                         if (startT.arrayOfInsect.contains(i)){
-                            System.out.println("StartTekton vágás");
+
                             i.cutString(s);
                             update();
                         }
                         else if (endT.arrayOfInsect.contains(i))
                         {
-                            System.out.println("EndTekton vágás");
+
                             i.cutString(s);
                             update();
                         }
@@ -504,7 +528,6 @@ public class Map {
                     break;
 
                 case "GROW":
-                    System.out.println("GROW");
                     if(command.length == 1){
                         System.out.println("Too few arguments");
                         break;
@@ -546,11 +569,11 @@ public class Map {
                     break;
 
                 case "SPREAD":
-                    System.out.println("SPREAD");
-                    if(command.length == 4){
+                    if(command.length == 5){
                         Integer shroomID = tryParseInt(command[1]);
                         Integer tektonID = tryParseInt(command[2]);
                         Integer rnd = tryParseInt(command[3]);
+                        Integer rnd2 = tryParseInt(command[4]);
                         Tekton t = tektons.get(tektonID);
                         Mushroom m = getMushroom(shroomID);
 
@@ -558,7 +581,7 @@ public class Map {
                             System.out.println("Error! Could not spread spore by Mushroom: "+shroomID +"at Tekton:"+tektonID);
                             break;
                         }
-                        m.spreadSpore(t, rnd);
+                        m.spreadSpore(t, rnd, rnd2);
                         update();
 
                     }
@@ -567,17 +590,16 @@ public class Map {
                     break;
 
                 case "ENDGAME":
-                    System.out.println("ENDGAME");
                     this.endGame();
                     break;
 
                 case "BREAKTEKTON":
-                    System.out.println("BREAKTEKTON");
-                    if(command.length == 2){
+                    if(command.length == 3){
                         Integer tektonID = tryParseInt(command[1]);
+                        Integer rnd = tryParseInt(command[2]);
                         Tekton t = getTekton(tektonID);
                         if(t != null){
-                            t.breakTekton(-1);
+                            tektons.add(t.breakTekton(rnd));
                             update();
                         }
                         else
@@ -585,16 +607,17 @@ public class Map {
                     }
                     else
                         System.out.println("Error! Could not break Tekton (Invalid argument count)");
+                    update();
                     break;
 
                 case "UPGRADE":
-                    System.out.println("UPGRADE");
                     if(command.length == 2){
                         Integer mushroomID = tryParseInt(command[1]);
                         Mushroom m = getMushroom(mushroomID);
                         if(m != null){
                             m.upgradeMushroom();
                             update();
+                            break;
                         }
                         System.out.println("Error! Could not upgrade Mushroom");
                     }
@@ -603,7 +626,6 @@ public class Map {
                     break;
 
                 case "TIMEELAPSED":
-                    System.out.println("TIMEELAPSED");
                     if (command.length == 2) {
                         Integer time = tryParseInt(command[1]);         //COMMAND konvertálás int-re
                         for (int i=0; i<time; i++) {                //Lefut amennyi az int
@@ -618,7 +640,6 @@ public class Map {
                     break;
 
                 case "ADDNEIGHBOURS":
-                    System.out.println("ADDNEIGHBOURS");
                     if(command.length == 3) {
                         Integer tekton1 = tryParseInt(command[1]);
                         Integer tekton2 = tryParseInt(command[2]);
@@ -634,12 +655,11 @@ public class Map {
                     break;
 
                 case "MOVE":
-                    System.out.println("MOVE");
                     if(command.length == 3) {
                         Integer insectID = tryParseInt(command[1]);
                         Integer tektonID = tryParseInt(command[2]);
-                        Tekton t1 = getTekton(insectID);
-                        Insect i = getInsect(tektonID);
+                        Tekton t1 = getTekton(tektonID);
+                        Insect i = getInsect(insectID);
 
                         if(i == null || t1 == null){
                             System.out.println("Error! Could not move insect:"+insectID+" to Tekton:"+tektonID);

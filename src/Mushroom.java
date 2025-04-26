@@ -69,10 +69,10 @@ public class Mushroom implements TurnControl {
      * @param tekton A cél Tekton
      * @param rnd A random szórásért felelős
      */
-    public void spreadSpore(Tekton tekton, int rnd) {
+    public void spreadSpore(Tekton tekton, int rnd, int calories) {
         if(sporeSpawnTime > 4) {
             if (position.neighbours.contains(tekton)) {
-                tekton.addSpore(playerID, rnd);
+                tekton.addSpore(playerID, rnd, calories);
                 sporeSpawnTime-=4;
                 return;
             }
@@ -88,16 +88,16 @@ public class Mushroom implements TurnControl {
      */
     public void growString(Tekton tekton1, Tekton tekton2) {
         String error = "Error! Could not grow MushroomString by Mushroom:"+id+" at "+tekton1.id+" and "+tekton2.id+" Tektons.";
-        boolean h = false;
+        boolean connectionCheck = false;
 
         for(ShroomString string : tekton1.arrayOfString){
-            if(string.disTek.equals(tekton1) && string.parentSrhoom.equals(this)) {
-                h = true;
+            if(string.disTek.equals(tekton1) && string.parentSrhoom.equals(this) && string.isConnected && !string.growing) {
+                connectionCheck = true;
                 break;
             }
         }
 
-        if(tekton1.equals(this.position) || h){
+        if(tekton1.equals(this.position) || connectionCheck){
             try {
                 tekton2.addString(tekton1, this);
             } catch (Exception e) {
@@ -126,7 +126,7 @@ public class Mushroom implements TurnControl {
      * @return szöveg
      */
     public String toString() {
-        return id + ": Owner: "+ playerID+ ", Position: "+ position+ ", Timer: "+ sporeSpawnTime
+        return id + ": Owner: "+ playerID+ ", Position: "+ position.id+ ", Timer: "+ sporeSpawnTime
         +", HP: "+lifeTime+", Resources: "+resources + ", Type: Basic";
     }
 }

@@ -25,6 +25,7 @@ public class Tekton implements TurnControl {
         this.id = tektonCount++;
     }
 
+
     public static void resetTid() {
         tektonCount = 0;
     }
@@ -44,7 +45,7 @@ public class Tekton implements TurnControl {
      * @return az újonnan létrehozott Tekton példány
      * @param rnd Az új tekton értékét jelöli, (-1 esetben random)
      */
-    public void breakTekton(int rnd) {
+    public Tekton breakTekton(int rnd) {
         for (int i = arrayOfInsect.size() - 1; i >= 0; i--) {
             arrayOfInsect.get(i).die();
         }
@@ -55,12 +56,39 @@ public class Tekton implements TurnControl {
             arrayOfString.get(i).die();
         }
         arrayOfSpore.clear();
+
+        for (Tekton tekton : stringNeighbours) {
+            tekton.stringNeighbours.remove(this);
+        }
+
         stringNeighbours.clear();
 
-        //TODO random tekton
-        Tekton newTekton = new Tekton();
+        if(rnd == -1){
+            Random rand = new Random();
+            rnd = rand.nextInt(1,5);
+        }
+
+        Tekton newTekton = null;
+        switch (rnd){
+            case 1:
+                newTekton = new Tekton();
+                break;
+            case 2:
+                newTekton = new AllStringsLiveTekton();
+                break;
+
+            case 3:
+                newTekton = new MultipleStringTekton();
+                break;
+
+            case 4:
+                newTekton = new UnlivableTekton();
+                break;
+        }
 
         this.addNeighbour(newTekton);
+        return newTekton;
+
     }
 
     /**
@@ -110,43 +138,22 @@ public class Tekton implements TurnControl {
         }
     }
 
-    //TODO: EZ KB GATYA
-    public void addSpecialString(Tekton t2, Mushroom m1, ShroomString specialString) {
-        // Check if a string already exists between this and t2
-        for (ShroomString s : arrayOfString) {
-            if ((s.startTek.equals(this) && s.disTek.equals(t2)) ||
-                    (s.startTek.equals(t2) && s.disTek.equals(this))) {
-                return; // A string already exists between these Tektons
-            }
-        }
-
-        // Add the special string to both Tektons
-        arrayOfString.add(specialString);
-        t2.arrayOfString.add(specialString);
-
-        // Add neighbours only if not already present
-        if(!this.stringNeighbours.contains(t2)){
-            this.stringNeighbours.add(t2);
-            t2.stringNeighbours.add(this);
-        }
-    }
-
     /**
      * Véletlenszerű típusú spóra generálása és hozzáadása ehhez a Tektonhoz.
      */
-    public void addSpore(int pid, int rnd) {
+    public void addSpore(int pid, int rnd, int calories) {
         if (rnd > 7 && rnd < 1) {
             Random random = new Random();
             rnd = random.nextInt(7) + 1;
         }
         switch (rnd) {
-            case 1 -> arrayOfSpore.add(new Spore(this, pid, -1));
-            case 2 -> arrayOfSpore.add(new BirthSpore(this, pid, -1));
-            case 3 -> arrayOfSpore.add(new KillerSpore(this, pid, -1));
-            case 4 -> arrayOfSpore.add(new NoCutSpore(this, pid, -1));
-            case 5 -> arrayOfSpore.add(new DebuffSpore(this, pid, -1)) ;
-            case 6 -> arrayOfSpore.add(new ParalyzeSpore(this, pid, -1));
-            case 7 -> arrayOfSpore.add(new BuffSpore(this, pid, -1));
+            case 1 -> arrayOfSpore.add(new Spore(this, pid, calories));
+            case 2 -> arrayOfSpore.add(new BirthSpore(this, pid, calories));
+            case 3 -> arrayOfSpore.add(new KillerSpore(this, pid, calories));
+            case 4 -> arrayOfSpore.add(new NoCutSpore(this, pid, calories));
+            case 5 -> arrayOfSpore.add(new DebuffSpore(this, pid, calories)) ;
+            case 6 -> arrayOfSpore.add(new ParalyzeSpore(this, pid, calories));
+            case 7 -> arrayOfSpore.add(new BuffSpore(this, pid, calories));
         }
     }
 
@@ -192,6 +199,8 @@ public class Tekton implements TurnControl {
         Mushroom mushroom = arrayOfMushroom.get(0);
         UpgradedMushroom upgradedMushroom = new UpgradedMushroom(this, mushroom.playerID, mushroom.id);
         upgradedMushroom.lifeTime = 200;
+        upgradedMushroom.sporeSpawnTime = mushroom.sporeSpawnTime;
+        upgradedMushroom.resources = mushroom.resources;
         arrayOfMushroom.add(upgradedMushroom);
 
         mushroom.die();

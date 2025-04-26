@@ -1,10 +1,13 @@
-Error! Could not create Insect
-Error! Could not create Spore
-Error! Could not eat Spore: 0 by Insect: 0
 Players:
+Player:0, Score: 0
+Player:1, Score: 200
 Tektons:
-	13: Neighbours: , StringNeighbours: , Type: Basic
+    0: Neighbours: 1, StringNeighbours: 1, Type: Basic
+    1: Neighbours: 0, StringNeighbours: 0, Type: Basic
 Insects:
 Mushrooms:
+    0: Owner: 1, Position: 0, Timer: 10, HP: 100, Resources: 200, Type: Basic
+    1: Owner: 1, Position: 1, Timer: 0, HP: 100, Resources: 0, Type: Basic
 Strings:
+    0: ParentShroom: 0, Start: 0, End: 1, Growing: false, LifeTime: 100, isCut: false, isConnected: true
 Spores:

@@ -49,7 +49,7 @@ public class Insect implements TurnControl {
      */
     public void moveToTekton(Tekton tekton2) {
         String error = "Error! Could not move Insect:"+ id + " to Tekton:" + tekton2.id;
-        if(actionPoints > 0) {
+        if(actionPoints > 0 && effectType != Effect.PARALYZE) {
             try {
                 tekton.moveInsect(this, tekton2);
             } catch (Exception e) {
@@ -86,7 +86,7 @@ public class Insect implements TurnControl {
             actionPoints--;
             return;
         }
-        System.out.println("Error! Could not eat Spore:"+spore.id+"at Tekton:"+tekton.id);
+        System.out.println("Error! Could not eat Spore:"+spore.id+" at Tekton:"+tekton.id);
     }
 
     /**
@@ -104,9 +104,8 @@ public class Insect implements TurnControl {
      * @param string A vágandó fonal
      */
     public void cutString(ShroomString string) {
-        if (this.effectType != Effect.NOCUT) {
+        if (this.effectType != Effect.NOCUT && actionPoints > 0) {
             string.cut();
-            //string.timeElapsed();
             actionPoints--;
             return;
         }

@@ -1,10 +1,13 @@
-Error! Could not create Insect
-Error! Could not create Spore
-Error! Could not eat Spore: 0 by Insect: 0
 Players:
+Player:0, Score: 0
+Player:1, Score: 200
 Tektons:
-	10: Neighbours: , StringNeighbours: , Type: Basic
+    0: Neighbours: 1, StringNeighbours: , Type: Basic
+    1: Neighbours: 0, 2, StringNeighbours: , Type: Basic
+    2: Neighbours: 1, StringNeighbours: , Type: Basic
 Insects:
 Mushrooms:
+    0: Owner: 1, Position: 0, Timer: 10, HP: 200, Resources: 200, Type: Upgraded
 Strings:
 Spores:
+    0: Type: Basic, Position: 1, Owner: 1, Calories:100

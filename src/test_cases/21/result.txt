@@ -1,10 +1,1 @@
-Error! Could not create Insect
-Error! Could not create Spore
-Error! Could not eat Spore: 0 by Insect: 0
-Players:
-Tektons:
-	20: Neighbours: , StringNeighbours: , Type: Basic
-Insects:
-Mushrooms:
-Strings:
-Spores:
+Error! Could not eat Spore:0 at Tekton:0

@@ -6,7 +6,7 @@ public class UnlivableTekton extends Tekton {
     /**
      * Gomba növesztésének tiltása ezen a mezőn.
      */
-    public void growBody() {
+    public void growBody(int pid) {
         throw new IllegalArgumentException("");
     }
 
