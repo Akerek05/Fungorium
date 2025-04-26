@@ -8,11 +8,11 @@ import java.util.*;
  * amely Tektonokat tárol és szomszédsági kapcsolatokat kezel.
  */
 public class Map {
+    public List<Tekton> tektons = new ArrayList<Tekton>();
     public List<ShroomString> shroomStrings = new ArrayList<ShroomString>();
     public List<Mushroom> mushrooms = new ArrayList<Mushroom>();
     public List<Insect> insects = new ArrayList<Insect>();
     public List<Spore> spores = new ArrayList<Spore>();
-    public List<Tekton> tektons = new ArrayList<Tekton>();
     public List<Integer> scores = new ArrayList<Integer>();
 
 
@@ -27,73 +27,45 @@ public class Map {
     }*/
 
     private void update() {
+        shroomStrings.clear();
+        mushrooms.clear();
+        insects.clear();
+        spores.clear();
+        Collections.fill(scores, 0);
+
         for (Tekton tekton : tektons) {
             for (Insect insect : tekton.arrayOfInsect) {
-                if (!containsInsectById(insects, insect.id)) {
-                    insects.add(insect);
-                }
+                insects.add(insect);
+                scores.set(insect.playerID, scores.get(insect.playerID) + insect.resources);
             }
 
-            for (Spore spore : tekton.arrayOfSpore) {
-                if (!containsSporeById(spores, spore.id)) {
-                    spores.add(spore);
-                }
+            spores.addAll(tekton.arrayOfSpore);
+
+            for(ShroomString string : shroomStrings){
+                shroomStrings.add(string);
+                string.notConnected();
             }
 
             for (Mushroom mushroom : tekton.arrayOfMushroom) {
-                if (!containsMushroomById(mushrooms, mushroom.id)) {
-                    mushrooms.add(mushroom);
-                }
-            }
-
-            for (ShroomString shroomString : tekton.arrayOfString) {
-                if (!containsShroomStringById(shroomStrings, shroomString.id)) {
-                    shroomStrings.add(shroomString);
-                }
+                mushrooms.add(mushroom);
+                scores.set(mushroom.playerID, scores.get(mushroom.playerID) + mushroom.resources);
             }
         }
     }
-    private boolean containsInsectById(List<Insect> list, int id) {
-        for (Insect i : list) {
-            if (i.id == id) return true;
-        }
-        return false;
+
+    private void load(String fileName) {
+
     }
 
-    private boolean containsSporeById(List<Spore> list, int id) {
-        for (Spore s : list) {
-            if (s.id == id) return true;
-        }
-        return false;
+    private void save(String fileName) {
+
     }
-
-    private boolean containsMushroomById(List<Mushroom> list, int id) {
-        for (Mushroom m : list) {
-            if (m.id == id) return true;
-        }
-        return false;
-    }
-
-    private boolean containsShroomStringById(List<ShroomString> list, int id) {
-        for (ShroomString s : list) {
-            if (s.id == id) return true;
-        }
-        return false;
-    }
-
-
 
     /**
      * Frissíti a szomszédsági kapcsolatokat minden Tekton között.
      */
-    private void addNeighbours() {
-        for (Tekton tekton : tektons) {
-            for (Tekton neighbour : tektons) {
-                if (tekton != neighbour) {
-                    tekton.neighbours.add(neighbour);
-                }
-            }
-        }
+    private void addNeighbours(Tekton t1, Tekton t2) {
+        t1.addNeighbour(t2);
     }
 
     private Tekton getTekton(int tektonID){
@@ -151,6 +123,16 @@ public class Map {
             System.out.println((i + 1) + ". hely: " + playerId + "|Pontszám: " + value);
         }
     }
+
+    /**
+     * Játék indítása, a score értékeit 0-ra beállítja
+     * @param num Ennyi játékos lesz
+     */
+    private void startGame(int num){
+        for(int i = 0; i<num; i++){
+            scores.add(0);
+        }
+    }
     public Integer tryParseInt(String text) {
         try {
             return Integer.parseInt(text);
@@ -175,26 +157,37 @@ public class Map {
     public void addScore(int playerID, int score){
         scores.add(playerID,score);
     }
-    public boolean isInTektons (int id) {
-        for (Tekton tekton : tektons) {
-            if (tekton.id == id) {
-                return true;
-            }
-        }
-        return false;
-    }
+
     public void command(String inputCommand) {
         if (inputCommand == null || inputCommand.isEmpty())
             return; //nem megyünk el a switch case-ig, csak akkor, ha a beolvasott sor nem üres.
 
         String[] command = inputCommand.trim().split("\\s+"); //szóközöknél eldarabolja a stringet - több szóköz esetén is jól működik.
             switch (command[0].toUpperCase()) {
+                case "STARTGAME":
+                    if(command.length == 2){
+                        Integer num = tryParseInt(command[1]);
+                        if(num != null){
+                            startGame(num);
+                            update();
+                        }
+                    }
+                    else
+                        System.out.println("Error! Could not start game (Invalid arguments)");
+                    break;
+
                 case "LOAD":
                     System.out.println("LOAD");
+                    if(command.length == 2){
+                        load(command[1]);
+                    }
                     break;
 
                 case "SAVE":
                     System.out.println("SAVE");
+                    if(command.length == 2){
+                        save(command[1]);
+                    }
                     break;
 
                 case "CREATE":
@@ -213,8 +206,8 @@ public class Map {
                                 Integer buffTimer = tryParseInt(command[6]);
                                 String effect = command[7].toUpperCase();
                                 Effect effectstatus = tryParseEffect(effect);
-                                if (playerID != null && tektonID != null && actionPoints != null
-                                        && resources != null && buffTimer != null && effectstatus != null && isInTektons(tektonID)) {
+                                if (playerID != null && playerID<scores.size() && tektonID != null && actionPoints != null
+                                        && resources != null && buffTimer != null && effectstatus != null && getTekton(tektonID) != null) {
                                     Insect i1 = new Insect(playerID, this.getTekton(tektonID), actionPoints, resources, buffTimer, effectstatus);
                                     this.getTekton(tektonID).accept(i1);
                                     update();
@@ -223,7 +216,7 @@ public class Map {
                                 }
                             }
                             else
-                                System.out.println(errorString + "Insect");
+                                System.out.println(errorString + "Insect (Invalid argument count)");
                             break;
                         case "MUSHROOM":
                             if(command.length == 7) {
@@ -232,7 +225,7 @@ public class Map {
                                 Integer sporeSpawnTimer = tryParseInt(command[4]);
                                 Integer lifeTime = tryParseInt(command[5]);
                                 Integer resources = tryParseInt(command[6]);
-                                if (playerID != null && tektonID != null && sporeSpawnTimer != null) {
+                                if (playerID != null  && playerID<scores.size() && tektonID != null && sporeSpawnTimer != null) {
                                     Mushroom m1 = new Mushroom(playerID, this.getTekton(tektonID), sporeSpawnTimer, lifeTime, resources);
                                     this.getTekton(tektonID).arrayOfMushroom.add(m1);
                                     update();
@@ -241,7 +234,7 @@ public class Map {
                                 }
                             }
                             else
-                                System.out.println(errorString + "Mushroom");
+                                System.out.println(errorString + "Mushroom (Invalid argument count)");
                             break;
                         case "STRING":
                             if (command.length == 9){
@@ -254,7 +247,7 @@ public class Map {
                                 Boolean isConnected = tryParseBoolean(command[8]);
                                 if (mushroomID != null && startTektonID != null && endTektonID != null &&
                                     growing != null && lifetime != null && isCut != null && isConnected != null &&
-                                        isInTektons(startTektonID) && isInTektons(endTektonID) ) {
+                                        getTekton(startTektonID) != null && getTekton(endTektonID) != null ) {
                                     ShroomString s1 = new ShroomString(this.getMushroom(mushroomID), this.getTekton(startTektonID), this.getTekton(endTektonID), growing, lifetime, isCut, isConnected);
                                     this.getTekton(startTektonID).addSpecialString(this.getTekton(endTektonID),this.getMushroom(mushroomID),s1);
                                     update();
@@ -265,7 +258,7 @@ public class Map {
                                 }
                             }
                             else
-                                System.out.println(errorString + "String");
+                                System.out.println(errorString + "String (Invalid argument count)");
                             break;
 
                         case "SPORE":
@@ -273,7 +266,7 @@ public class Map {
                                 Integer playerID = tryParseInt(command[3]);
                                 Integer tektonID = tryParseInt(command[4]);
                                 Integer rand = tryParseInt(command[5]);
-                                if (tektonID != null && playerID != null && rand != null && isInTektons(tektonID)) {
+                                if (tektonID != null  && playerID<scores.size() && playerID != null && rand != null && getTekton(tektonID) != null) {
                                     Spore s1;
                                     switch (command[2].toUpperCase()) {
                                         case "BASIC":
@@ -321,7 +314,7 @@ public class Map {
                                 }
                             }
                             else
-                                System.out.println(errorString + "Spore");
+                                System.out.println(errorString + "Spore (Invalid argument count)");
                             break;
 
                         case "TEKTON":
@@ -354,7 +347,7 @@ public class Map {
                                 }
                             }
                             else
-                                System.out.println(errorString + "Tekton");
+                                System.out.println(errorString + "Tekton (Invalid argument count)");
                             break;
                         default:
                             System.out.println(errorString + command[1]+ " (Unknown Object)");
@@ -395,50 +388,82 @@ public class Map {
                         if (command[1].toUpperCase().equals("SPORE")) {
                             Integer insectID = tryParseInt(command[2]);
                             Integer sporeID = tryParseInt(command[3]);
-                            Tekton t = getInsect(insectID).tekton;
+                            Spore s = getSpore(sporeID);
+                            Insect i = getInsect(insectID);
 
-                            if (!t.arrayOfSpore.contains(getSpore(sporeID))) {
+                            if(s== null || i== null){
                                 System.out.println("Error! Could not eat Spore: " + sporeID + " by Insect: " + insectID);
-                            } else {
-                                getInsect(insectID).eatSpore(getSpore(sporeID));
-                                update();
+                                break;
                             }
+
+                            Tekton t = i.tekton;
+                            if (!t.arrayOfSpore.contains(s)) {
+                                System.out.println("Error! Could not eat Spore: " + sporeID + " by Insect: " + insectID);
+                                break;
+                            }
+
+                            else {
+                                i.eatSpore(s);
+                                update();
+                                break;
+                            }
+
                         } else if (command[1].toUpperCase().equals("INSECT")) {
                             int stringID = Integer.parseInt(command[2]);
                             int insectID = Integer.parseInt(command[3]);
-                            Tekton t = getShroomString(stringID).disTek;
-                            if (!t.arrayOfInsect.contains(getInsect(insectID)) || getInsect(insectID).effectType != Effect.PARALYZE) {
+                            ShroomString s = getShroomString(stringID);
+                            Insect i = getInsect(insectID);
+
+                            if(s == null || i== null){
+                                System.out.println("Error! Could not eat Insect: " + insectID + " by String: " + stringID);
+                                break;
+                            }
+
+                            Tekton t = s.disTek;
+                            if (!t.arrayOfInsect.contains(getInsect(insectID)) || t.arrayOfString.contains(getShroomString(stringID))) {
                                 System.out.println("Error! Could not eat Insect: " + insectID + " by String: " + stringID);
                             } else {
                                 System.out.println("INSECT EVES");
-                                getShroomString(stringID).eatInsect(getInsect(insectID));
+                                s.eatInsect(i);
                                 update();
                             }
                         }
                     }
+                    else
+                        System.out.println("Error! Could not eat Spore (Invalid argument count)");
+
                     break;
 
                 case "CUT":
                     if (command.length == 3){
                         Integer stringID = tryParseInt(command[1]);
                         Integer insectID = tryParseInt(command[2]);
-                        Tekton startT = getShroomString(stringID).startTek;
-                        Tekton endT = getShroomString(stringID).disTek;
-                        if (startT.arrayOfInsect.contains(getInsect(insectID))){
+                        Insect i = getInsect(insectID);
+                        ShroomString s = getShroomString(stringID);
+                        if(s == null || i== null){
+                            System.out.println("Error! Could not cut String: "+stringID+" by Insect: "+insectID);
+                            break;
+                        }
+
+                        Tekton startT = s.startTek;
+                        Tekton endT = s.disTek;
+                        if (startT.arrayOfInsect.contains(i)){
                             System.out.println("StartTekton vágás");
-                            getInsect(insectID).cutString(getShroomString(stringID));
+                            i.cutString(s);
                             update();
                         }
-                        else if (endT.arrayOfInsect.contains(getInsect(insectID)))
+                        else if (endT.arrayOfInsect.contains(i))
                         {
                             System.out.println("EndTekton vágás");
-                            getInsect(insectID).cutString(getShroomString(stringID));
+                            i.cutString(s);
                             update();
                         }
                         else{
                             System.out.println("Error! Could not cut String: "+stringID+" by Insect: "+insectID);
                         }
                     }
+                    else
+                        System.out.println("Error! Could not cut String (Invalid argument count)");
                     break;
 
                 case "GROW":
@@ -452,21 +477,32 @@ public class Map {
                             case "MUSHROOM":
                                 if(command.length == 3) {
                                     Integer stringID = tryParseInt(command[2]);
-                                    shroomStrings.get(stringID).growMushroom();
+                                    ShroomString s = getShroomString(stringID);
+
+                                    if(s == null){
+                                        System.out.println("Error! Could not grow Mushroom (Invalid argument count)");
+                                        break;
+                                    }
+
+                                    s.growMushroom();
                                     update();
                                 }
+                                else
+                                    System.out.println("Error! Could not grow Mushroom (Invalid argument count)");
                                 break;
                             case "STRING":
                                 if(command.length == 5) {
                                     Integer mushroomID = tryParseInt(command[2]);
                                     Integer StartTekID = tryParseInt(command[3]);
                                     Integer EndTekID = tryParseInt(command[4]);
-                                    if (tektons.get(StartTekID).getNeighbours().contains(tektons.get(EndTekID))) {
+                                    if (tektons.get(StartTekID).neighbours.contains(tektons.get(EndTekID))) {
                                         mushrooms.get(mushroomID).growString(tektons.get(StartTekID), tektons.get(EndTekID));
                                         update();
                                     } else
-                                        System.out.println("Error! Could not grow String from Mushroom: " + mushroomID + " by Tekton: " + StartTekID + " and EndTekID: " + EndTekID);
+                                        System.out.println("Error! Could not grow MushroomString by Mushroom:"+mushroomID+" at "+StartTekID+" and "+EndTekID+" Tektons.");
                                 }
+                                else
+                                    System.out.println("Error! Could not grow String from Mushroom (Invalid argument count)");
                                 break;
                         }
 
@@ -474,24 +510,23 @@ public class Map {
 
                 case "SPREAD":
                     System.out.println("SPREAD");
-                    if(command.length < 4){
-                        System.out.println("Too few arguments");
-                        break;
-                    };
-                    Integer shroomID = tryParseInt(command[1]);
-                    Integer tektonID = tryParseInt(command[2]);
-                    if(this.isInTektons(tektonID)){
-                        if(this.containsMushroomById(mushrooms,shroomID)){
-                            mushrooms.get(shroomID).spreadSpore(tektons.get(tektonID),tryParseInt(command[3]));
-                            update();
+                    if(command.length == 4){
+                        Integer shroomID = tryParseInt(command[1]);
+                        Integer tektonID = tryParseInt(command[2]);
+                        Integer rnd = tryParseInt(command[3]);
+                        Tekton t = tektons.get(tektonID);
+                        Mushroom m = getMushroom(shroomID);
+
+                        if(m == null || t == null){
+                            System.out.println("Error! Could not spread spore by Mushroom: "+shroomID +"at Tekton:"+tektonID);
+                            break;
                         }
-                        else{
-                            System.out.println("Error! Could not spread spore  by Mushroom: "+shroomID +"at Tekton: "+tektonID);
-                        }
+                        m.spreadSpore(t, rnd);
+                        update();
+
                     }
-                    else{
-                        System.out.println("Error! Could not spread spore  by Mushroom: "+shroomID +"at Tekton: "+tektonID);
-                    }
+                    else
+                        System.out.println("Error! Could not spread spore (Invalid argument count)");
                     break;
 
                 case "ENDGAME":
@@ -501,14 +536,48 @@ public class Map {
 
                 case "BREAKTEKTON":
                     System.out.println("BREAKTEKTON");
+                    if(command.length == 2){
+                        Integer tektonID = tryParseInt(command[1]);
+                        Tekton t = getTekton(tektonID);
+                        if(t != null){
+                            t.breakTekton(-1);
+                            update();
+                        }
+                        else
+                            System.out.println("Error! Could not break Tekton:"+tektonID);
+                    }
+                    else
+                        System.out.println("Error! Could not break Tekton (Invalid argument count)");
                     break;
 
                 case "UPGRADE":
                     System.out.println("UPGRADE");
+                    if(command.length == 2){
+                        Integer mushroomID = tryParseInt(command[1]);
+                        Mushroom m = getMushroom(mushroomID);
+                        if(m != null){
+                            m.upgradeMushroom();
+                            update();
+                        }
+                        System.out.println("Error! Could not upgrade Mushroom");
+                    }
+                    else
+                        System.out.println("Error! Could not upgrade Mushroom (Invalid argument count)");
                     break;
 
                 case "TIMEELAPSED":
                     System.out.println("TIMEELAPSED");
+                    if (command.length == 2) {
+                        Integer time = tryParseInt(command[1]);         //COMMAND konvertálás int-re
+                        for (int i=0; i<time; i++) {                //Lefut amennyi az int
+                            for (Tekton tekton : tektons) {   //Tektonokon végigmegyünk
+                                tekton.timeElapsed();
+                                update();
+                            }
+                        }
+                    }
+                    else
+                        System.out.println("Error! Could not elapse time (Invalid argument count)");
                     break;
 
                 case "ADDNEIGHBOURS":
@@ -516,13 +585,19 @@ public class Map {
                     if(command.length == 3) {
                         Integer tekton1 = tryParseInt(command[1]);
                         Integer tekton2 = tryParseInt(command[2]);
-                        tektons.get(tekton1).addNeighbour(tektons.get(tekton2));
+                        Tekton t1 = getTekton(tekton1);
+                        Tekton t2 = getTekton(tekton2);
+                        if(t1 == null || t2 == null){
+                            System.out.println("Could not add neighbours");
+                            break;
+                        }
+                        addNeighbours(t1, t2);
                         update();
                     }
                     break;
 
                 default:
-                    System.out.println("Ismeretlen parancs: " + command[0]);
+                    System.out.println("Unknown Command: " + command[0]);
             }
     }
 }

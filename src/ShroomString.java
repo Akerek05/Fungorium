@@ -13,7 +13,8 @@ public class ShroomString implements TurnControl {
     public static int stringCount = 0;
 
     /**
-     * Konstruktor új gombafonal létrehozásához két Tekton között.
+     * Konstruktor új gombafonal létrehozásához két Tekton között. Beállítja paramétereket.
+     * NEM ÁLLÍT STRINGNEIGHBOURT
      *
      * @param startTek A kezdő Tekton
      * @param disTek A cél Tekton
@@ -51,6 +52,15 @@ public class ShroomString implements TurnControl {
     }
 
     /**
+     * Segédfüggvény, ha meghal egy gomba a fonalai false
+     */
+    public void notConnected() {
+        if(this.parentSrhoom == null) {
+            this.isConnected = false;
+        }
+    }
+
+    /**
      * Idő telése
      */
     public void timeElapsed() {
@@ -60,10 +70,7 @@ public class ShroomString implements TurnControl {
         if (!isConnected) {
             lifeTime -= 10;
         }
-        if (lifeTime <= 0)
-        {
-            die();
-        }
+
     }
 
     /**
@@ -76,8 +83,37 @@ public class ShroomString implements TurnControl {
         //TODO: SZOMSZÉDOKRA IS ISCONNECTED false
     }
 
+    /**
+     * Beallitja vagas utan, hogy melyik fonalak vannak a gombaval osszekotve es melyek nem
+     * Rekurziv
+     * Erre a fonalra nem allitja be csak a tobbire
+     */
+    private boolean setCuttedStringes (Tekton fromTekton) {
+        Mushroom parentSrhoom = this.parentSrhoom;
+        Tekton tekton;
+        if (fromTekton.equals(startTek)) {
+            tekton = disTek;
+        } else {
+            tekton = startTek;
+        }
+        for (ShroomString string : tekton.arrayOfString) {
+            if (string.parentSrhoom == parentSrhoom) {
+                return isConnected = string.setCuttedStringes(disTek);
+            }
+        }
+
+        return true;
+    }
     public String toString() {
-        return id+": ParentShroom: "+ parentSrhoom.id+ ", Start: "+startTek.id+ ", End: "+disTek.id
+        String num = "";
+        if(parentSrhoom == null) {
+            num = "NoParent";
+        }
+        else {
+            num = ""+parentSrhoom.id;
+        }
+
+        return id+": ParentShroom: "+ num+ ", Start: "+startTek.id+ ", End: "+disTek.id
                 + ", Growing: " + growing +", LifeTime: "+lifeTime
                 + ", isCut: "+isCut+", isConnected: "+isConnected;
     }
@@ -103,6 +139,8 @@ public class ShroomString implements TurnControl {
             insect.die();
             growMushroom();
         }
+        else
+            System.out.println("Error! Could not eat Insect:" + insect.id + " by String:" + this.id);
 
     }
 

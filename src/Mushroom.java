@@ -82,16 +82,31 @@ public class Mushroom implements TurnControl {
      * @param tekton1 Az egyik Tekton
      * @param tekton2 A másik Tekton
      */
-    //TODO: Fonal növesztése
     public void growString(Tekton tekton1, Tekton tekton2) {
-        tekton1.addString(tekton2,this);
-        tekton2.stringNeighbours.add(tekton1);
+        String error = "Error! Could not grow MushroomString by Mushroom:"+id+" at "+tekton1.id+" and "+tekton2.id+" Tektons.";
+        boolean h = false;
+
+        for(ShroomString string : tekton1.arrayOfString){
+            if(string.disTek.equals(tekton1) && string.parentSrhoom.equals(this)) {
+                h = true;
+                break;
+            }
+        }
+
+        if(tekton1.equals(this.position) || h){
+            try {
+                tekton2.addString(tekton1, this);
+            } catch (Exception e) {
+                System.out.println(error);
+            }
+            return;
+        }
+        System.out.println(error);
     }
 
     /**
      * Gomba eltávolítása a Tektonról.
      */
-    //TODO: A fonalakra beállítani hogy isConnected false
     public void die(){
         position.removeBody(this);
     }

@@ -23,6 +23,11 @@ public class Tekton implements TurnControl {
     public Tekton() {
         this.id = tektonCount++;
     }
+
+    /**
+     * Beállítja a kettőt szomszédnak
+     * @param tekton másik tekton
+     */
     public void addNeighbour(Tekton tekton){
         this.neighbours.add(tekton);
         tekton.neighbours.add(this);
@@ -79,36 +84,24 @@ public class Tekton implements TurnControl {
      *
      * @param t2 A másik Tekton, amelyhez a fonalat hozzákötjük
      */
-    //TODO: EZT IS MAJD EZ A SEGÉDFÜGGVÉNYE growstring
+    //TODO: KÉSZ
     public void addString(Tekton t2, Mushroom m1) {
-        // Check if a string already exists between this and t2
+        // Ha már létezik
         for (ShroomString s : arrayOfString) {
             if ((s.startTek.equals(this) && s.disTek.equals(t2)) ||
                     (s.startTek.equals(t2) && s.disTek.equals(this))) {
-                return; // String already exists, do not add another
+                throw new IllegalArgumentException("");
             }
         }
 
-        // Create and add new ShroomString
-        ShroomString s1 = new ShroomString(this, t2, m1);
+        ShroomString s1 = new ShroomString(t2, this, m1);
         arrayOfString.add(s1);
         t2.arrayOfString.add(s1);
 
-        // Add stringNeighbours only if not already present
-        if (s1.startTek.equals(this)) {
-            if (!stringNeighbours.contains(s1.disTek)) {
-                stringNeighbours.add(s1.disTek);
-            }
-            if (!t2.stringNeighbours.contains(s1.disTek)) {
-                t2.stringNeighbours.add(s1.disTek);
-            }
-        } else if (s1.disTek.equals(this)) {
-            if (!stringNeighbours.contains(s1.startTek)) {
-                stringNeighbours.add(s1.startTek);
-            }
-            if (!t2.stringNeighbours.contains(s1.startTek)) {
-                t2.stringNeighbours.add(s1.startTek);
-            }
+        // Csak ha még nem azok
+        if(!this.stringNeighbours.contains(t2)){
+            this.stringNeighbours.add(t2);
+            t2.stringNeighbours.add(this);
         }
     }
 
@@ -143,7 +136,6 @@ public class Tekton implements TurnControl {
             }
         }
     }
-
 
     /**
      * Véletlenszerű típusú spóra generálása és hozzáadása ehhez a Tektonhoz.
@@ -248,6 +240,7 @@ public class Tekton implements TurnControl {
             mushroom.timeElapsed();
             if (mushroom.lifeTime <= 0) {
                 mushroom.die();
+
             }
         }
         for (Insect insect : arrayOfInsect){
