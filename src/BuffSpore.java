@@ -22,6 +22,8 @@ public class BuffSpore extends Spore {
     public void consumed(Insect insect) {
         insect.addPoints(calories);
         insect.effectType = Effect.BUFF;
+        insect.buffTimer = 3;
+        insect.actionPoints = 5;
         tekton.removeSpore(this);
     }
 

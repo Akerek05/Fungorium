@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * Gombafonalat reprezentáló osztály, amely két Tekton között húzódik.
  */
@@ -52,6 +54,12 @@ public class ShroomString implements TurnControl {
         this.isCut = isCut;
         this.isConnected = isConnected;
 
+        startTek.stringNeighbours.add(disTek);
+        disTek.stringNeighbours.add(startTek);
+
+        startTek.arrayOfString.add(this);
+        disTek.arrayOfString.add(this);
+
         this.id = stringCount++;
     }
 
@@ -87,27 +95,6 @@ public class ShroomString implements TurnControl {
         //TODO: SZOMSZÉDOKRA IS ISCONNECTED false
     }
 
-    /**
-     * Beallitja vagas utan, hogy melyik fonalak vannak a gombaval osszekotve es melyek nem
-     * Rekurziv
-     * Erre a fonalra nem allitja be csak a tobbire
-     */
-    private boolean setCuttedStringes (Tekton fromTekton) {
-        Mushroom parentSrhoom = this.parentSrhoom;
-        Tekton tekton;
-        if (fromTekton.equals(startTek)) {
-            tekton = disTek;
-        } else {
-            tekton = startTek;
-        }
-        for (ShroomString string : tekton.arrayOfString) {
-            if (string.parentSrhoom == parentSrhoom) {
-                return isConnected = string.setCuttedStringes(disTek);
-            }
-        }
-
-        return true;
-    }
     public String toString() {
         String num = "";
         if(parentSrhoom == null) {

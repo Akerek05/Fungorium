@@ -21,6 +21,7 @@ public class NoCutSpore extends Spore {
     public void consumed(Insect insect) {
         insect.addPoints(calories);
         insect.effectType = Effect.NOCUT;
+        insect.buffTimer = 3;
         tekton.removeSpore(this);
     }
 

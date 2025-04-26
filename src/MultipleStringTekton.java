@@ -5,8 +5,18 @@ public class MultipleStringTekton extends Tekton {
     /**
      * Fonal hozzáadása, jelenleg üres implementációval.
      */
-    // TODO
-    public void addString() {}
+    public void addString(Tekton t2, Mushroom m1) {
+
+        ShroomString s1 = new ShroomString(t2, this, m1);
+        arrayOfString.add(s1);
+        t2.arrayOfString.add(s1);
+
+        // Csak ha még nem azok
+        if(!this.stringNeighbours.contains(t2)){
+            this.stringNeighbours.add(t2);
+            t2.stringNeighbours.add(this);
+        }
+    }
 
     /**
      * Kiírja a tekton típusát, valamint szomszédjait

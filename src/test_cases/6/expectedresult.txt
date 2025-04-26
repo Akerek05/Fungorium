@@ -1,9 +1,10 @@
 Players:
-Player:0, Score: 0
+Player:0, Score: 1
+Player:1, Score: 0
 Tektons:
-	0: Neighbours: , StringNeighbours: , Type: Basic
+    0: Neighbours: , StringNeighbours: , Type: Basic
 Insects:
-	0: Owner: 0, Position: 0, ActionPoints: 2, Timer: 1, effectType: BUFF
+    0: Owner: 0, Position: 0, ActionPoints: 2, Timer: 3, effectType: NOCUT
 Mushrooms:
 Strings:
 Spores:

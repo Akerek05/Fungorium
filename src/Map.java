@@ -40,74 +40,54 @@ public class Map {
         }
     }*/
 
+    /**
+     * Beallitja az isConnected-t az osszes fonalra
+     */
+    protected void setStringIsConnected (ShroomString cuttedString){
+        List<ShroomString> stringWithSameShroom = new ArrayList<ShroomString>();
+        for (ShroomString shroomString : shroomStrings) {
+            if (shroomString.parentSrhoom.equals(cuttedString.parentSrhoom)) {
+                stringWithSameShroom.add(shroomString);
+            }
+        }
+        Tekton startTekton = cuttedString.parentSrhoom.position;
+        for (ShroomString shroomString : startTekton.arrayOfString) {
+            if (shroomString.parentSrhoom.equals(cuttedString.parentSrhoom) && shroomString.isConnected && !shroomString.isCut) {
+
+            }
+        }
+    }
+
+
+
     private void update() {
+        shroomStrings.clear();
+        mushrooms.clear();
         insects.clear();
         spores.clear();
-        mushrooms.clear();
-        shroomStrings.clear();
+        Collections.fill(scores, 0);
 
         for (Tekton tekton : tektons) {
             for (Insect insect : tekton.arrayOfInsect) {
-                if (!containsInsectById(insects, insect.id)) {
-                    insects.add(insect);
-                    ensurePlayerExists(insect.id);
-                    scores.set(insect.playerID, scores.get(insect.playerID) + insect.resources);
+                insects.add(insect);
+                scores.set(insect.playerID, scores.get(insect.playerID) + insect.resources);
+
+            }
+
+            spores.addAll(tekton.arrayOfSpore);
+
+            for(ShroomString string : tekton.arrayOfString) {
+                if(!shroomStrings.contains(string)) {
+                    shroomStrings.add(string);
+                    string.notConnected();
                 }
             }
-            for (Spore spore : tekton.arrayOfSpore) {
-                if (!containsSporeById(spores, spore.id)) {
-                    spores.add(spore);
-                    ensurePlayerExists(spore.id);
-                }
-            }
+
             for (Mushroom mushroom : tekton.arrayOfMushroom) {
-                if (!containsMushroomById(mushrooms, mushroom.id)) {
-                    mushrooms.add(mushroom);
-                    ensurePlayerExists(mushroom.id);
-                    scores.set(mushroom.playerID, scores.get(mushroom.playerID) + mushroom.resources);
-                }
-            }
-            for (ShroomString s : tekton.arrayOfString) {
-                if (!containsShroomStringById(shroomStrings, s.id)) {
-                    shroomStrings.add(s);
-                    ensurePlayerExists(s.id);
-                }
+                mushrooms.add(mushroom);
+                scores.set(mushroom.playerID, scores.get(mushroom.playerID) + mushroom.resources);
             }
         }
-    }
-
-    private void ensurePlayerExists(int playerId) {
-        while (scores.size() <= playerId) {
-            scores.add(0); // fill missing players up to this id
-        }
-    }
-
-    private boolean containsInsectById(List<Insect> list, int id) {
-        for (Insect i : list) {
-            if (i.id == id) return true;
-        }
-        return false;
-    }
-
-    private boolean containsSporeById(List<Spore> list, int id) {
-        for (Spore s : list) {
-            if (s.id == id) return true;
-        }
-        return false;
-    }
-
-    private boolean containsMushroomById(List<Mushroom> list, int id) {
-        for (Mushroom m : list) {
-            if (m.id == id) return true;
-        }
-        return false;
-    }
-
-    private boolean containsShroomStringById(List<ShroomString> list, int id) {
-        for (ShroomString s : list) {
-            if (s.id == id) return true;
-        }
-        return false;
     }
 
     private void load(String fileName) {
@@ -306,7 +286,7 @@ public class Map {
                                     growing != null && lifetime != null && isCut != null && isConnected != null &&
                                         getTekton(startTektonID) != null && getTekton(endTektonID) != null ) {
                                     ShroomString s1 = new ShroomString(this.getMushroom(mushroomID), this.getTekton(startTektonID), this.getTekton(endTektonID), growing, lifetime, isCut, isConnected);
-                                    this.getTekton(startTektonID).addSpecialString(this.getTekton(endTektonID),this.getMushroom(mushroomID),s1);
+                                    shroomStrings.add(s1);
                                     update();
 
                                 }
@@ -652,6 +632,23 @@ public class Map {
                         update();
                     }
                     break;
+
+                case "MOVE":
+                    System.out.println("MOVE");
+                    if(command.length == 3) {
+                        Integer insectID = tryParseInt(command[1]);
+                        Integer tektonID = tryParseInt(command[2]);
+                        Tekton t1 = getTekton(insectID);
+                        Insect i = getInsect(tektonID);
+
+                        if(i == null || t1 == null){
+                            System.out.println("Error! Could not move insect:"+insectID+" to Tekton:"+tektonID);
+                            break;
+                        }
+                        i.moveToTekton(t1);
+                        update();
+                        break;
+                    }
 
                 default:
                     System.out.println("Unknown Command: " + command[0]);

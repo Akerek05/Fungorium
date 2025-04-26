@@ -21,6 +21,8 @@ public class ParalyzeSpore extends Spore {
     public void consumed(Insect insect) {
         insect.addPoints(calories);
         insect.effectType = Effect.PARALYZE;
+        insect.buffTimer = 3;
+        insect.actionPoints = 1;
         tekton.removeSpore(this);
     }
 

@@ -125,20 +125,9 @@ public class Tekton implements TurnControl {
         t2.arrayOfString.add(specialString);
 
         // Add neighbours only if not already present
-        if (specialString.startTek.equals(this)) {
-            if (!stringNeighbours.contains(specialString.disTek)) {
-                stringNeighbours.add(specialString.disTek);
-            }
-            if (!t2.stringNeighbours.contains(specialString.disTek)) {
-                t2.stringNeighbours.add(specialString.disTek);
-            }
-        } else if (specialString.disTek.equals(this)) {
-            if (!stringNeighbours.contains(specialString.startTek)) {
-                stringNeighbours.add(specialString.startTek);
-            }
-            if (!t2.stringNeighbours.contains(specialString.startTek)) {
-                t2.stringNeighbours.add(specialString.startTek);
-            }
+        if(!this.stringNeighbours.contains(t2)){
+            this.stringNeighbours.add(t2);
+            t2.stringNeighbours.add(this);
         }
     }
 

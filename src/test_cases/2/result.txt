@@ -1,5 +1,6 @@
 Players:
 Player:0, Score: 0
+Player:1, Score: 0
 Tektons:
     0: Neighbours: , StringNeighbours: , Type: Basic
 Insects:

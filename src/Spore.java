@@ -43,6 +43,7 @@ public class Spore {
     public void consumed(Insect insect) {
         insect.addPoints(calories);
         tekton.removeSpore(this);
+        insect.buffTimer = 3;
     }
 
     /**
