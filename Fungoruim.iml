@@ -4,6 +4,36 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/1" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/10" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/11" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/12" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/13" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/14" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/15" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/16" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/17" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/18" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/19" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/2" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/20" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/21" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/22" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/23" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/24" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/25" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/26" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/27" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/28" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/29" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/3" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/4" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/5" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/6" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/7" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/8" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/9" type="java-test-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
