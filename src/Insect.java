@@ -62,6 +62,10 @@ public class Insect implements TurnControl {
         System.out.println(error);
     }
 
+    public static void resetIid() {
+        insectCount = 0;
+    }
+
     /**
      * Pontok (erőforrás) hozzáadása a rovarhoz.
      *

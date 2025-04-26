@@ -31,6 +31,10 @@ public class Spore {
         this.id = sporeCount++;
     }
 
+    public static void resetSpid() {
+        sporeCount = 0;
+    }
+
     /**
      * Elfogyasztási művelet – erőforrás növelése és spóra eltávolítása.
      *

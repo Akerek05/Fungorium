@@ -354,27 +354,45 @@ public class TestApp {
     private static final String ACTUAL_RESULT_FILE = "result.txt";
 
     public static void main(String[] args) {
-        System.out.println("Select test case by entering 'all' or the number of the test you’d like to run:");
+        // Create Scanner and TestApp runner ONCE, outside the loop
         Scanner scanner = new Scanner(System.in);
-        String userInput = scanner.nextLine().trim();
-
         TestApp runner = new TestApp();
 
-        if ("all".equalsIgnoreCase(userInput)) {
-            runner.runAllTests();
-        } else {
-            try {
-                int testNumber = Integer.parseInt(userInput);
-                if (testNumber <= 0) {
-                    System.err.println("Invalid test number. Please enter a positive integer.");
-                } else {
-                    runner.runSingleTest(testNumber);
-                }
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid input. Please enter 'all' or a valid test number.");
+        String userInput; // Declare userInput outside the loop to check in the loop condition
+
+        // Loop indefinitely until 'exit' is entered
+        while (true) {
+            System.out.println("\nSelect test case ('all', test number, or 'exit' to quit):"); // Updated prompt
+            userInput = scanner.nextLine().trim();
+
+            // Check for the exit condition FIRST
+            if ("exit".equalsIgnoreCase(userInput)) {
+                System.out.println("Exit command received.");
+                break; // Exit the while loop
             }
+
+            // Process 'all' or a specific test number
+            if ("all".equalsIgnoreCase(userInput)) {
+                runner.runAllTests();
+            } else {
+                try {
+                    int testNumber = Integer.parseInt(userInput);
+                    if (testNumber <= 0) {
+                        System.err.println("Invalid test number. Please enter a positive integer.");
+                    } else {
+                        runner.runSingleTest(testNumber);
+
+                    }
+                } catch (NumberFormatException e) {
+                    // Updated error message to include 'exit' possibility
+                    System.err.println("Invalid input. Please enter 'all', a valid positive test number, or 'exit'.");
+                }
+            }
+            // Loop continues here for the next input
         }
 
+        // Close the scanner AFTER the loop has finished
+        System.out.println("Exiting application.");
         scanner.close();
     }
 
@@ -560,6 +578,7 @@ public class TestApp {
         } finally {
             System.setOut(originalOut); // <<< Visszaállítjuk az eredeti System.out-ot MINDENKÉPPEN >>>
         }
+        gameMap.wipeMap();
     }
 
 

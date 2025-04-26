@@ -28,6 +28,10 @@ public class ShroomString implements TurnControl {
         this.id = stringCount++;
     }
 
+    public static void resetSsid() {
+        stringCount = 0;
+    }
+
     /**
      * MInden paraméteres konstruktor
      * @param parentSrhoom A kezdő gomba

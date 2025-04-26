@@ -15,6 +15,10 @@ public class Mushroom implements TurnControl {
      */
     public Mushroom(){}
 
+    public static void resetMid() {
+        mushroomCount = 0;
+    }
+
     /**
      * Konstruktor, amely elhelyezi a gombát egy adott Tektonra.
      *

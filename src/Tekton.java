@@ -6,6 +6,7 @@ import java.util.Random;
  * A játéktér egyik mezője, amely rovarokat, gombákat, spórákat és fonalakat tárolhat.
  * Képes ezek kezelésére és szomszédos mezőkkel való kapcsolattartásra.
  */
+
 public class Tekton implements TurnControl {
 
     public int id;
@@ -22,6 +23,10 @@ public class Tekton implements TurnControl {
      */
     public Tekton() {
         this.id = tektonCount++;
+    }
+
+    public static void resetTid() {
+        tektonCount = 0;
     }
 
     /**

@@ -7,6 +7,7 @@ import java.util.*;
  * A játékban használt térképet reprezentáló osztály,
  * amely Tektonokat tárol és szomszédsági kapcsolatokat kezel.
  */
+
 public class Map {
     public List<Tekton> tektons = new ArrayList<Tekton>();
     public List<ShroomString> shroomStrings = new ArrayList<ShroomString>();
@@ -15,7 +16,20 @@ public class Map {
     public List<Spore> spores = new ArrayList<Spore>();
     public List<Integer> scores = new ArrayList<Integer>();
 
+    public void wipeMap(){
+        Tekton.resetTid();
+        tektons.clear();
+        ShroomString.resetSsid();
+        shroomStrings.clear();
+        Mushroom.resetMid();
+        mushrooms.clear();
+        Insect.resetIid();
+        insects.clear();
+        Spore.resetSpid();
+        spores.clear();
+        scores.clear();
 
+    }
     /**
      * Új Tekton hozzáadása a térképhez, és szomszédság frissítése.
      */
@@ -37,6 +51,7 @@ public class Map {
                 if (!containsInsectById(insects, insect.id)) {
                     insects.add(insect);
                     ensurePlayerExists(insect.id);
+                    scores.set(insect.playerID, scores.get(insect.playerID) + insect.resources);
                 }
             }
             for (Spore spore : tekton.arrayOfSpore) {
@@ -49,6 +64,7 @@ public class Map {
                 if (!containsMushroomById(mushrooms, mushroom.id)) {
                     mushrooms.add(mushroom);
                     ensurePlayerExists(mushroom.id);
+                    scores.set(mushroom.playerID, scores.get(mushroom.playerID) + mushroom.resources);
                 }
             }
             for (ShroomString s : tekton.arrayOfString) {
@@ -402,23 +418,23 @@ public class Map {
                     }
                     System.out.println("Tektons:");
                     for (Tekton tekton : tektons) {
-                        System.out.println("\t"+tekton.toString());
+                        System.out.println("    "+tekton.toString());
                     }
                     System.out.println("Insects:");
                     for (Insect insect : insects) {
-                        System.out.println("\t"+insect.toString());
+                        System.out.println("    "+insect.toString());
                     }
                     System.out.println("Mushrooms:");
                     for (Mushroom mushroom : mushrooms) {
-                        System.out.println("\t"+mushroom.toString());
+                        System.out.println("    "+mushroom.toString());
                     }
                     System.out.println("Strings:");
                     for (ShroomString shroomString : shroomStrings) {
-                        System.out.println("\t"+shroomString.toString());
+                        System.out.println("    "+shroomString.toString());
                     }
                     System.out.println("Spores:");
                     for (Spore spore : spores) {
-                        System.out.println("\t"+spore.toString());
+                        System.out.println("    "+spore.toString());
                     }
                     break;
 
