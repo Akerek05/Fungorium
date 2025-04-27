@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -7,8 +8,8 @@ import java.util.Random;
  * Képes ezek kezelésére és szomszédos mezőkkel való kapcsolattartásra.
  */
 
-public class Tekton implements TurnControl {
-
+public class Tekton implements TurnControl, Serializable {
+    private static final long serialVersionUID = 1L;
     public int id;
     public static int tektonCount = 0;
     protected List<ShroomString> arrayOfString = new ArrayList<>();

@@ -1,9 +1,11 @@
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Gombafonalat reprezentáló osztály, amely két Tekton között húzódik.
  */
-public class ShroomString implements TurnControl {
+public class ShroomString implements TurnControl, Serializable {
+    private static final long serialVersionUID = 1L;
     protected boolean growing = true;
     protected int lifeTime = 100;
     protected Tekton startTek;
@@ -76,11 +78,15 @@ public class ShroomString implements TurnControl {
      * Idő telése
      */
     public void timeElapsed() {
+        growing=false;
         if (isCut) {
             lifeTime-= 40;
         }
         if (!isConnected) {
             lifeTime -= 10;
+        }
+        if(lifeTime <= 0) {
+            die();
         }
 
     }

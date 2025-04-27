@@ -1,10 +1,12 @@
+import java.io.Serializable;
 import java.util.Random;
 
 /**
  * Alapértelmezett spóraosztály, amely pontokat ad elfogyasztáskor.
  * Többféle specializált spóra származik belőle.
  */
-public class Spore {
+public class Spore implements Serializable {
+    private static final long serialVersionUID = 1L;
     public int id;
     public static int sporeCount = 0;
     protected int calories;

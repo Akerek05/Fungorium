@@ -1,1 +1,23 @@
+!!! EXCEPTION while processing command: CREATE STRING 0 0 1 FALSE 100 FALSE TRUE
+java.util.ConcurrentModificationException
+	at java.base/java.util.ArrayList$Itr.checkForComodification(ArrayList.java:1013)
+	at java.base/java.util.ArrayList$Itr.remove(ArrayList.java:981)
+	at Map.setStringIsConnected(Map.java:103)
+	at Map.update(Map.java:140)
+	at Map.command(Map.java:395)
+	at TestApp.runMapCommandsAndCaptureOutput(TestApp.java:562)
+	at TestApp.executeAndCompareTest(TestApp.java:518)
+	at TestApp.runAllTests(TestApp.java:432)
+	at TestApp.main(TestApp.java:376)
 Error! Could not grow mushroom by String:0 at Tekton:1
+!!! EXCEPTION while processing command: GROW MUSHROOM 0
+java.util.ConcurrentModificationException
+	at java.base/java.util.ArrayList$Itr.checkForComodification(ArrayList.java:1013)
+	at java.base/java.util.ArrayList$Itr.remove(ArrayList.java:981)
+	at Map.setStringIsConnected(Map.java:103)
+	at Map.update(Map.java:140)
+	at Map.command(Map.java:629)
+	at TestApp.runMapCommandsAndCaptureOutput(TestApp.java:562)
+	at TestApp.executeAndCompareTest(TestApp.java:518)
+	at TestApp.runAllTests(TestApp.java:432)
+	at TestApp.main(TestApp.java:376)

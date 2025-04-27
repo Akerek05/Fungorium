@@ -1,0 +1,12 @@
+Players:
+Player:0, Score: 3
+Player:1, Score: 120
+Tektons:
+    0: Neighbours: 1, StringNeighbours: 1, Type: Basic
+    1: Neighbours: 0, StringNeighbours: 0, Type: Basic
+Insects:
+    0: Owner: 0, Position: 1, ActionPoints: 3, Timer: 0, effectType: DEFAULT
+Mushrooms:
+    0: Owner: 1, Position: 0, Timer: 30, HP: 20, Resources: 120, Type: Basic
+Strings:
+Spores:

@@ -1,4 +1,4 @@
-!!! EXCEPTION while processing command: CREATE STRING 0 0 1 true 100 false true
+!!! EXCEPTION while processing command: CREATE STRING 0 0 1 true 50 false true
 java.util.ConcurrentModificationException
 	at java.base/java.util.ArrayList$Itr.checkForComodification(ArrayList.java:1013)
 	at java.base/java.util.ArrayList$Itr.remove(ArrayList.java:981)
@@ -9,7 +9,18 @@ java.util.ConcurrentModificationException
 	at TestApp.executeAndCompareTest(TestApp.java:518)
 	at TestApp.runAllTests(TestApp.java:432)
 	at TestApp.main(TestApp.java:376)
-!!! EXCEPTION while processing command: CREATE INSECT 0 0 3 0 1 DEFAULT
+!!! EXCEPTION while processing command: TIMEELAPSED 1
+java.util.ConcurrentModificationException
+	at java.base/java.util.ArrayList$Itr.checkForComodification(ArrayList.java:1013)
+	at java.base/java.util.ArrayList$Itr.remove(ArrayList.java:981)
+	at Map.setStringIsConnected(Map.java:103)
+	at Map.update(Map.java:140)
+	at Map.command(Map.java:724)
+	at TestApp.runMapCommandsAndCaptureOutput(TestApp.java:562)
+	at TestApp.executeAndCompareTest(TestApp.java:518)
+	at TestApp.runAllTests(TestApp.java:432)
+	at TestApp.main(TestApp.java:376)
+!!! EXCEPTION while processing command: CREATE INSECT 0 1 3 3 1 BUFF
 java.util.ConcurrentModificationException
 	at java.base/java.util.ArrayList$Itr.checkForComodification(ArrayList.java:1013)
 	at java.base/java.util.ArrayList$Itr.remove(ArrayList.java:981)
@@ -20,25 +31,27 @@ java.util.ConcurrentModificationException
 	at TestApp.executeAndCompareTest(TestApp.java:518)
 	at TestApp.runAllTests(TestApp.java:432)
 	at TestApp.main(TestApp.java:376)
-!!! EXCEPTION while processing command: CREATE SPORE BASIC 1 0 100
+Error! Could not cut String: 0 by Insect: 0
+!!! EXCEPTION while processing command: TIMEELAPSED 1
 java.util.ConcurrentModificationException
 	at java.base/java.util.ArrayList$Itr.checkForComodification(ArrayList.java:1013)
 	at java.base/java.util.ArrayList$Itr.remove(ArrayList.java:981)
 	at Map.setStringIsConnected(Map.java:103)
 	at Map.update(Map.java:140)
-	at Map.command(Map.java:417)
+	at Map.command(Map.java:724)
 	at TestApp.runMapCommandsAndCaptureOutput(TestApp.java:562)
 	at TestApp.executeAndCompareTest(TestApp.java:518)
 	at TestApp.runAllTests(TestApp.java:432)
 	at TestApp.main(TestApp.java:376)
 Players:
 Player:0, Score: 0
-Player:1, Score: 0
+Player:1, Score: 120
 Tektons:
-    0: Neighbours: 1, 2, StringNeighbours: , Type: Basic
-    1: Neighbours: 0, StringNeighbours: , Type: Basic
-    2: Neighbours: 0, StringNeighbours: , Type: Basic
+    0: Neighbours: 1, StringNeighbours: 1, Type: Basic
+    1: Neighbours: 0, StringNeighbours: 0, Type: Basic
 Insects:
 Mushrooms:
+    0: Owner: 1, Position: 0, Timer: 30, HP: 20, Resources: 120, Type: Basic
 Strings:
+    0: ParentShroom: 0, Start: 0, End: 1, Growing: false, LifeTime: 50, isCut: false, isConnected: true
 Spores:

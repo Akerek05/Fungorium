@@ -1,6 +1,7 @@
 import jdk.jshell.ImportSnippet;
 
 import java.awt.geom.Area;
+import java.io.*;
 import java.sql.Array;
 import java.util.*;
 
@@ -9,7 +10,8 @@ import java.util.*;
  * amely Tektonokat tárol és szomszédsági kapcsolatokat kezel.
  */
 
-public class Map {
+public class Map implements Serializable {
+    private static final long serialVersionUID = 1L;
     public List<Tekton> tektons = new ArrayList<Tekton>();
     public List<ShroomString> shroomStrings = new ArrayList<ShroomString>();
     public List<Mushroom> mushrooms = new ArrayList<Mushroom>();
@@ -34,6 +36,28 @@ public class Map {
     /**
      * Beallitja egy gomba osszes fonalara, az isConnected-t
      */
+    public void saveMap(String filename) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
+            out.writeObject(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void loadMap(String filename) {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
+            Map map = (Map) in.readObject();
+            this.scores = map.scores;
+            this.tektons = map.tektons;
+            this.shroomStrings = map.shroomStrings;
+            this.mushrooms = map.mushrooms;
+            this.insects = map.insects;
+            this.spores = map.spores;
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     protected void setStringIsConnected (Mushroom mushroom){
         /// Ha nem lenne elvagva, akkor elvagjuk
 
@@ -117,13 +141,6 @@ public class Map {
         }
     }
 
-    private void load(String fileName) {
-
-    }
-
-    private void save(String fileName) {
-
-    }
 
     /**
      * Map létrehozásáért felelős 5x5-ös tekton, scores fele mushroom, másik insect
@@ -303,13 +320,14 @@ public class Map {
 
                 case "LOAD":
                     if(command.length == 2){
-                        load(command[1]);
+                        loadMap(command[1]);
+                        update();
                     }
                     break;
 
                 case "SAVE":
                     if(command.length == 2){
-                        save(command[1]);
+                        saveMap(command[1]);
                     }
                     break;
 

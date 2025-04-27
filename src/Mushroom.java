@@ -1,7 +1,10 @@
+import java.io.Serializable;
+
 /**
  * Gomba entitás, amely spórát képes szórni, fonalat növeszteni, és fejleszthető.
  */
-public class Mushroom implements TurnControl {
+public class Mushroom implements TurnControl, Serializable {
+    private static final long serialVersionUID = 1L;
     protected int sporeSpawnTime = 0;
     protected int playerID;
     protected int lifeTime = 100;
@@ -119,6 +122,9 @@ public class Mushroom implements TurnControl {
         resources += 10;
         sporeSpawnTime += 10;
         lifeTime -= 10;
+        if (lifeTime <= 0) {
+            this.die();
+        }
     }
 
     /**

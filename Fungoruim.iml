@@ -34,6 +34,9 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test_cases/7" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test_cases/8" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test_cases/9" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/30" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/31" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_cases/32" type="java-test-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

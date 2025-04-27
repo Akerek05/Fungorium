@@ -1,0 +1,12 @@
+Players:
+Player:0, Score: 0
+Player:1, Score: 110
+Tektons:
+    0: Neighbours: 1, StringNeighbours: 1, Type: Basic
+    1: Neighbours: 0, StringNeighbours: 0, Type: Basic
+Insects:
+Mushrooms:
+    0: Owner: 1, Position: 0, Timer: 20, HP: 30, Resources: 110, Type: Basic
+Strings:
+    0: ParentShroom: 0, Start: 0, End: 1, Growing: false, LifeTime: 30, isCut: false, isConnected: true
+Spores:

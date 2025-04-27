@@ -1,9 +1,12 @@
+import java.io.Serializable;
+
 /**
  * A játékban szereplő rovar entitás.
  * Tud mozogni, spórát fogyasztani, és fonalat vágni.
  */
 
-public class Insect implements TurnControl {
+public class Insect implements TurnControl, Serializable {
+    private static final long serialVersionUID = 1L;
     public static int insectCount = 0;
     public int id = 0;
     protected int resources = 0;
@@ -148,6 +151,7 @@ public class Insect implements TurnControl {
         buffTimer--;
         if (buffTimer <= 0) {
             effectType = Effect.DEFAULT;
+            this.actionPoints = 3;
         }
     }
 

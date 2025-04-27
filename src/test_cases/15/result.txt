@@ -1,3 +1,14 @@
+!!! EXCEPTION while processing command: GROW STRING 0 0 1
+java.util.ConcurrentModificationException
+	at java.base/java.util.ArrayList$Itr.checkForComodification(ArrayList.java:1013)
+	at java.base/java.util.ArrayList$Itr.remove(ArrayList.java:981)
+	at Map.setStringIsConnected(Map.java:103)
+	at Map.update(Map.java:140)
+	at Map.command(Map.java:650)
+	at TestApp.runMapCommandsAndCaptureOutput(TestApp.java:562)
+	at TestApp.executeAndCompareTest(TestApp.java:518)
+	at TestApp.runAllTests(TestApp.java:432)
+	at TestApp.main(TestApp.java:376)
 Players:
 Player:0, Score: 0
 Player:1, Score: 200
