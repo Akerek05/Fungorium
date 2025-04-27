@@ -1,5 +1,6 @@
 import jdk.jshell.ImportSnippet;
 
+import java.awt.geom.Area;
 import java.sql.Array;
 import java.util.*;
 
@@ -125,6 +126,61 @@ public class Map {
     }
 
     /**
+     * Map létrehozásáért felelős 5x5-ös tekton, scores fele mushroom, másik insect
+     */
+    private void mapInit(){
+        if(!tektons.isEmpty() || scores.isEmpty()){
+            System.out.println("Error! Map innit is not possible (tektons already on map or no players)");
+            return;
+        }
+
+        /// Tektonok létrehozása
+        for(int i = 0; i<25; i++) {
+            Tekton t1;
+            if (i == 4) t1 = new AllStringsLiveTekton();
+            else if (i == 6) t1 = new MultipleStringTekton();
+            else if (i == 7) t1 = new MultipleStringTekton();
+            else if (i == 13) t1 = new StringCutterTekton();
+            else if (i == 18) t1 = new StringCutterTekton();
+            else if (i == 22) t1 = new UnlivableTekton();
+            else t1 = new Tekton();
+            tektons.add(t1);
+
+            if (i > 0 && i != 5 && i != 10 && i != 15 && i != 20) addNeighbours(t1, tektons.get(i - 1));
+            if (i >= 5) addNeighbours(t1, tektons.get(i - 5));
+        }
+
+        Random rnd = new Random();
+        /// Gombák létrehozása
+        for(int j = 0; j<scores.size()/2; j++){
+            int pos = rnd.nextInt(0, 25);
+            Tekton t1 = getTekton(pos);                             //Random tekton
+
+            while(!t1.arrayOfMushroom.isEmpty() && t1.id!=22){       //Ismétli amíg nem talál jót
+                pos = rnd.nextInt(0, 25);
+                t1 = getTekton(pos);
+            }
+
+            Mushroom m1 = new Mushroom(j, t1, 0, 100, 0);
+            t1.arrayOfMushroom.add(m1);                             //Elhelyezi
+        }
+
+        for(int j = scores.size()/2; j<scores.size(); j++){
+            int pos = rnd.nextInt(0, 25);
+            Tekton t1 = getTekton(pos);                 //Random tekton
+
+            while(!t1.arrayOfInsect.isEmpty()){          //Ismétli amíg jót nem talál
+                pos = rnd.nextInt(0, 25);
+                t1 = getTekton(pos);
+            }
+
+            Insect i1 = new Insect(j, t1, 3, 0, 0, Effect.DEFAULT);
+            t1.arrayOfInsect.add(i1);                   //Elhelyezi
+        }
+    }
+
+
+    /**
      * Frissíti a szomszédsági kapcsolatokat minden Tekton között.
      */
     private void addNeighbours(Tekton t1, Tekton t2) {
@@ -238,6 +294,12 @@ public class Map {
                     else
                         System.out.println("Error! Could not start game (Invalid arguments)");
                     break;
+
+                case "MAPINIT":
+                    if(command.length == 1){
+                        mapInit();
+                        update();
+                    }
 
                 case "LOAD":
                     if(command.length == 2){
@@ -555,8 +617,17 @@ public class Map {
                                     Integer mushroomID = tryParseInt(command[2]);
                                     Integer StartTekID = tryParseInt(command[3]);
                                     Integer EndTekID = tryParseInt(command[4]);
-                                    if (tektons.get(StartTekID).neighbours.contains(tektons.get(EndTekID))) {
-                                        mushrooms.get(mushroomID).growString(tektons.get(StartTekID), tektons.get(EndTekID));
+                                    Mushroom m1 = getMushroom(mushroomID);
+                                    Tekton t1 = getTekton(StartTekID);
+                                    Tekton t2 = getTekton(EndTekID);
+
+                                    if(m1==null || t1==null || t2==null){
+                                        System.out.println("Error! Could not grow MushroomString by Mushroom:"+mushroomID+" at "+StartTekID+" and "+EndTekID+" Tektons.");
+                                        break;
+                                    }
+
+                                    if (t1.neighbours.contains(t2)) {
+                                        m1.growString(t1, t2);
                                         update();
                                     } else
                                         System.out.println("Error! Could not grow MushroomString by Mushroom:"+mushroomID+" at "+StartTekID+" and "+EndTekID+" Tektons.");
