@@ -348,7 +348,7 @@ import java.util.stream.Collectors;
 
 public class TestApp {
 
-    private static final String TEST_BASE_DIR = ".\\src\\test_cases";
+    private static final String TEST_BASE_DIR = ".\\test_cases";
     private static final String INPUT_FILE = "input.txt";
     private static final String EXPECTED_RESULT_FILE = "expectedresult.txt";
     private static final String ACTUAL_RESULT_FILE = "result.txt";

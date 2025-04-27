@@ -118,7 +118,6 @@ public class Tekton implements TurnControl, Serializable {
      *
      * @param t2 A másik Tekton, amelyhez a fonalat hozzákötjük
      */
-    //TODO: KÉSZ
     public void addString(Tekton t2, Mushroom m1) {
         // Ha már létezik
         for (ShroomString s : arrayOfString) {
@@ -219,7 +218,6 @@ public class Tekton implements TurnControl, Serializable {
     /**
      * A Tekton "halála", minden rajta lévő objektum törlése.
      */
-    //TODO szerintem nem kell
     public void die() {
         arrayOfString.clear();
         arrayOfMushroom.clear();

@@ -69,7 +69,7 @@ public class ShroomString implements TurnControl, Serializable {
      * Segédfüggvény, ha meghal egy gomba a fonalai false
      */
     public void notConnected() {
-        if(this.parentSrhoom == null) {
+        if(this.parentSrhoom.lifeTime <= 0) {
             this.isConnected = false;
         }
     }
@@ -98,12 +98,11 @@ public class ShroomString implements TurnControl, Serializable {
         startTek.removeString(this);
         disTek.removeString(this);
 
-        //TODO: SZOMSZÉDOKRA IS ISCONNECTED false
     }
 
     public String toString() {
         String num = "";
-        if(parentSrhoom == null) {
+        if(parentSrhoom.lifeTime <= 0) {
             num = "NoParent";
         }
         else {
@@ -144,8 +143,6 @@ public class ShroomString implements TurnControl, Serializable {
     public void cut(){
         isCut = true;
         isConnected = false;
-
-        //TODO: SZOMSZÉDOKRA IS ISCONNECTED false
     }
 
     public void getDamaged(int i) {
