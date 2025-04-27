@@ -77,6 +77,8 @@ public class Map implements Serializable {
         while (!reachedTektons.isEmpty()) {
             /// Iteratorok, azert, mert kell majd törölni is azt a tektont amin voltam
             Iterator<Tekton> tektonIterator = reachedTektons.iterator();
+            /// Lista az uj tektonokat majd a reachedtektonba toltesre
+            List<Tekton> newTektons = new ArrayList<Tekton>();
             while (tektonIterator.hasNext()) {
                 Tekton tekton = tektonIterator.next();
                 Iterator<ShroomString> shroomStringIterator = stringWithSameShroom.iterator();
@@ -88,20 +90,23 @@ public class Map implements Serializable {
                 while (shroomStringIterator.hasNext()) {
 
                     ShroomString shroomString = shroomStringIterator.next();
-                    if (shroomString.disTek.equals(tekton) && !shroomString.isCut) {
+                    if (shroomString.disTek.equals(tekton) && !shroomString.isCut && shroomString.isConnected) {
 
-                        reachedTektons.add(shroomString.startTek);
-                        shroomString.isConnected = true;
+                        newTektons.add(shroomString.startTek);
                         shroomStringIterator.remove();
-                    } else if (shroomString.startTek.equals(tekton) && !shroomString.isCut) {
+                    } else if (shroomString.startTek.equals(tekton) && !shroomString.isCut && shroomString.isConnected) {
 
-                        reachedTektons.add(shroomString.disTek);
-                        shroomString.isConnected = true;
+                        newTektons.add(shroomString.disTek);
+                        shroomStringIterator.remove();
+                    } else if (shroomString.isCut) {
+
+                        shroomString.isConnected = false;
                         shroomStringIterator.remove();
                     }
                 }
                 tektonIterator.remove();
             }
+            reachedTektons.addAll(newTektons);
         }
         /// Beallitja a maradek fonalra, amelyekig nem ertunk el, hogy isConnected = false
         for (ShroomString shroomString : stringWithSameShroom) {
@@ -136,6 +141,7 @@ public class Map implements Serializable {
 
             for (Mushroom mushroom : tekton.arrayOfMushroom) {
                 mushrooms.add(mushroom);
+                setStringIsConnected(mushroom);
                 scores.set(mushroom.playerID, scores.get(mushroom.playerID) + mushroom.resources);
             }
         }

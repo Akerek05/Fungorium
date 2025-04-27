@@ -12,7 +12,9 @@ public class Main {
             System.out.print("> "); //Parancs bemenet
             String ln = br.readLine();
             mainMap.command(ln);
-
+            if (ln.toUpperCase().equals("ENDGAME")) {
+                return;
+            }
         }
 
     }

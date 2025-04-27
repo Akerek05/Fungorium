@@ -26,7 +26,6 @@ public class UpgradedMushroom extends Mushroom {
      * @param tekton Kiindulási pont a terjesztéshez
      * @param rnd A spóra fajtáját valósítja meg (-1 esetén random)
      */
-    //TODO az error megvan, algoritmus jó-e
     public void spreadSpore(Tekton tekton, int rnd, int calories) {
         String error = "Error! Could not spread Spore to Tekton:"+tekton.id+" from Mushroom:"+id;
         if (sporeSpawnTime > 4) {
