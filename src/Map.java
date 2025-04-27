@@ -314,7 +314,7 @@ public class Map {
                     break;
 
                 case "CREATE":
-                    if(command.length == 1){
+                    if(command.length < 3){
                         System.out.println("Too few arguments");
                         break;
                     };
@@ -365,13 +365,13 @@ public class Map {
                                 Integer startTektonID = tryParseInt(command[3]);
                                 Integer endTektonID = tryParseInt(command[4]);
                                 Boolean growing = tryParseBoolean(command[5]);
-                                Integer lifetime = tryParseInt(command[6]);
+                                Integer lifeTime = tryParseInt(command[6]);
                                 Boolean isCut = tryParseBoolean(command[7]);
                                 Boolean isConnected = tryParseBoolean(command[8]);
                                 if (mushroomID != null && startTektonID != null && endTektonID != null &&
-                                    growing != null && lifetime != null && isCut != null && isConnected != null &&
+                                    growing != null && lifeTime != null && isCut != null && isConnected != null &&
                                         getTekton(startTektonID) != null && getTekton(endTektonID) != null ) {
-                                    ShroomString s1 = new ShroomString(this.getMushroom(mushroomID), this.getTekton(startTektonID), this.getTekton(endTektonID), growing, lifetime, isCut, isConnected);
+                                    ShroomString s1 = new ShroomString(this.getMushroom(mushroomID), this.getTekton(startTektonID), this.getTekton(endTektonID), growing, lifeTime, isCut, isConnected);
                                     shroomStrings.add(s1);
                                     update();
 

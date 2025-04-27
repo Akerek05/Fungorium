@@ -139,10 +139,10 @@ public class Tekton implements TurnControl {
     }
 
     /**
-     * Véletlenszerű típusú spóra generálása és hozzáadása ehhez a Tektonhoz.
+     * Véletlenszerű típusú spóra generálása és hozzáadása ehhez a Tektonhoz.S
      */
     public void addSpore(int pid, int rnd, int calories) {
-        if (rnd > 7 && rnd < 1) {
+        if (rnd > 7 || rnd < 1) {
             Random random = new Random();
             rnd = random.nextInt(7) + 1;
         }
