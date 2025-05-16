@@ -1,11 +1,6 @@
 import java.util.List;
 import java.util.ArrayList;
-
-// ----- Helyőrző osztályok a fordíthatóságért -----
-// Ezeket a projekt tényleges modell osztályaival kell helyettesíteni.
-
-
-// ----- Helyőrző osztályok vége -----
+import java.util.Random;
 
 /**
  * GUI eseményeit kezeli le, összeköti a user-t a játék logikájával.
@@ -17,7 +12,9 @@ public class Controller {
     /**
      * A körök maximális száma.
      */
-    protected int MAX_TURNS;
+    protected int MAX_TURNS = 100;
+
+    protected int currentTurn = 0;
 
     /**
      * A játékosokat azonosító számok listája – vezérli, hogy melyik játékos
@@ -28,12 +25,12 @@ public class Controller {
     /**
      * Számláló, hogy mennyi idő múlva történik meg a tekton törés.
      */
-    protected int breakTektonCounter;
+    protected int breakTektonCounter = 0;
 
     /**
      * A töréshez szükséges határérték.
      */
-    protected int TEKTON_BREAK_NUM;
+    protected int TEKTON_BREAK_NUM = 20;
 
     /**
      * Kiválasztott (aktuális) játékos gombája.
@@ -41,105 +38,49 @@ public class Controller {
      * Lehet az aktuális játékos fő/aktív gombája, vagy a GUI-n kiválasztott elem.
      * Megjegyzés: A Java konvenciók szerint a változónév 'playerMushroom' lenne.
      */
-    protected Mushroom PlayerMushroom;
+    protected Mushroom PlayerMushroom = null;
 
     /**
      * Kiválasztott (aktuális) játékos rovarja.
      * Hasonlóan a PlayerMushroom-hoz.
      * Megjegyzés: A Java konvenciók szerint a változónév 'playerInsect' lenne.
      */
-    protected Insect PlayerInsect;
+    protected Insect PlayerInsect = null;
 
     // Belső állapot a játékosok sorrendjének kezeléséhez
-    private int currentPlayerIndex;
+    private int currentPlayerIndex = 0;
 
-    // Referenciák a GUI elemekre és a játékmodellre (ezek a specifikációban nem szerepeltek,
-    // de egy valós Controllernek szüksége lenne rájuk)
-    // private GameView gameView;
-    // private GameLogic gameLogic;
+    /**
+     * Láthatóság
+     */
+    protected GameWindow gameWindow;
 
+    /**
+     * Map logikája
+     */
+    protected Map map;
+
+    /**
+     * Menü megjelenítése
+     */
+    protected MenuWindow menuWindow;
 
     /**
      * Alapértelmezett konstruktor.
      * Inicializálja a Controller állapotát.
      */
-    public Controller() {
+    public Controller(Map map) {
         this.player_ids = new ArrayList<>();
-        this.currentPlayerIndex = 0;
-        // Alapértelmezett értékek beállítása (ezeket a játék indításakor felül lehet írni)
-        this.MAX_TURNS = 100; // Példa érték
-        this.TEKTON_BREAK_NUM = 20; // Példa érték
-        this.breakTektonCounter = 0;
+        this.map = map;
+        showMenu();
     }
 
     /**
      * Következő játékos ID-jét adja vissza és lépteti a sort.
      * @return A soron következő játékos ID-ja.
-     * @throws IllegalStateException Ha nincsenek játékosok inicializálva.
      */
     public int nextPlayer() {
-        if (player_ids == null || player_ids.isEmpty()) {
-            System.err.println("Hiba: Nincsenek játékosok a játékban a nextPlayer() hívásakor.");
-            // Döntéstől függően: vagy hibát dob, vagy egy speciális értéket ad vissza
-            // A specifikáció szerint int-et ad vissza, így nem dobunk kivételt itt alapból.
-            // Lehet, hogy a hívó félnek kell ellenőriznie ezt az állapotot.
-            return -1; // Jelzi a hibát vagy a játék végét
-        }
-
-        // Az aktuális játékos ID-jének lekérése az index alapján
-        int currentPlayerId = player_ids.get(currentPlayerIndex);
-
-        // Az index léptetése a következő játékosra, körkörösen
-        currentPlayerIndex = (currentPlayerIndex + 1) % player_ids.size();
-
-        // Itt lehetne frissíteni a PlayerMushroom és PlayerInsect attribútumokat
-        // az új, soron következő játékos entitásaival, ha ez a koncepció.
-        // E.g., this.PlayerMushroom = gameLogic.getMushroomForPlayer(player_ids.get(currentPlayerIndex));
-        // this.PlayerInsect = gameLogic.getInsectForPlayer(player_ids.get(currentPlayerIndex));
-
-        System.out.println("Következő játékos (ID: " + player_ids.get(currentPlayerIndex) + ") előkészítve. Az előző volt: " + currentPlayerId);
-        return currentPlayerId; // Az előző (most befejező) játékos ID-ját adja vissza, vagy a soron következőt?
-        // A "Következő játékos ID-jét adja vissza" arra utal, hogy az új játékosét.
-        // Módosítom, hogy az ÚJ játékos ID-ját adja vissza:
-        // return player_ids.get(currentPlayerIndex); // Ez lenne az új játékos
-        // A fenti sorrenddel az az aktuális játékos, aki BEFEJEZTE a körét.
-        // Ha az a cél, hogy az ÚJ játékos ID-ját adja vissza:
-        // currentPlayerIndex = (currentPlayerIndex + 1) % player_ids.size();
-        // return player_ids.get(currentPlayerIndex);
-        // Maradok az eredeti logikánál, ami szerint az épp aktuális (még cselekvés előtt álló) játékos indexe van a currentPlayerIndex-ben
-        // a metódus hívása UTÁN. Tehát a metódusnak az aktuálisan sorra kerülő játékost kell visszaadnia.
-        // Újraértelmezve: a nextPlayer() hívásakor az aktuális player index léptetődik, és az ÚJ aktuális player ID-je tér vissza.
-        // Korrigált logika:
-        // Integer idToReturn = player_ids.get(currentPlayerIndex);
-        // currentPlayerIndex = (currentPlayerIndex + 1) % player_ids.size();
-        // return idToReturn; -> Ez azt jelenti, hogy a nextPlayer() hívása UTÁN a currentPlayerIndex már a következőre mutat.
-
-        // Egyszerűbb, ha a currentPlayerIndex mindig az aktuálisan soron lévő játékosra mutat.
-        // A nextPlayer() hívása lépteti ezt.
-        // Tehát:
-        // 1. Lekérdezzük az aktuális játékos ID-t.
-        // 2. Léptetjük az indexet.
-        // 3. Visszaadjuk a lekérdezett ID-t (aki most fejezte be a körét, vagy akinek a köre elkezdődik).
-        // A "Következő játékos ID-jét adja vissza" megfogalmazás szerint a hívás után az ÚJ játékos ID-je kell.
-        // Tehát a léptetés UTÁN kell lekérdezni.
-
-        // Legtisztább:
-        // currentPlayerIndex = (currentPlayerIndex + 1) % player_ids.size();
-        // int nextPlayerId = player_ids.get(currentPlayerIndex);
-        // System.out.println("Soron következő játékos: " + nextPlayerId);
-        // return nextPlayerId;
-        // Vagy ha az oneRound kezeli a ciklust, és a nextPlayer csak a soron következőt adja, de nem léptet,
-        // akkor a léptetést a hívónak kell végezni.
-        // A specifikáció alapján a `nextPlayer` maga léptet és visszaadja a következőt.
-
-        // Maradjunk az egyszerűbb körkörös léptetésnél, ahol a `currentPlayerIndex` mindig
-        // a következő játékosra mutat a hívás előtt.
-        // A hívás kiválasztja, léptet, és visszaadja azt, aki sorra került.
-        int playerIDForThisTurn = player_ids.get(currentPlayerIndex);
-        System.out.println("Soron: Játékos " + playerIDForThisTurn);
-        // A következő híváshoz előkészítjük a következő indexet:
-        currentPlayerIndex = (currentPlayerIndex + 1) % player_ids.size();
-        return playerIDForThisTurn;
+        return currentPlayerIndex++;
     }
 
     /**
@@ -158,9 +99,13 @@ public class Controller {
         }
         currentPlayerIndex = 0; // Az első játékos kezd (ID: player_ids.get(0))
         breakTektonCounter = 0;
-        // Itt történhet a játéktábla inicializálása, játékosok entitásainak létrehozása stb.
-        // gameLogic.initializeBoard(playerCount);
-        // updateView(); // GUI frissítése
+
+        menuWindow.dispose();
+        map.startGame(playerCount);
+        map.mapInit();
+        map.update();
+
+        gameWindow = new GameWindow(this);
     }
 
     /**
@@ -168,62 +113,65 @@ public class Controller {
      */
     public void showMenu() {
         System.out.println("Főmenü megjelenítése...");
-        // Pl. gameView.showMainMenu();
+        menuWindow = new MenuWindow(this);
+        menuWindow.setVisible(true);
     }
 
     /**
      * Egy teljes kör lefutása. Ebben van a Playerek sorrendje.
      */
     public void oneRound() {
+        currentTurn++;
         if (player_ids.isEmpty()) {
             System.out.println("Nincsenek játékosok, a kör nem indul el.");
             return;
         }
         System.out.println("--- Új kör kezdődik ---");
-        for (int i = 0; i < player_ids.size(); i++) {
-            int currentPlayerId = nextPlayer(); // Meghatározza és lépteti a soron következő játékost
+        for (int i = 0; i <= player_ids.size()/2; i++) {
+            int currentPlayerId = i; // Meghatározza és lépteti a soron következő játékost
+            gameWindow.setCurrentPlayerId(currentPlayerId);
             System.out.println("Játékos " + currentPlayerId + " következik.");
 
-            // A specifikáció szerint: "a jelenlegi player gombáin vagy rovarain megy végig
-            // és állitja be hogy most melyik van soron"
-            // Ez a logika itt valósulna meg, pl. az aktív játékos entitásainak
-            // kiválasztásával/aktiválásával a GUI számára, vagy az AI döntéshozatalával.
-            // Példa:
-            // this.PlayerMushroom = gameLogic.getActiveMushroomForPlayer(currentPlayerId);
-            // this.PlayerInsect = gameLogic.getActiveInsectForPlayer(currentPlayerId);
-            // gameView.setActivePlayer(currentPlayerId, PlayerMushroom, PlayerInsect);
+            for(int j = 0; j < map.mushrooms.size(); j++) {
+                if (map.mushrooms.get(j).id == currentPlayerId) {
+                    PlayerMushroom = map.mushrooms.get(j);
+                    gameWindow.showMushroomCMD();
+                }
+            }
+        }
 
-            // Itt kellene a játékosnak lehetőséget adni a cselekvésre.
-            // Ez várhat GUI interakcióra vagy AI logikát futtathat.
-            // waitForPlayerActionsOrRunAI(currentPlayerId);
+        for (int i = player_ids.size()/2 + 1; i < player_ids.size(); i++) {
+            int currentPlayerId = i; // Meghatározza és lépteti a soron következő játékost
+            gameWindow.setCurrentPlayerId(currentPlayerId);
+            System.out.println("Játékos " + currentPlayerId + " következik.");
+
+            for(int j = 0; j < map.insects.size(); j++) {
+                if (map.insects.get(j).id == currentPlayerId) {
+                    PlayerInsect = map.insects.get(j);
+                    gameWindow.showInsectCMD();
+                }
+            }
         }
 
         // Kör végi események
-        handleEndOfRoundTasks();
         System.out.println("--- Kör vége ---");
 
-        // Ellenőrizzük, hogy elértük-e a maximális körszámot
-        // Ezt a MAX_TURNS-höz képest kellene egy körszámlálóval figyelni, ami itt hiányzik.
-        // Tegyük fel, van egy `currentTurnNumber` attribútum.
-        // if (currentTurnNumber >= MAX_TURNS) {
-        //     endGame();
-        // }
-    }
-
-    /**
-     * Kör végi teendők, pl. Tekton törés.
-     */
-    private void handleEndOfRoundTasks() {
         breakTektonCounter++;
-        if (breakTektonCounter >= TEKTON_BREAK_NUM) {
-            System.out.println("!!! TEKTON TÖRÉS ESEMÉNY !!!");
-            // Itt implementálódna a Tekton törés logikája
-            // gameLogic.triggerTektonBreak();
+        if (breakTektonCounter >= TEKTON_BREAK_NUM) { // Tekton törése random tektonra
+            System.out.println("TEKTON TÖRÉS");
+            Random rand = new Random();
+            int randomIndex = rand.nextInt(map.tektons.size());
+            Tekton t = map.tektons.get(randomIndex);
+            breakTekton(t);
+            map.update();
+            gameWindow.reDraw();
             breakTektonCounter = 0; // Számláló nullázása
         }
-        // updateView();
-    }
 
+        if (currentTurn >= MAX_TURNS) {
+           endGame();
+        }
+    }
 
     /**
      * Már elkezdett játék betöltése.
@@ -231,12 +179,19 @@ public class Controller {
      */
     public void load(String filePath) {
         System.out.println("Játék betöltése innen: " + filePath);
-        // Implementáció: fájl beolvasása, játékállapot (pálya, játékosok, körök stb.) visszaállítása.
-        // gameLogic.loadState(filePath);
-        // this.player_ids = gameLogic.getPlayerIds();
-        // this.currentPlayerIndex = gameLogic.getCurrentPlayerIndex();
-        // ... stb.
-        // updateView();
+        map.loadMap(filePath);
+        map.update();
+        gameWindow.reDraw();
+    }
+
+    /**
+     * A tekton törését hívja meg
+     * @param tekton Törendő tekton
+     */
+    public void breakTekton(Tekton tekton) {
+        tekton.breakTekton(-1);
+        map.update();
+        gameWindow.reDraw();
     }
 
     /**
@@ -245,8 +200,7 @@ public class Controller {
      */
     public void save(String filePath) {
         System.out.println("Játék mentése ide: " + filePath);
-        // Implementáció: aktuális játékállapot kiírása fájlba.
-        // gameLogic.saveState(filePath, player_ids, currentPlayerIndex, ...);
+        map.saveMap(filePath);
     }
 
     /**
@@ -254,11 +208,10 @@ public class Controller {
      */
     public void endGame() {
         System.out.println("Játék vége!");
-        // Eredmények megjelenítése, GUI lezárása vagy menübe való visszatérés.
-        // gameView.showEndGameScreen(gameLogic.getResults());
+        map.endGame();
+        gameWindow.endGame();
+        showMenu();
     }
-
-    // --- Játékos által kezdeményezett akciók ---
 
     /**
      * Spórázás a pályán.
@@ -268,9 +221,9 @@ public class Controller {
      */
     public void spread(Mushroom mushroom, Tekton tekton, int amount) {
         System.out.println("Akció: Spórázás - Gomba: " + mushroom + ", Cél: " + tekton + ", Mennyiség: " + amount);
-        // Játéklogika hívása:
-        // boolean success = gameLogic.performSpread(mushroom, tekton, amount);
-        // if (success) updateView();
+        mushroom.spreadSpore(tekton, -1, -1);
+        map.update();
+        gameWindow.reDraw();
     }
 
     /**
@@ -281,9 +234,9 @@ public class Controller {
      */
     public void growString(Mushroom mushroom, Tekton tekton1, Tekton tekton2) {
         System.out.println("Akció: Fonálnövesztés - Gomba: " + mushroom + ", Tektonok: " + tekton1 + ", " + tekton2);
-        // Játéklogika hívása:
-        // boolean success = gameLogic.performGrowString(mushroom, tekton1, tekton2);
-        // if (success) updateView();
+        mushroom.growString(tekton1, tekton2);
+        map.update();
+        gameWindow.reDraw();
     }
 
     /**
@@ -293,9 +246,14 @@ public class Controller {
      */
     public void growBody(Mushroom mushroom, Tekton tekton) {
         System.out.println("Akció: Gombatest növesztés - Gomba: " + mushroom + ", Cél: " + tekton);
-        // Játéklogika hívása:
-        // boolean success = gameLogic.performGrowBody(mushroom, tekton);
-        // if (success) updateView();
+        for(int i = 0; i< map.shroomStrings.size(); i++) {
+            if(map.shroomStrings.get(i).parentSrhoom == mushroom && map.shroomStrings.get(i).disTek == tekton) {
+                map.shroomStrings.get(i).growMushroom();
+            }
+        }
+        map.update();
+        gameWindow.reDraw();
+
     }
 
     /**
@@ -304,9 +262,9 @@ public class Controller {
      */
     public void upgradeMushroom(Mushroom mushroom) {
         System.out.println("Akció: Gomba fejlesztése - Gomba: " + mushroom);
-        // Játéklogika hívása:
-        // boolean success = gameLogic.performUpgradeMushroom(mushroom);
-        // if (success) updateView();
+        mushroom.upgradeMushroom();
+        map.update();
+        gameWindow.reDraw();
     }
 
     /**
@@ -318,9 +276,14 @@ public class Controller {
     public void eatInsect(Tekton sourceTekton, Tekton insectTekton, Insect insect) {
         System.out.println("Akció: Fonál megeszi a rovart - Fonál forrás: " + sourceTekton +
                 ", Rovar helye: " + insectTekton + ", Rovar: " + insect);
-        // Játéklogika hívása:
-        // boolean success = gameLogic.performEatInsect(sourceTekton, insectTekton, insect);
-        // if (success) updateView();
+        for(int i = 0; i< map.shroomStrings.size(); i++) {
+            if(map.shroomStrings.get(i).parentSrhoom == PlayerMushroom
+                    && map.shroomStrings.get(i).startTek == sourceTekton && map.shroomStrings.get(i).disTek == insectTekton) {
+                map.shroomStrings.get(i).eatInsect(insect);
+            }
+        }
+        map.update();
+        gameWindow.reDraw();
     }
 
     /**
@@ -330,9 +293,9 @@ public class Controller {
      */
     public void move(Insect insect, Tekton targetTekton) {
         System.out.println("Akció: Rovar mozgatása - Rovar: " + insect + ", Cél: " + targetTekton);
-        // Játéklogika hívása:
-        // boolean success = gameLogic.performMoveInsect(insect, targetTekton);
-        // if (success) updateView();
+        insect.moveToTekton(targetTekton);
+        map.update();
+        gameWindow.reDraw();
     }
 
     /**
@@ -341,9 +304,9 @@ public class Controller {
      */
     public void eatSpore(Insect insect) {
         System.out.println("Akció: Rovar spórát eszik - Rovar: " + insect);
-        // Játéklogika hívása (a rovar pozícióját a gameLogic-nak kell tudnia):
-        // boolean success = gameLogic.performEatSpore(insect);
-        // if (success) updateView();
+        insect.eatSpore(insect.tekton.arrayOfSpore.get(0));
+        map.update();
+        gameWindow.reDraw();
     }
 
     /**
@@ -354,19 +317,13 @@ public class Controller {
      */
     public void cut(Insect insect, Tekton tekton) {
         System.out.println("Akció: Rovar fonalat vág - Rovar: " + insect + ", Fonál célpontja: " + tekton);
-        // Játéklogika hívása:
-        // boolean success = gameLogic.performCutString(insect, tekton);
-        // if (success) updateView();
-    }
 
-    /**
-     * Segédfüggvény a megjelenítés frissítésére (a Controller felelőssége).
-     * Ezt a metódust a játékállapotot megváltoztató műveletek után kellene hívni.
-     */
-    protected void updateView() {
-        System.out.println("(Controller) Megjelenítés frissítésének kérése...");
-        // if (gameView != null) {
-        //     gameView.refresh();
-        // }
+        for(int i = 0; i< map.shroomStrings.size(); i++) {
+            if(map.shroomStrings.get(i).disTek == tekton) {
+                insect.cutString(map.shroomStrings.get(i));
+            }
+        }
+        map.update();
+        gameWindow.reDraw();
     }
 }

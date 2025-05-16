@@ -116,7 +116,7 @@ public class Map implements Serializable {
 
 
 
-    private void update() {
+    public void update() {
         shroomStrings.clear();
         mushrooms.clear();
         insects.clear();
@@ -151,7 +151,7 @@ public class Map implements Serializable {
     /**
      * Map létrehozásáért felelős 5x5-ös tekton, scores fele mushroom, másik insect
      */
-    private void mapInit(){
+    public void mapInit(){
         if(!tektons.isEmpty() || scores.isEmpty()){
             System.out.println("Error! Map innit is not possible (tektons already on map or no players)");
             return;
@@ -255,7 +255,7 @@ public class Map implements Serializable {
         return null;
     }
 
-    private void endGame(){
+    public void endGame(){
         List<Integer> order = new ArrayList<Integer>(scores);
 
         scores.sort(Collections.reverseOrder());
@@ -270,7 +270,7 @@ public class Map implements Serializable {
      * Játék indítása, a score értékeit 0-ra beállítja
      * @param num Ennyi játékos lesz
      */
-    private void startGame(int num){
+    public void startGame(int num){
         for(int i = 0; i<num; i++){
             scores.add(0);
         }

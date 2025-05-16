@@ -11,14 +11,10 @@ import java.awt.image.BufferedImage; // Az ikonhoz
  */
 public class InsectPanel extends BasicPanel {
 
-    /**
-     * Megjeleníti a rovar akciópontjait.
-     */
+    //Rovar akciópontjai
     protected JLabel actionPointsLabel;
 
-    /**
-     * A tulajdonságok listája, amelyek a rovarhoz tartoznak (pl. jobb klikkes menü).
-     */
+    //Rovar tulajdonságai (pl jobb klikkes menü, hover menü...)
     protected JPopupMenu list; // A 'list' név lehet félrevezető, 'contextMenu' jobb lenne
 
     private Insect insectData; // A panelhez tartozó rovar adatai
@@ -129,9 +125,9 @@ public class InsectPanel extends BasicPanel {
     private void showInsectDetails() {
         if (insectData != null) {
             JOptionPane.showMessageDialog(this,
-                    "Rovar neve: " + insectData.getName() + "\n" +
+                    "Rovar id-je: " + insectData.id + "\n" +
                             "Akciópontok: " + insectData.getActionPoints() + "\n" +
-                            "(További tulajdonságok itt...)",
+                            "Játékos id-je:" + insectData.playerID,
                     "Rovar Részletei",
                     JOptionPane.INFORMATION_MESSAGE);
         }

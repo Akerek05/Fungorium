@@ -155,6 +155,8 @@ public class Insect implements TurnControl, Serializable {
         }
     }
 
+    public int getActionPoints() {return actionPoints;}
+
     /**
      * Kiírja a paramétereket
      * @return szöveg
