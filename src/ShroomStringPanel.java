@@ -49,10 +49,10 @@ public class ShroomStringPanel extends BasicPanel {
         // Vonal kirajzolása a megadott pontok között
         // A pontok a panel (0,0) pontjához képest relatívak.
         g2d.draw(new Line2D.Double(
-                stringData.startPointPanelCoords.x,
-                stringData.startPointPanelCoords.y,
-                stringData.endPointPanelCoords.x,
-                stringData.endPointPanelCoords.y
+                //stringData.startPointPanelCoords.x,
+                //stringData.startPointPanelCoords.y,
+                //stringData.endPointPanelCoords.x,
+                //stringData.endPointPanelCoords.y
         ));
 
         // Ha az ősosztály icon attribútumát textúraként használnánk a vonalhoz,

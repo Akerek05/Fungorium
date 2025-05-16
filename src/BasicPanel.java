@@ -30,21 +30,12 @@ public abstract class BasicPanel extends JPanel {
     protected boolean selected;
 
     /**
-     * Alapértelmezett konstruktor.
-     * Inicializálja a panel alapállapotát (pl. nincs kiválasztva).
-     */
-    public BasicPanel() {
-        super(); // JPanel ősosztály konstruktorának hívása
-        this.selected = false; // Alapértelmezetten nincs kiválasztva
-        // Az ikont a leszármazott osztály vagy egy setter állíthatja be
-    }
-
-    /**
      * Konstruktor, amely lehetővé teszi az ikon kezdeti beállítását.
      * @param icon A panelhez tartozó BufferedImage ikon.
      */
     public BasicPanel(BufferedImage icon) {
-        this(); // Meghívja az alapértelmezett konstruktort
+        super(); // JPanel ősosztály konstruktorának hívása
+        this.selected = false; // Alapértelmezetten nincs kiválasztva
         this.icon = icon;
     }
 

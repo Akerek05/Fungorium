@@ -1,3 +1,5 @@
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
@@ -109,11 +111,42 @@ public class Controller {
         map.mapInit();
 
         for(Tekton tekton : map.tektons){
-            TektonPanel newTektonPanel
-            gameWindow.tektonPanels.add(new TektonPanel(tekton, 2));
+            TektonPanel newTektonPanel = new TektonPanel(tekton, 2);
+            gameWindow.tektonPanels.add(newTektonPanel);
             for (Mushroom mushroom : tekton.arrayOfMushroom) {
-                new MushroomPanel(mushroom, );
+                try {
+                    BufferedImage image = ImageIO.read(getClass().getResource("/icons/mushroomtrans.png"));
+                    newTektonPanel.addItemPanel(new MushroomPanel(mushroom, image));
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
 
+            }
+            for (Insect insect : tekton.arrayOfInsect) {
+                try {
+                    BufferedImage image = ImageIO.read(getClass().getResource("/icons/insecttrans.png"));
+                    newTektonPanel.addItemPanel(new InsectPanel(insect, image));
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+            for (Spore spore : tekton.arrayOfSpore) {
+                try {
+                    BufferedImage image = ImageIO.read(getClass().getResource("/icons/sporetrans.png"));
+                    newTektonPanel.addItemPanel(new SporePanel(spore, image));
+                }
+                catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+            for (ShroomString string : tekton.arrayOfString) {
+                try {
+                    BufferedImage image = ImageIO.read(getClass().getResource("/icons/stringtrans.png"));
+                    newTektonPanel.addItemPanel(new ShroomStringPanel(string, image));
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+
+                }
             }
         }
 
