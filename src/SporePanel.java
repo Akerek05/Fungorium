@@ -20,11 +20,7 @@ public class SporePanel extends BasicPanel {
     public SporePanel(Spore sporeData, BufferedImage icon) {
         super(icon); // BasicPanel konstruktorának hívása
         this.sporeData = sporeData;
-        setOpaque(false); // Legyen átlátszó, hogy csak a spóra látszódjon
-        // A tooltipet beállíthatjuk itt, ha a sporeData már rendelkezésre áll
-        if (this.sporeData != null) {
-            setToolTipText("Spóra: " + this.sporeData.getOwnerMushroomType());
-        }
+        setOpaque(false);
     }
 
     /**
@@ -57,9 +53,6 @@ public class SporePanel extends BasicPanel {
             int x = (getWidth() - diameter) / 2;
             int y = (getHeight() - diameter) / 2;
 
-            // Spóra színének beállítása a sporeData alapján
-            g2d.setColor(sporeData.getSporeColor());
-
             // Spóra kirajzolása (pl. egy kis kör)
             g2d.fill(new Ellipse2D.Double(x, y, diameter, diameter));
 
@@ -79,12 +72,6 @@ public class SporePanel extends BasicPanel {
      */
     @Override
     public void draw() {
-        // Ha a sporeData megváltozhatna kívülről, itt lehetne frissíteni.
-        // Például: this.sporeData = getUpdatedSporeDataFromModel();
-        // És a tooltip frissítése is itt történhet:
-        if (this.sporeData != null) {
-            setToolTipText("Spóra: " + this.sporeData.getOwnerMushroomType());
-        }
         repaint(); // Újrarajzolás kérése, ami a paintComponent() hívását eredményezi
     }
 

@@ -10,7 +10,8 @@ import java.awt.image.BufferedImage; // Az ikonhoz
  * Ősosztálya: BasicPanel.
  */
 public class InsectPanel extends BasicPanel {
-
+    private int x;
+    private int y;
     //Rovar akciópontjai
     protected JLabel actionPointsLabel;
 
@@ -108,6 +109,33 @@ public class InsectPanel extends BasicPanel {
         // Szükség esetén explicit repaint, ha az ikon vagy a kijelölés is változott
         // és azt nem a setterek (setIcon, setSelected) váltották ki.
         repaint();
+    }
+
+    /**
+     * Felüldefiniált metódus a JPanel-ből a komponens tényleges kirajzolásához.
+     * Ez a metódus felelős az ikon és a kijelölés vizuális megjelenítéséért.
+     * A leszármazott osztályok kiegészíthetik ezt további egyedi rajzolással.
+     * @param g A Graphics kontextus, amire rajzolni kell.
+     */
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g); // Fontos az ősosztály paintComponent metódusának hívása
+
+        // Ikon kirajzolása, ha van
+        if (icon != null) {
+            // Egyszerű kirajzolás a bal felső sarokba.
+            // A pozícionálás és méretezés finomítható (pl. középre, skálázva stb.)
+            g.drawImage(icon, 0, 0, this);
+        }
+
+
+        // Kijelölés jelzése (pl. egy kerettel)
+        if (selected) {
+            g.setColor(Color.BLUE); // Válasszunk egy jól látható színt a kijelöléshez
+            // Rajzoljunk egy keretet a panel széleire
+            // A vonalvastagság vagy stílus tovább finomítható
+            g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+        }
     }
 
     /**

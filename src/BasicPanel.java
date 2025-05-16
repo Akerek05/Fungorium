@@ -10,7 +10,14 @@ import javax.swing.JPanel;
  * ki van-e jelölve.
  */
 public abstract class BasicPanel extends JPanel {
-
+    /**
+     * A x koordnitaja a kepernyon
+     */
+    private int x;
+    /**
+     * Az y koordinataja a kepernyon
+     */
+    private int y;
     /**
      * Az adott panelhez tartozó ikon/kép.
      */
@@ -53,6 +60,10 @@ public abstract class BasicPanel extends JPanel {
      */
     public abstract void draw();
 
+
+    public void draw(TektonPanel tektonPanel) {
+
+    }
     /**
      * Felüldefiniált metódus a JPanel-ből a komponens tényleges kirajzolásához.
      * Ez a metódus felelős az ikon és a kijelölés vizuális megjelenítéséért.
@@ -69,6 +80,7 @@ public abstract class BasicPanel extends JPanel {
             // A pozícionálás és méretezés finomítható (pl. középre, skálázva stb.)
             g.drawImage(icon, 0, 0, this);
         }
+
 
         // Kijelölés jelzése (pl. egy kerettel)
         if (selected) {

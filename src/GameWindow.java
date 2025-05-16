@@ -2,17 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-// Feltételezett importok a nem definiált osztályokhoz:
-// import com.example.game.Controller;
-// import com.example.game.model.Mushroom; // Ha a CommandPaneleknek kell
-// import com.example.game.model.Insect;  // Ha a CommandPaneleknek kell
-// import com.example.ui.MapPanel;
-// import com.example.ui.StatusBarPanel;
-// import com.example.ui.MenuWindow;
-// import com.example.ui.MushroomCommandPanel;
-// import com.example.ui.InsectCommandPanel;
-// import com.example.ui.BasicCommandPanel; // Ha a Mushroom/Insect panelek ebből származnak
+import java.util.ArrayList;
 
 /**
  * A fő játékképernyőt jeleníti meg ez az osztály.
@@ -24,17 +14,51 @@ public class GameWindow extends JFrame {
     private int currentPlayerId;
     private Controller controller;
 
+    private JPanel gamePanel;
     private StatusPanel statusBarPanel;
     private MushroomCommandPanel mushroomCommandPanel;
     private InsectCommandPanel insectCommandPanel;
-    private TektonPanel tektonPanel;
+    protected ArrayList<TektonPanel> tektonPanels;
 
     /**
      * GameWindow konstruktor.
      * @param controller A játék vezérlő objektuma.
      */
     public GameWindow(Controller controller) {
+        this.controller = controller;
+        setTitle("Game Window");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(800, 600);
+        setLocationRelativeTo(null); // Képernyő közepére
 
+        // Komponensek inicializálása
+        statusBarPanel = new StatusPanel(controller);
+        mushroomCommandPanel = new MushroomCommandPanel(controller);
+        insectCommandPanel = new InsectCommandPanel(controller);
+        tektonPanels = new ArrayList<>();
+
+        // Fő panel BorderLayout-tal
+        JPanel mainPanel = new JPanel(new BorderLayout());
+
+        // Felső státuszbár
+        mainPanel.add(statusBarPanel, BorderLayout.NORTH);
+
+        // Játékterület (pl. térkép vagy game logic)
+        gamePanel = new JPanel();
+        gamePanel.setBackground(Color.LIGHT_GRAY); // teszteléshez
+        mainPanel.add(gamePanel, BorderLayout.CENTER);
+
+        // Alsó command panelek CardLayout-tal
+        JPanel commandPanelContainer = new JPanel(new CardLayout());
+        commandPanelContainer.add(mushroomCommandPanel, "MUSHROOM");
+        commandPanelContainer.add(insectCommandPanel, "INSECT");
+        mainPanel.add(commandPanelContainer, BorderLayout.SOUTH);
+
+        this.setContentPane(mainPanel);
+        this.setVisible(true);
+
+        // Alapértelmezésben mutatjuk a gombapanelt
+        showMushroomCMD();
     }
 
     /**
@@ -42,7 +66,12 @@ public class GameWindow extends JFrame {
      * Akkor hívódik, ha változás történt az állapotban.
      */
     public void reDraw() {
-
+        for(TektonPanel tektonPanel : tektonPanels) {
+            tektonPanel.draw();
+        }
+        statusBarPanel.draw();
+        mushroomCommandPanel.draw();
+        insectCommandPanel.draw();
     }
 
     /**
@@ -50,25 +79,32 @@ public class GameWindow extends JFrame {
      * Végrehajtja a grafikus komponensek leállítását.
      */
     public void endGame() {
-
+        //TODO: kiírja a pontokat sorba
+        goToMenu();
     }
 
     public void goToMenu() {
-
+        controller.showMenu();
     }
 
-    /**
-     * Kirajzolja a Gombákhoz tartozó CommandPanelt.
-     */
+    private void showCard(String name) {
+        Container parent = mushroomCommandPanel.getParent();
+        if (parent instanceof JPanel) {
+            CardLayout layout = (CardLayout) ((JPanel) parent).getLayout();
+            layout.show((JPanel) parent, name);
+        }
+    }
+
     public void showMushroomCMD() {
-
+        showCard("MUSHROOM");
     }
 
-    /**
-     * Kirajzolja a Rovarokhoz tartozó CommandPanelt.
-     */
     public void showInsectCMD() {
+        showCard("INSECT");
+    }
 
+    public ArrayList<TektonPanel> getTektonPanels(){
+        return tektonPanels;
     }
 
     public int getCurrentPlayerId() {
@@ -78,4 +114,5 @@ public class GameWindow extends JFrame {
     public void setCurrentPlayerId(int currentPlayerId) {
         this.currentPlayerId = currentPlayerId;
     }
+    public void selectTektonPanel(TektonPanel tektonPanel) {}
 }

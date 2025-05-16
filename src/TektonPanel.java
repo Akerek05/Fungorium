@@ -11,7 +11,7 @@ import java.util.List;
  * Ősosztálya: BasicPanel.
  */
 public class TektonPanel extends BasicPanel {
-
+    private ArrayList<BasicPanel> containedItemPanels;
     /**
      * A szín határozza meg, hogy a tekton típusa milyen.
      * Ezt a logikai Tekton objektumból fogjuk lekérni.
@@ -23,8 +23,8 @@ public class TektonPanel extends BasicPanel {
      * Ezeket a JPanel getX() és getY() metódusai biztosítják.
      * Ha logikai rácskoordinátákról van szó, azokat a 'tektonData'-ban kell tárolni.
      */
-    // protected int x; // A JPanel.getX() helyettesíti
-    // protected int y; // A JPanel.getY() helyettesíti
+    //protected int x; // A JPanel.getX() helyettesíti
+    //protected int y; // A JPanel.getY() helyettesíti
 
     /**
      * A tekton szélessége és magassága.
@@ -37,14 +37,10 @@ public class TektonPanel extends BasicPanel {
      * Azt jelzi, hogy ki van-e választva.
      * Ezt a BasicPanel `selected` attribútuma és metódusai kezelik.
      */
-    // protected boolean isSelected; // A BasicPanel.selected helyettesíti
+    protected boolean isSelected; // A BasicPanel.selected helyettesíti
 
     private Tekton tektonData; // A panelhez tartozó logikai Tekton objektum
 
-    // Lista a Tektonon lévő elemek paneljeinek (pl. SporePanel, MushroomPanel, InsectPanel)
-    // Ezeket a TektonPanel fölé kellene rajzolni, vagy a TektonPanel rajzolná őket
-    // a saját paintComponent-jében. Most csak egy placeholder.
-    private List<Component> containedItemPanels;
 
 
     /**
@@ -60,7 +56,18 @@ public class TektonPanel extends BasicPanel {
         // Méret beállítása
         setPreferredSize(new Dimension(this.size, this.size));
         // A szín beállítása a TektonType alapján
-        this.color = (this.tektonData != null) ? this.tektonData.getDisplayColor() : Color.LIGHT_GRAY;
+        if (this.tektonData != null) {
+            if (tektonData instanceof UnlivableTekton)
+                this.color = new Color(0,0,155);
+            else if (tektonData instanceof AllStringsLiveTekton)
+                this.color = new Color(0,255,0);
+            else if (tektonData instanceof MultipleStringTekton)
+                this.color = new Color(255,255,0);
+            else if (tektonData instanceof StringCutterTekton)
+                this.color = new Color(155,0,0);
+            else
+                this.color = new Color(255,255,255);
+        }
 
         // Alapértelmezetten átlátszó, hogy a szín érvényesüljön
         // De ha a BasicPanel már setOpaque(false)-ra van állítva, és itt színt rajzolunk, akkor
@@ -114,8 +121,19 @@ public class TektonPanel extends BasicPanel {
     public void draw() {
         // Szín frissítése, ha a tektonData típusa megváltozhatna
         if (this.tektonData != null) {
-            this.color = this.tektonData.getDisplayColor();
-            setToolTipText(this.tektonData.toString()); // Tooltip frissítése is
+            if (tektonData instanceof UnlivableTekton)
+                this.color = new Color(0,0,155);
+            else if (tektonData instanceof AllStringsLiveTekton)
+                this.color = new Color(0,255,0);
+            else if (tektonData instanceof MultipleStringTekton)
+                this.color = new Color(255,255,0);
+            else if (tektonData instanceof StringCutterTekton)
+                this.color = new Color(155,0,0);
+            else
+                this.color = new Color(255,255,255);
+        }
+        for (BasicPanel panel : panels) {
+            panel.draw(this);
         }
         repaint(); // Újrarajzolás kérése
     }
@@ -142,19 +160,6 @@ public class TektonPanel extends BasicPanel {
             g2d.drawRect(1, 1, getWidth() - 3, getHeight() - 3); // Kicsit beljebb
         }
 
-        // Itt lehetne a "rajta található elemek rétegeinek" rajzolása.
-        // Ha ezek külön JPanel-ek (pl. SporePanel, MushroomPanel), akkor azokat
-        // a TektonPanel-hez kellene hozzáadni (pl. OverlayLayout-tal, vagy JLayeredPane-nel
-        // a GameWindow szintjén).
-        // Ha itt, a paintComponent-ben rajzolnánk őket:
-        // for (Component itemPanel : containedItemPanels) {
-        //     // Pozícionálni és kirajzolni az itemPanel-t a g2d kontextusra
-        //     // Ez bonyolultabb, ha azok is JPanel-ek.
-        //     // Egyszerűbb, ha az itemPanel-ek a TektonPanel-en vannak elhelyezve egy LayoutManagerrel.
-        // }
-        // Most feltételezzük, hogy a "rétegek" kezelése a GameWindow vagy egy magasabb szintű
-        // konténer feladata, ami ezeket a TektonPanel fölé helyezi.
-
         g2d.dispose();
     }
 
@@ -163,7 +168,7 @@ public class TektonPanel extends BasicPanel {
      * Ez egy egyszerűsített megközelítés, OverlayLayout vagy JLayeredPane lenne jobb.
      * @param component A hozzáadandó komponens.
      */
-    public void addItemPanel(Component component) {
+    public void addItemPanel(BasicPanel component) {
         if (component != null) {
             // Ahhoz, hogy az itemPanel-ek a TektonPanel-en belül látszódjanak,
             // és a TektonPanel háttérszíne ne takarja el őket, ha az itemPanel is setOpaque(false),
@@ -179,7 +184,7 @@ public class TektonPanel extends BasicPanel {
         }
     }
 
-    public void removeItemPanel(Component component) {
+    public void removeItemPanel(BasicPanel component) {
         if (component != null) {
             remove(component);
             containedItemPanels.remove(component);

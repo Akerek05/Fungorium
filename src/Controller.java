@@ -72,6 +72,10 @@ public class Controller {
     public Controller(Map map) {
         this.player_ids = new ArrayList<>();
         this.map = map;
+
+        this.gameWindow = new GameWindow(this);
+        this.menuWindow = new MenuWindow(this);
+
         showMenu();
     }
 
@@ -103,6 +107,16 @@ public class Controller {
         menuWindow.dispose();
         map.startGame(playerCount);
         map.mapInit();
+
+        for(Tekton tekton : map.tektons){
+            TektonPanel newTektonPanel
+            gameWindow.tektonPanels.add(new TektonPanel(tekton, 2));
+            for (Mushroom mushroom : tekton.arrayOfMushroom) {
+                new MushroomPanel(mushroom, );
+
+            }
+        }
+
         map.update();
 
         gameWindow = new GameWindow(this);
@@ -325,5 +339,11 @@ public class Controller {
         }
         map.update();
         gameWindow.reDraw();
+    }
+    public int getCurrentPlayerIndex() {
+        return currentPlayerIndex;
+    }
+    public int getCurrentPlayerScore() {
+        return map.scores.get(currentPlayerIndex);
     }
 }

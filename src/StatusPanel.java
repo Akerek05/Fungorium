@@ -50,7 +50,7 @@ public class StatusPanel extends JPanel {
         attachActionListeners();
 
         // Kezdeti értékek beállítása (opcionális, a controllerből is jöhet)
-        updatePlayerId(controller != null ? controller.getCurrentPlayerId() : 0);
+        updatePlayerId(controller != null ? controller.getCurrentPlayerIndex() : 0);
         updateScore(controller != null ? controller.getCurrentPlayerScore() : 0);
     }
 
@@ -131,7 +131,7 @@ public class StatusPanel extends JPanel {
                     // vagy egy fix nevet használunk.
                     // Egy komplexebb megoldás JFileChooser-t használna.
                     String defaultSaveName = "jatekmentes_" + System.currentTimeMillis() + ".sav";
-                    controller.saveGame(defaultSaveName);
+                    controller.save(defaultSaveName);
                 }
             }
         });
@@ -141,7 +141,7 @@ public class StatusPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("StatusPanel: Kilépés gomb megnyomva.");
                 if (controller != null) {
-                    controller.exitGame();
+                    controller.endGame();
                 } else {
                     // Ha nincs controller, alapértelmezett kilépés
                     System.exit(0);
@@ -166,29 +166,8 @@ public class StatusPanel extends JPanel {
     public JButton getSaveButton() { return saveButton; }
 
 
-    // Egyszerű main metódus a StatusPanel önálló teszteléséhez
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame testFrame = new JFrame("StatusPanel Teszt");
-            testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Kilépéskor bezárul
-
-            Controller dummyController = new Controller() {
-                @Override public int getCurrentPlayerId() { return 7; }
-                @Override public int getCurrentPlayerScore() { return 12345; }
-            };
-            StatusPanel statusPanel = new StatusPanel(dummyController);
-
-            testFrame.add(statusPanel, BorderLayout.SOUTH); // Tipikusan alul helyezkedik el
-            testFrame.setSize(600, 150); // Ablakméret a teszthez
-            testFrame.setLocationRelativeTo(null); // Középre
-            testFrame.setVisible(true);
-
-            // Szimuláljuk az adatok frissítését
-            new Timer(3000, e -> {
-                statusPanel.updatePlayerId(8);
-                statusPanel.updateScore(20000);
-                ((Timer)e.getSource()).stop();
-            }).start();
-        });
+    public void draw() {
+        updatePlayerId(controller.getCurrentPlayerIndex());
+        updateScore(controller.getCurrentPlayerScore());
     }
 }

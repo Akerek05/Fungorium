@@ -103,6 +103,9 @@ public class MenuWindow extends JFrame {
      */
     private void layoutComponents() {
         JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+
+        /*JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Margó
         mainPanel.setBackground(new Color(240, 240, 240)); // Világos háttér
@@ -125,7 +128,7 @@ public class MenuWindow extends JFrame {
         playerCountPanel.add(new JLabel("Válassz játékosszámot:"));
         playerCountPanel.add(playerCountSpinner);
         gbc.insets = new Insets(5, 5, 10, 5);
-        mainPanel.add(playerCountPanel, gbc);
+        mainPanel.add(playerCountPanel, gbc);*/
 
         // Játékosok számát jelző label (frissül a spinnerrel)
         // Ezt a labelt most nem muszáj külön megjeleníteni, ha a spinner elég informatív.
@@ -134,7 +137,7 @@ public class MenuWindow extends JFrame {
         // mainPanel.add(playerCountLabel, gbc);
 
         // Gombok
-        gbc.fill = GridBagConstraints.NONE; // Gombok ne nyúljanak szét
+        /*gbc.fill = GridBagConstraints.NONE; // Gombok ne nyúljanak szét
         gbc.anchor = GridBagConstraints.CENTER;
         startButton.setPreferredSize(new Dimension(200, 40));
         mainPanel.add(startButton, gbc);
@@ -151,7 +154,7 @@ public class MenuWindow extends JFrame {
         mainPanel.add(exitButton, gbc);
 
 
-        add(mainPanel);
+        add(mainPanel);*/
     }
 
     /**

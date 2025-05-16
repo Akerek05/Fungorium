@@ -35,7 +35,7 @@ public class ShroomStringPanel extends BasicPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // Meghívja a BasicPanel paintComponent-jét (pl. kijelöléshez)
 
-        if (stringData == null || stringData.startPointPanelCoords == null || stringData.endPointPanelCoords == null) {
+        if (stringData == null || stringData.startTek == null || stringData.disTek == null) {
             return; // Nincs mit rajzolni
         }
 
@@ -43,8 +43,8 @@ public class ShroomStringPanel extends BasicPanel {
 
         // Rajzolási attribútumok beállítása
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); // Szebb vonalak
-        g2d.setColor(stringData.color != null ? stringData.color : Color.RED); // Alapértelmezett szín piros
-        g2d.setStroke(new BasicStroke(stringData.thickness > 0 ? stringData.thickness : 2f)); // Vonalvastagság
+        g2d.setColor(Color.RED); // Alapértelmezett szín piros
+        g2d.setStroke(new BasicStroke(2f)); // Vonalvastagság
 
         // Vonal kirajzolása a megadott pontok között
         // A pontok a panel (0,0) pontjához képest relatívak.
