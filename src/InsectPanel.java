@@ -2,60 +2,29 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage; // Az ikonhoz
+import java.awt.image.BufferedImage;
 
 /**
  * A pályán lévő rovarok megjelenítésére szolgáló panel.
- * Felelős a rovarok akciópontjainak megjelenítéséért.
  * Ősosztálya: BasicPanel.
  */
 public class InsectPanel extends BasicPanel {
-    private int x;
-    private int y;
-    //Rovar akciópontjai
-    protected JLabel actionPointsLabel;
 
-    //Rovar tulajdonságai (pl jobb klikkes menü, hover menü...)
-    protected JPopupMenu list; // A 'list' név lehet félrevezető, 'contextMenu' jobb lenne
+    protected JPopupMenu list;
+    private Insect insectData;
 
-    private Insect insectData; // A panelhez tartozó rovar adatai
-
-    /**
-     * Konstruktor az InsectPanel számára.
-     * @param insect Az Insect objektum, amit ez a panel megjelenít.
-     * @param icon A rovarhoz tartozó kép/ikon (opcionális, a BasicPanel kezeli).
-     */
     public InsectPanel(Insect insect, BufferedImage icon) {
-        super(icon); // BasicPanel konstruktorának hívása az ikonnal
+        super(icon);
         this.insectData = insect;
 
-        // Panel alapbeállításai
-        setLayout(new BorderLayout()); // Hogy a JLabel-t el tudjuk helyezni
-        setOpaque(false); // Legyen átlátszó, ha a BasicPanel háttérszínét nem akarjuk felülírni,
-        // vagy ha az ikon tartalmaz átlátszóságot.
-        // Ha az ikon téglalap alakú és kitölti a panelt, akkor ez nem lényeges.
+        setOpaque(false);
+        setLayout(null); // nem kell semmilyen layout, mert kézzel rajzolunk
 
-        // Akciópontokat megjelenítő JLabel inicializálása
-        actionPointsLabel = new JLabel();
-        actionPointsLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        actionPointsLabel.setFont(new Font("Arial", Font.BOLD, 10));
-        actionPointsLabel.setForeground(Color.WHITE); // Fehér szöveg (jól mutat sötét ikonon)
-        // Egy kis háttér a labelnek a jobb olvashatóságért, ha az ikon színes
-        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
-        labelPanel.setOpaque(false); // A label panel legyen átlátszó
-        labelPanel.add(actionPointsLabel);
-        // Elhelyezzük a labelt a panel aljára
-        add(labelPanel, BorderLayout.SOUTH);
-
-
-        // JPopupMenu (kontextus menü) inicializálása
         list = new JPopupMenu();
-        // Menüelemek hozzáadása (példa)
         JMenuItem detailsItem = new JMenuItem("Részletek...");
         detailsItem.addActionListener(e -> showInsectDetails());
         list.add(detailsItem);
 
-        // Egér eseménykezelő a kontextus menü megjelenítéséhez (jobb klikk)
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -68,113 +37,57 @@ public class InsectPanel extends BasicPanel {
             }
 
             private void maybeShowPopup(MouseEvent e) {
-                if (e.isPopupTrigger()) { // Jobb klikk ellenőrzése
+                if (e.isPopupTrigger()) {
                     list.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
 
-        // Kezdeti kirajzolás/adatfrissítés
         draw();
     }
 
-    /**
-     * Konstruktor az InsectPanel számára ikon nélkül.
-     * @param insect Az Insect objektum, amit ez a panel megjelenít.
-     */
     public InsectPanel(Insect insect) {
-        this(insect, null); // Meghívja a másik konstruktort null ikonnal
+        this(insect, null);
     }
 
-
-    /**
-     * Kirajzolja a rovart a pályán (az ikon által az ősosztályban),
-     * és frissíti a kijelzett akciópontokat.
-     */
     @Override
     public void draw() {
-        // Az ősosztály paintComponent metódusa felelős az ikon kirajzolásáért.
-        // A draw() itt inkább az állapotfrissítésről szól (pl. JLabel tartalma).
-
-        if (insectData != null) {
-            actionPointsLabel.setText("AP: " + insectData.getActionPoints());
-            // A BasicPanel repaint() metódusát kellene hívni, ha vizuális változás van
-            // (pl. ikon csere, kijelölés), de a JLabel frissítése automatikusan újrarajzolja magát.
-        } else {
-            actionPointsLabel.setText("N/A");
-        }
-        // Ha a BasicPanel `draw` metódusa is csinál valamit, itt hívhatjuk:
-        // super.draw();
-
-        // Szükség esetén explicit repaint, ha az ikon vagy a kijelölés is változott
-        // és azt nem a setterek (setIcon, setSelected) váltották ki.
         repaint();
     }
 
-    /**
-     * Felüldefiniált metódus a JPanel-ből a komponens tényleges kirajzolásához.
-     * Ez a metódus felelős az ikon és a kijelölés vizuális megjelenítéséért.
-     * A leszármazott osztályok kiegészíthetik ezt további egyedi rajzolással.
-     * @param g A Graphics kontextus, amire rajzolni kell.
-     */
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g); // Fontos az ősosztály paintComponent metódusának hívása
+        super.paintComponent(g);
 
-        // Ikon kirajzolása, ha van
         if (icon != null) {
-            // Egyszerű kirajzolás a bal felső sarokba.
-            // A pozícionálás és méretezés finomítható (pl. középre, skálázva stb.)
-            g.drawImage(icon, 0, 0, this);
+            int iconSize = Math.min(getWidth(), getHeight()) / 2; // pl. 40x40, ha panel 80x80
+            int x = getWidth() - iconSize - 2; // jobb felső sarok, 2px margó
+            int y = 2;
+            g.drawImage(icon, x, y, iconSize, iconSize, this);
         }
 
-
-        // Kijelölés jelzése (pl. egy kerettel)
         if (selected) {
-            g.setColor(Color.BLUE); // Válasszunk egy jól látható színt a kijelöléshez
-            // Rajzoljunk egy keretet a panel széleire
-            // A vonalvastagság vagy stílus tovább finomítható
+            g.setColor(Color.BLUE);
             g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
         }
     }
 
-    /**
-     * Frissíti a panelen megjelenített rovar adatait.
-     * @param insect Az új Insect objektum.
-     */
-    public void updateInsectData(Insect insect) {
-        this.insectData = insect;
-        draw(); // Újrarajzolás az új adatokkal (főleg az AP label frissítése)
-    }
-
-    /**
-     * Példa metódus a rovar részleteinek megjelenítésére (a kontextus menüből hívva).
-     */
     private void showInsectDetails() {
         if (insectData != null) {
             JOptionPane.showMessageDialog(this,
                     "Rovar id-je: " + insectData.id + "\n" +
                             "Akciópontok: " + insectData.getActionPoints() + "\n" +
-                            "Játékos id-je:" + insectData.playerID,
+                            "Játékos id-je: " + insectData.playerID,
                     "Rovar Részletei",
                     JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
-    // Getter a JLabelhez, ha külső osztálynak szüksége van rá
-    public JLabel getActionPointsLabel() {
-        return actionPointsLabel;
-    }
-
-    // Getter a JPopupMenu-hez
-    public JPopupMenu getContextMenu() { // Átneveztem 'list'-ről 'contextMenu'-re
+    public JPopupMenu getContextMenu() {
         return list;
     }
 
-    // Getter a rovar adataihoz
     public Insect getInsectData() {
         return insectData;
     }
-
-
 }

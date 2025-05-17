@@ -166,8 +166,18 @@ public class StatusPanel extends JPanel {
     public JButton getSaveButton() { return saveButton; }
 
 
+   //public void draw() {
+   //    updatePlayerId(controller.getCurrentPlayerIndex());
+   //    updateScore(controller.getCurrentPlayerScore());
+
+   //    repaint();
+   //}
+
     public void draw() {
-        updatePlayerId(controller.getCurrentPlayerIndex());
-        updateScore(controller.getCurrentPlayerScore());
+        int currentPlayerId = controller.getCurrentPlayerIndex();
+        int currentScore = controller.getCurrentPlayerScore(); // vagy más megfelelő getter
+        playerIdLabel.setText("Játékos: " + currentPlayerId);
+        playerScoreLabel.setText("Pontszám: " + currentScore);
     }
+
 }

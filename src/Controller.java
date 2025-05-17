@@ -1,4 +1,5 @@
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class Controller {
     /**
      * A körök maximális száma.
      */
+    boolean gamestarted=false;
     protected int MAX_TURNS = 100;
 
     protected int currentTurn = 0;
@@ -97,6 +99,9 @@ public class Controller {
      * @param playerCount A játékosok száma.
      */
     public void startGame(int playerCount) {
+        if (this.gameWindow != null) {
+            this.gameWindow.dispose();
+        }
         if (playerCount <= 0) {
             System.err.println("Hiba: A játékosok száma pozitív egész kell legyen.");
             return;
@@ -118,7 +123,7 @@ public class Controller {
         menuWindow.dispose();
 
 
-        for(Tekton tekton : map.tektons){
+        /*for(Tekton tekton : map.tektons){
             TektonPanel newTektonPanel = new TektonPanel(tekton, 2);
             gameWindow.tektonPanels.add(newTektonPanel);
             for (Mushroom mushroom : tekton.arrayOfMushroom) {
@@ -156,11 +161,11 @@ public class Controller {
 
                 }
             }
-        }
+        }*/
 
         map.update();
+        gamestarted = true;
 
-        gameWindow = new GameWindow(this);
     }
 
     /**
@@ -175,6 +180,12 @@ public class Controller {
     /**
      * Egy teljes kör lefutása. Ebben van a Playerek sorrendje.
      */
+    private boolean turnEnded = false;
+
+    public void setTurnEnded(boolean turnEnded) {
+        this.turnEnded = turnEnded;
+    }
+
     public void oneRound() {
         currentTurn++;
         if (player_ids.isEmpty()) {
@@ -182,37 +193,59 @@ public class Controller {
             return;
         }
         System.out.println("--- Új kör kezdődik ---");
-        for (int i = 0; i <= player_ids.size()/2; i++) {
-            int currentPlayerId = i; // Meghatározza és lépteti a soron következő játékost
-            gameWindow.setCurrentPlayerId(currentPlayerId);
-            System.out.println("Játékos " + currentPlayerId + " következik.");
 
-            for(int j = 0; j < map.mushrooms.size(); j++) {
-                if (map.mushrooms.get(j).id == currentPlayerId) {
+        for (int i = 0; i < player_ids.size() / 2; i++) {
+            currentPlayerIndex = i;
+            gameWindow.setCurrentPlayerId(currentPlayerIndex);
+
+            System.out.println("Játékos " + currentPlayerIndex + " következik.");
+            turnEnded = false; // Alaphelyzetbe állítjuk a flag-et
+            for (int j = 0; j < player_ids.size()/2; j++){
+                if(map.mushrooms.get(j).playerID == currentPlayerIndex){
                     PlayerMushroom = map.mushrooms.get(j);
-                    gameWindow.showMushroomCMD();
+                }
+            }
+            gameWindow.showMushroomCMD(); // Gomba parancsok megjelenítése
+            gameWindow.reDraw();
+            while (!turnEnded) {
+                // Várunk a gombra... (GUI események kezelése)
+                try {
+                    Thread.sleep(100); // Kicsit várunk, hogy ne pörögjön feleslegesen
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
 
-        for (int i = player_ids.size()/2 + 1; i < player_ids.size(); i++) {
-            int currentPlayerId = i; // Meghatározza és lépteti a soron következő játékost
-            gameWindow.setCurrentPlayerId(currentPlayerId);
-            System.out.println("Játékos " + currentPlayerId + " következik.");
+        for (int i = player_ids.size() / 2; i < player_ids.size(); i++) {
+            currentPlayerIndex = i;
 
-            for(int j = 0; j < map.insects.size(); j++) {
-                if (map.insects.get(j).id == currentPlayerId) {
+            gameWindow.setCurrentPlayerId(currentPlayerIndex);
+
+            System.out.println("Játékos " + currentPlayerIndex + " következik.");
+            turnEnded = false;
+            for (int j = 0; j < player_ids.size()/2; j++){
+                if(map.insects.get(j).playerID == currentPlayerIndex){
                     PlayerInsect = map.insects.get(j);
-                    gameWindow.showInsectCMD();
                 }
             }
+            gameWindow.showInsectCMD(); // Rovar parancsok megjelenítése
+            gameWindow.reDraw();
+            while (!turnEnded) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            turnEnded = false;
         }
 
-        // Kör végi események
+        // Kör végi események (maradnak)
         System.out.println("--- Kör vége ---");
-
         breakTektonCounter++;
-        if (breakTektonCounter >= TEKTON_BREAK_NUM) { // Tekton törése random tektonra
+        map.command("TIMEELAPSED 2");
+        if (breakTektonCounter >= TEKTON_BREAK_NUM) {
             System.out.println("TEKTON TÖRÉS");
             Random rand = new Random();
             int randomIndex = rand.nextInt(map.tektons.size());
@@ -220,11 +253,11 @@ public class Controller {
             breakTekton(t);
             map.update();
             gameWindow.reDraw();
-            breakTektonCounter = 0; // Számláló nullázása
+            breakTektonCounter = 0;
         }
 
         if (currentTurn >= MAX_TURNS) {
-           endGame();
+            endGame();
         }
     }
 
@@ -265,7 +298,7 @@ public class Controller {
         System.out.println("Játék vége!");
         map.endGame();
         gameWindow.endGame();
-        showMenu();
+
     }
 
     /**
@@ -348,7 +381,55 @@ public class Controller {
      */
     public void move(Insect insect, Tekton targetTekton) {
         System.out.println("Akció: Rovar mozgatása - Rovar: " + insect + ", Cél: " + targetTekton);
+
+        // 🔍 1. Megkeressük a régi TektonPanelt
+        Tekton oldTekton = insect.tekton;
+        TektonPanel oldPanel = null;
+        TektonPanel newPanel = null;
+
+        for (TektonPanel tp : gameWindow.tektonPanels) {
+            if (tp.getTektonData() == oldTekton) oldPanel = tp;
+            if (tp.getTektonData() == targetTekton) newPanel = tp;
+        }
+
+        if (oldPanel == null || newPanel == null) {
+            System.out.println("Hiba: nem található a TektonPanel.");
+            return;
+        }
+
+        // 🔄 2. InsectPanel eltávolítása a régi TektonPanelről
+        InsectPanel toRemove = null;
+        for (Component c : oldPanel.getComponents()) {
+            if (c instanceof InsectPanel) {
+                InsectPanel ip = (InsectPanel) c;
+                if (ip.getInsectData() == insect) {
+                    toRemove = ip;
+                    break;
+                }
+            }
+        }
+        if (toRemove != null) {
+            oldPanel.removeItemPanel(toRemove);
+        }
+
+        // 🧠 3. Logikai lépés: áthelyezzük a rovart
         insect.moveToTekton(targetTekton);
+
+        // 🎨 4. Új InsectPanel létrehozása
+        try {
+            BufferedImage image = ImageIO.read(getClass().getResource("/icons/insecttrans.png"));
+            InsectPanel newPanelInstance = new InsectPanel(insect, image);
+            newPanel.addItemPanel(newPanelInstance);
+        } catch (Exception e) {
+            System.out.println("Nem sikerült a rovar képét betölteni: " + e.getMessage());
+        }
+
+        // 🧼 5. Újrarajzolás
+        newPanel.revalidate();
+        newPanel.repaint();
+        oldPanel.revalidate();
+        oldPanel.repaint();
+
         map.update();
         gameWindow.reDraw();
     }
@@ -398,7 +479,7 @@ public class Controller {
     public void resetSelectedTektons(){
         for (TektonPanel tektonPanel: gameWindow.tektonPanels){
             if(tektonPanel.isSelected){
-                tektonPanel.setSelected(false);
+                tektonPanel.isSelected = false;
             }
         }
         selectedTektons.clear();

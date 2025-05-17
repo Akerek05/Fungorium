@@ -47,6 +47,7 @@ public class InsectCommandPanel extends BasicCommandPanel {
      */
     @Override
     public void draw() {
+        this.removeAll();
         // Először az ősosztály gombjait rajzoljuk ki (pl. endTurnButton)
         super.draw();
 
@@ -79,12 +80,15 @@ public class InsectCommandPanel extends BasicCommandPanel {
                 System.out.println("InsectCommandPanel: Mozgás gomb megnyomva.");
                 controller.checkSelected();
                 if (controller.selectedTektons.size() == 1) {
-                    Tekton target = controller.selectedTektons.get(0); // Placeholder, ezt a GUI más része állítaná
+                    Tekton target = controller.selectedTektons.get(0);
                     controller.move(controller.PlayerInsect, target);
+                } else {
+                    System.out.println("Hibás mezőválasztás! Válassz ki pontosan egy célmezőt.");
                 }
-                controller.checkSelected();
+                controller.resetSelectedTektons(); // FONTOS: kijelölések törlése
             }
         });
+
 
         eatButton.addActionListener(new ActionListener() {
             @Override
@@ -100,7 +104,7 @@ public class InsectCommandPanel extends BasicCommandPanel {
                 System.out.println("InsectCommandPanel: Fonálvágás gomb megnyomva.");
                 controller.checkSelected();
                 if (controller.selectedTektons.size() == 1) {
-                    Tekton target = controller.selectedTektons.getFirst(); // Placeholder
+                    Tekton target = controller.selectedTektons.get(0); // Placeholder
                     controller.cut(controller.PlayerInsect, target);
 
                 }

@@ -63,21 +63,21 @@ public abstract class BasicPanel extends JPanel {
      */
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g); // Fontos az ősosztály paintComponent metódusának hívása
+        super.paintComponent(g);
 
-        // Ikon kirajzolása, ha van
         if (icon != null) {
-            // Egyszerű kirajzolás a bal felső sarokba.
-            // A pozícionálás és méretezés finomítható (pl. középre, skálázva stb.)
-            g.drawImage(icon, 0, 0, this);
+            int panelWidth = getWidth();
+            int panelHeight = getHeight();
+
+            int targetSize = Math.min(panelWidth, panelHeight) - 4; // kis margó
+            int x = (panelWidth - targetSize) / 2;
+            int y = (panelHeight - targetSize) / 2;
+
+            g.drawImage(icon, x, y, targetSize, targetSize, this);
         }
 
-
-        // Kijelölés jelzése (pl. egy kerettel)
         if (selected) {
-            g.setColor(Color.BLUE); // Válasszunk egy jól látható színt a kijelöléshez
-            // Rajzoljunk egy keretet a panel széleire
-            // A vonalvastagság vagy stílus tovább finomítható
+            g.setColor(Color.BLUE);
             g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
         }
     }

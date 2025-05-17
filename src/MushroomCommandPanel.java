@@ -54,6 +54,7 @@ public class MushroomCommandPanel extends BasicCommandPanel {
      */
     @Override
     public void draw() {
+        this.removeAll();
         // Először az ősosztály gombjait rajzoljuk ki (pl. endTurnButton)
         super.draw();
 
@@ -83,7 +84,7 @@ public class MushroomCommandPanel extends BasicCommandPanel {
                 // A cél Tekton-t a GUI-n kellene kiválasztani.
                 controller.checkSelected();
                 if (controller.selectedTektons.size() == 1) {
-                    Tekton target = controller.selectedTektons.getFirst(); // Placeholder
+                    Tekton target = controller.selectedTektons.get(0); // Placeholder
                     int amount = -1; // Placeholder spóra mennyiség
                     controller.spread(controller.PlayerMushroom, target, amount);
                 }
@@ -99,9 +100,10 @@ public class MushroomCommandPanel extends BasicCommandPanel {
                 controller.checkSelected();
                 if(controller.selectedTektons.size() == 2)
                 {
-                    Tekton target1 = controller.selectedTektons.getFirst(); // Placeholder
+                    Tekton target1 = controller.selectedTektons.get(0); // Placeholder
                     Tekton target2 = controller.selectedTektons.get(1); // Placeholder
-                    controller.PlayerMushroom.growString(target1, target2);
+                    controller.growString(controller.PlayerMushroom,target1, target2);
+
                 }
                 controller.resetSelectedTektons();
             }
@@ -122,9 +124,9 @@ public class MushroomCommandPanel extends BasicCommandPanel {
                 // A cél Rovar-t és a kapcsolódó Tekton(oka)t a GUI-n kellene kiválasztani.
                 controller.checkSelected();
                 if(controller.selectedTektons.size() == 2) {
-                    Tekton source = controller.selectedTektons.getFirst(); // Placeholder: fonál forrása
+                    Tekton source = controller.selectedTektons.get(0); // Placeholder: fonál forrása
                     Tekton insectLocation = controller.selectedTektons.get(1); // Placeholder: rovar helye
-                    Insect targetInsect = insectLocation.arrayOfInsect.getFirst(); // Placeholder
+                    Insect targetInsect = insectLocation.arrayOfInsect.get(0); // Placeholder
                     controller.eatInsect(source, insectLocation, targetInsect);
                 }
                 controller.resetSelectedTektons();
@@ -137,7 +139,7 @@ public class MushroomCommandPanel extends BasicCommandPanel {
                 System.out.println("MushroomCommandPanel: Testnövesztés gomb megnyomva.");
                 controller.checkSelected();
                 if (controller.selectedTektons.size() == 1) {
-                    Tekton target = controller.selectedTektons.getFirst(); // Placeholder
+                    Tekton target = controller.selectedTektons.get(0); // Placeholder
                     controller.growBody(controller.PlayerMushroom, target);
                 }
                 controller.resetSelectedTektons();

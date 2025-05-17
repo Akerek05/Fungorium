@@ -93,14 +93,17 @@ public class Mushroom implements TurnControl, Serializable {
         String error = "Error! Could not grow MushroomString by Mushroom:"+id+" at "+tekton1.id+" and "+tekton2.id+" Tektons.";
         boolean connectionCheck = false;
 
-        for(ShroomString string : tekton1.arrayOfString){
-            if(string.disTek.equals(tekton1) && string.parentSrhoom.equals(this) && string.isConnected && !string.growing) {
+        for (ShroomString string : tekton1.arrayOfString) {
+            if ((string.startTek.equals(tekton1) || string.disTek.equals(tekton1)) &&
+                    string.parentSrhoom.equals(this) && string.isConnected && !string.growing) {
                 connectionCheck = true;
                 break;
             }
         }
 
-        if(tekton1.equals(this.position) || connectionCheck){
+
+        if ((tekton1.equals(this.position) || connectionCheck) &&
+                tekton1.neighbours.stream().anyMatch(t -> t.id == tekton2.id)) {
             try {
                 tekton2.addString(tekton1, this);
             } catch (Exception e) {

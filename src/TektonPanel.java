@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Egy mezőt jelenít meg. Feladata a mezők állapotának vizuális megjelenítése
@@ -23,8 +22,8 @@ public class TektonPanel extends JPanel{
      * Ezeket a JPanel getX() és getY() metódusai biztosítják.
      * Ha logikai rácskoordinátákról van szó, azokat a 'tektonData'-ban kell tárolni.
      */
-    //protected int x; // A JPanel.getX() helyettesíti
-    //protected int y; // A JPanel.getY() helyettesíti
+    protected int x; // A JPanel.getX() helyettesíti
+    protected int y; // A JPanel.getY() helyettesíti
 
     /**
      * A tekton szélessége és magassága.
@@ -85,7 +84,7 @@ public class TektonPanel extends JPanel{
                     // Itt lehetne a kiválasztási logikát kezelni,
                     // pl. egy Controller értesítése.
                     // Most egyszerűen váltogatjuk a 'selected' állapotot.
-                    setSelected(!isSelected);
+                    setSelected();
                     System.out.println("TektonPanel (" + tektonData + ") kiválasztva: " + isSelected);
                     // Ha a selectTekton() metódusnak kellene itt lefutnia:
                     // selectTekton(); // Bár a metódus neve inkább getter-re utal
@@ -99,7 +98,7 @@ public class TektonPanel extends JPanel{
         }
     }
 
-    public void setSelected(boolean isSelected) {
+    public void setSelected() {
         if(!isSelected)
             isSelected = true;
         else
@@ -138,6 +137,7 @@ public class TektonPanel extends JPanel{
             else
                 this.color = new Color(255,255,255);
         }
+
         for (BasicPanel panel : containedItemPanels) {
             panel.draw(this);
         }
@@ -175,14 +175,35 @@ public class TektonPanel extends JPanel{
      * @param component A hozzáadandó komponens.
      */
     public void addItemPanel(BasicPanel component) {
+        //if (component != null) {
+        //    // Ahhoz, hogy az itemPanel-ek a TektonPanel-en belül látszódjanak,
+        //    // és a TektonPanel háttérszíne ne takarja el őket, ha az itemPanel is setOpaque(false),
+        //    // vagy a TektonPanel-nek megfelelő LayoutManager kell.
+        //    // Egy egyszerű OverlayLayout:
+        //    if (getLayout() == null || !(getLayout() instanceof OverlayLayout)) {
+        //        setLayout(new OverlayLayout(this));
+        //    }
+        //    add(component);
+        //    containedItemPanels.add(component);
+        //    revalidate();
+        //    repaint();
+        //}
         if (component != null) {
-            // Ahhoz, hogy az itemPanel-ek a TektonPanel-en belül látszódjanak,
-            // és a TektonPanel háttérszíne ne takarja el őket, ha az itemPanel is setOpaque(false),
-            // vagy a TektonPanel-nek megfelelő LayoutManager kell.
-            // Egy egyszerű OverlayLayout:
             if (getLayout() == null || !(getLayout() instanceof OverlayLayout)) {
-                setLayout(new OverlayLayout(this));
+                setLayout(null); // fontos, hogy manuálisan pozicionálhassunk
             }
+
+            if (component instanceof InsectPanel) {
+                component.setBounds(getWidth() - 34, 4, 30, 30); // jobb felső
+            } else if (component instanceof MushroomPanel) {
+                component.setBounds(4, 4, 30, 30); // bal felső
+            } else if (component instanceof SporePanel) {
+                component.setBounds(getWidth() - 34, getHeight() - 34, 30, 30); // jobb alsó
+            } else if (component instanceof ShroomStringPanel) {
+                // ha lenne ilyen vizuális megjelenítés
+                component.setBounds(getWidth() / 2 - 15, getHeight() / 2 - 15, 30, 30); // középre
+            }
+
             add(component);
             containedItemPanels.add(component);
             revalidate();
