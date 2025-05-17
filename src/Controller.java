@@ -310,6 +310,24 @@ public class Controller {
     public void spread(Mushroom mushroom, Tekton tekton, int amount) {
         System.out.println("Akció: Spórázás - Gomba: " + mushroom + ", Cél: " + tekton + ", Mennyiség: " + amount);
         mushroom.spreadSpore(tekton, -1, -1);
+        try {
+            BufferedImage image = ImageIO.read(getClass().getResource("/icons/sporetrans.png"));
+            Spore latestSpore = tekton.arrayOfSpore.get(tekton.arrayOfSpore.size() - 1); // utolsóként hozzáadott
+
+            // Megkeressük a megfelelő TektonPanelt
+            for (TektonPanel panel : gameWindow.getTektonPanels()) {
+                if (panel.getTektonData() == tekton) {
+                    SporePanel sporePanel = new SporePanel(latestSpore, image);
+                    sporePanel.setBounds(panel.getWidth() - 34, panel.getHeight() - 34, 30, 30); // jobb alsó sarok
+                    panel.addItemPanel(sporePanel);
+                    panel.revalidate();
+                    panel.repaint();
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Hiba a spóra kép betöltésekor: " + e.getMessage());
+        }
         map.update();
         gameWindow.reDraw();
     }
