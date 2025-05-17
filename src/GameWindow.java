@@ -1,13 +1,8 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.*;
-import java.awt.Point;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A fő játékképernyőt jeleníti meg ez az osztály.
@@ -18,6 +13,7 @@ public class GameWindow extends JFrame {
 
     private int currentPlayerId;
     private Controller controller;
+
 
     private JPanel gamePanel;
     private StatusPanel statusBarPanel;
@@ -52,63 +48,64 @@ public class GameWindow extends JFrame {
         gamePanel = new JPanel();
         gamePanel.setBackground(Color.LIGHT_GRAY); // teszteléshez
         mainPanel.add(gamePanel, BorderLayout.CENTER);
-        //FIX JÓ - KINDA
-        //gamePanel.setLayout(null); // vagy megfelelő layout, pl. GridLayout, ha rács
-        //for (int i = 0; i < controller.map.tektons.size(); i++) {
-        //    Tekton tekton = controller.map.tektons.get(i);
-        //    TektonPanel tektonPanel = new TektonPanel(tekton, 50); // 2 túl kicsi, próbáld 40-60 közé
-        //    tektonPanel.setBounds(i * 60, i * 60, 50, 50);
-        //    tektonPanels.add(tektonPanel);
-        //    gamePanel.add(tektonPanel); // !!! ez a kulcs
-        //}
-        //
-        //gamePanel.revalidate();
-        //gamePanel.repaint();
 
-        //int j = 0;
-        //for(Tekton tekton : controller.map.tektons){
-        //    TektonPanel newTektonPanel = new TektonPanel(tekton, 50);
-        //    newTektonPanel.setBounds(j * 60, j * 60, 50, 50);
-        //    tektonPanels.add(newTektonPanel);
-        //    gamePanel.add(newTektonPanel);
-        //    for (Mushroom mushroom : tekton.arrayOfMushroom) {
-        //        try {
-        //            BufferedImage image = ImageIO.read(getClass().getResource("/icons/mushroomtrans.png"));
-        //            newTektonPanel.addItemPanel(new MushroomPanel(mushroom, image));
-        //        } catch (Exception e) {
-        //            System.out.println(e.getMessage());
-        //        }
-//
-        //    }
-        //    for (Insect insect : tekton.arrayOfInsect) {
-        //        try {
-        //            BufferedImage image = ImageIO.read(getClass().getResource("/icons/insecttrans.png"));
-        //            newTektonPanel.addItemPanel(new InsectPanel(insect, image));
-        //        } catch (Exception e) {
-        //            System.out.println(e.getMessage());
-        //        }
-        //    }
-        //    for (Spore spore : tekton.arrayOfSpore) {
-        //        try {
-        //            BufferedImage image = ImageIO.read(getClass().getResource("/icons/sporetrans.png"));
-        //            newTektonPanel.addItemPanel(new SporePanel(spore, image));
-        //        }
-        //        catch (Exception e) {
-        //            System.out.println(e.getMessage());
-        //        }
-        //    }
-        //    for (ShroomString string : tekton.arrayOfString) {
-        //        try {
-        //            BufferedImage image = ImageIO.read(getClass().getResource("/icons/stringtrans.png"));
-        //            newTektonPanel.addItemPanel(new ShroomStringPanel(string, image));
-        //        } catch (Exception e) {
-        //            System.out.println(e.getMessage());
-        //
-        //        }
-        //    }
-        //    j++;
-        //}
+        gamePanel.setLayout(null); // szabad elhelyezés
 
+        drawGamePanel();
+
+
+        // Alsó command panelek CardLayout-tal
+        JPanel commandPanelContainer = new JPanel(new CardLayout());
+        commandPanelContainer.add(mushroomCommandPanel, "MUSHROOM");
+        commandPanelContainer.add(insectCommandPanel, "INSECT");
+        mainPanel.add(commandPanelContainer, BorderLayout.SOUTH);
+
+        this.setContentPane(mainPanel);
+        this.setVisible(true);
+
+        // Alapértelmezésben mutatjuk a gombapanelt
+        showMushroomCMD();
+    }
+
+    //új
+    private TektonPanel getPanelForTekton(Tekton tekton) {
+        for (TektonPanel tp : tektonPanels) {
+            if (tp.getTektonData() == tekton)
+                return tp;
+        }
+        return null;
+    }
+    //új
+
+    public static BufferedImage resizeTo(BufferedImage originalImage, int scale) {
+        int newWidth = originalImage.getWidth() / scale;
+        int newHeight = originalImage.getHeight() / scale;
+
+        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
+
+        Graphics2D g = resizedImage.createGraphics();
+        g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
+        g.dispose(); // Clean up resources
+
+        return resizedImage;
+    }
+    /**
+     * Újrarajzolja a térképet és a játékelemeket.
+     * Akkor hívódik, ha változás történt az állapotban.
+     */
+    public void reDraw() {
+        drawGamePanel();
+        statusBarPanel.draw();
+        insectCommandPanel.draw();
+        mushroomCommandPanel.draw();
+    }
+    /**
+     * GamePanel kirajzolasa/ frissitese
+     */
+
+    public void drawGamePanel() {
+
+        gamePanel.removeAll();
         gamePanel.setLayout(null); // szabad elhelyezés
 
         int step = 100;             // rácslépés pixelben
@@ -165,22 +162,8 @@ public class GameWindow extends JFrame {
             }
         }
 
-
-        gamePanel.revalidate();
-        gamePanel.repaint();
-
-
-        // Alsó command panelek CardLayout-tal
-        JPanel commandPanelContainer = new JPanel(new CardLayout());
-        commandPanelContainer.add(mushroomCommandPanel, "MUSHROOM");
-        commandPanelContainer.add(insectCommandPanel, "INSECT");
-        mainPanel.add(commandPanelContainer, BorderLayout.SOUTH);
-
-        this.setContentPane(mainPanel);
-        this.setVisible(true);
-
         //ÚJ
-        JComponent stringLayer = new JComponent() {
+            JComponent stringLayer = new JComponent() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -189,7 +172,6 @@ public class GameWindow extends JFrame {
                 g2.setStroke(new BasicStroke(2));
 
                 for (ShroomString ss : controller.map.shroomStrings) {
-                    if (!ss.isConnected) continue;
 
                     Tekton start = ss.startTek;
                     Tekton end = ss.disTek;
@@ -211,55 +193,9 @@ public class GameWindow extends JFrame {
         stringLayer.setBounds(0, 0, gamePanel.getWidth(), gamePanel.getHeight());
         stringLayer.setOpaque(false);
         gamePanel.add(stringLayer);
-        gamePanel.setComponentZOrder(stringLayer, 0); // Legyen legalul
-        //ÚJ
 
-        // Alapértelmezésben mutatjuk a gombapanelt
-        showMushroomCMD();
-    }
-
-    //új
-    private TektonPanel getPanelForTekton(Tekton tekton) {
-        for (TektonPanel tp : tektonPanels) {
-            if (tp.getTektonData() == tekton)
-                return tp;
-        }
-        return null;
-    }
-    //új
-
-    public static BufferedImage resizeTo(BufferedImage originalImage, int scale) {
-        int newWidth = originalImage.getWidth() / scale;
-        int newHeight = originalImage.getHeight() / scale;
-
-        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
-
-        Graphics2D g = resizedImage.createGraphics();
-        g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
-        g.dispose(); // Clean up resources
-
-        return resizedImage;
-    }
-    /**
-     * Újrarajzolja a térképet és a játékelemeket.
-     * Akkor hívódik, ha változás történt az állapotban.
-     */
-    public void reDraw() {
-        for(TektonPanel tektonPanel : tektonPanels) {
-            tektonPanel.draw();
-        }
-        statusBarPanel.draw();
-        insectCommandPanel.draw();
-        mushroomCommandPanel.draw();
-        gamePanel.repaint(); // újrarajzolja a vonalakat is
-
-    }
-    /**
-     * GamePanel kirajzolasa/ frissitese
-     */
-
-    public void drawGamePanel() {
-        gamePanel.removeAll();
+        gamePanel.revalidate();
+        gamePanel.repaint();
     }
     /**
      * Játék végi állapotot megjelenítő dialógus vagy képernyő kirajzolása.
@@ -308,4 +244,5 @@ public class GameWindow extends JFrame {
         this.statusBarPanel.draw();
     }
     public void selectTektonPanel(TektonPanel tektonPanel) {}
+
 }

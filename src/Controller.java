@@ -247,13 +247,10 @@ public class Controller {
         map.command("TIMEELAPSED 2");
         if (breakTektonCounter >= TEKTON_BREAK_NUM) {
             System.out.println("TEKTON TÖRÉS");
-            Random rand = new Random();
-            int randomIndex = rand.nextInt(map.tektons.size());
-            Tekton t = map.tektons.get(randomIndex);
+            Tekton t = map.tektons.getLast();
             breakTekton(t);
-            map.update();
-            gameWindow.reDraw();
             breakTektonCounter = 0;
+            gameWindow.reDraw();
         }
 
         if (currentTurn >= MAX_TURNS) {
@@ -277,8 +274,10 @@ public class Controller {
      * @param tekton Törendő tekton
      */
     public void breakTekton(Tekton tekton) {
-        tekton.breakTekton(-1);
+
+        map.tektons.add(tekton.breakTekton(-1));
         map.update();
+        map.command("STATUS");
         gameWindow.reDraw();
     }
 
@@ -399,54 +398,7 @@ public class Controller {
      */
     public void move(Insect insect, Tekton targetTekton) {
         System.out.println("Akció: Rovar mozgatása - Rovar: " + insect + ", Cél: " + targetTekton);
-
-        // 🔍 1. Megkeressük a régi TektonPanelt
-        Tekton oldTekton = insect.tekton;
-        TektonPanel oldPanel = null;
-        TektonPanel newPanel = null;
-
-        for (TektonPanel tp : gameWindow.tektonPanels) {
-            if (tp.getTektonData() == oldTekton) oldPanel = tp;
-            if (tp.getTektonData() == targetTekton) newPanel = tp;
-        }
-
-        if (oldPanel == null || newPanel == null) {
-            System.out.println("Hiba: nem található a TektonPanel.");
-            return;
-        }
-
-        // 🔄 2. InsectPanel eltávolítása a régi TektonPanelről
-        InsectPanel toRemove = null;
-        for (Component c : oldPanel.getComponents()) {
-            if (c instanceof InsectPanel) {
-                InsectPanel ip = (InsectPanel) c;
-                if (ip.getInsectData() == insect) {
-                    toRemove = ip;
-                    break;
-                }
-            }
-        }
-        if (toRemove != null) {
-            oldPanel.removeItemPanel(toRemove);
-        }
-
-        // 🧠 3. Logikai lépés: áthelyezzük a rovart
         insect.moveToTekton(targetTekton);
-
-        // 🎨 4. Új InsectPanel létrehozása
-        try {
-            BufferedImage image = ImageIO.read(getClass().getResource("/icons/insecttrans.png"));
-            InsectPanel newPanelInstance = new InsectPanel(insect, image);
-            newPanel.addItemPanel(newPanelInstance);
-        } catch (Exception e) {
-            System.out.println("Nem sikerült a rovar képét betölteni: " + e.getMessage());
-        }
-
-        // 🧼 5. Újrarajzolás
-        newPanel.revalidate();
-        newPanel.repaint();
-        oldPanel.revalidate();
-        oldPanel.repaint();
 
         map.update();
         gameWindow.reDraw();
