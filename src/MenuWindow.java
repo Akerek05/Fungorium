@@ -49,7 +49,7 @@ public class MenuWindow extends JFrame {
      */
     public MenuWindow(Controller controller) {
         this.controller = controller;
-        this.playerCount = 2; // Alapértelmezett játékosszám
+        this.playerCount = 4; // Alapértelmezett játékosszám
 
         setTitle("Játék Főmenü");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // A főmenü bezárása bezárja az alkalmazást
@@ -70,11 +70,11 @@ public class MenuWindow extends JFrame {
         playerCountLabel = new JLabel("Játékosok száma: " + playerCount);
         playerCountLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        // JSpinner a játékosok számának beállításához (pl. 1-től 4-ig)
+        // JSpinner a játékosok számának beállításához (pl. 4-től 12-ig)
         SpinnerModel spinnerModel = new SpinnerNumberModel(
                 this.playerCount, // Kezdeti érték
-                1,  // Minimum érték
-                4,  // Maximum érték
+                4,  // Minimum érték
+                12,  // Maximum érték
                 1   // Lépésköz
         );
         playerCountSpinner = new JSpinner(spinnerModel);
@@ -105,7 +105,7 @@ public class MenuWindow extends JFrame {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
-        /*JPanel mainPanel = new JPanel();
+
         mainPanel.setLayout(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Margó
         mainPanel.setBackground(new Color(240, 240, 240)); // Világos háttér
@@ -128,7 +128,7 @@ public class MenuWindow extends JFrame {
         playerCountPanel.add(new JLabel("Válassz játékosszámot:"));
         playerCountPanel.add(playerCountSpinner);
         gbc.insets = new Insets(5, 5, 10, 5);
-        mainPanel.add(playerCountPanel, gbc);*/
+        mainPanel.add(playerCountPanel, gbc);
 
         // Játékosok számát jelző label (frissül a spinnerrel)
         // Ezt a labelt most nem muszáj külön megjeleníteni, ha a spinner elég informatív.
@@ -137,7 +137,7 @@ public class MenuWindow extends JFrame {
         // mainPanel.add(playerCountLabel, gbc);
 
         // Gombok
-        /*gbc.fill = GridBagConstraints.NONE; // Gombok ne nyúljanak szét
+        gbc.fill = GridBagConstraints.NONE; // Gombok ne nyúljanak szét
         gbc.anchor = GridBagConstraints.CENTER;
         startButton.setPreferredSize(new Dimension(200, 40));
         mainPanel.add(startButton, gbc);
@@ -154,7 +154,7 @@ public class MenuWindow extends JFrame {
         mainPanel.add(exitButton, gbc);
 
 
-        add(mainPanel);*/
+        add(mainPanel);
     }
 
     /**

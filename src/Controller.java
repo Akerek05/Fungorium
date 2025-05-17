@@ -42,6 +42,7 @@ public class Controller {
      */
     protected Mushroom PlayerMushroom = null;
 
+    protected ArrayList<Tekton> selectedTektons = new ArrayList<>();
     /**
      * Kiválasztott (aktuális) játékos rovarja.
      * Hasonlóan a PlayerMushroom-hoz.
@@ -75,10 +76,12 @@ public class Controller {
         this.player_ids = new ArrayList<>();
         this.map = map;
 
-        this.gameWindow = new GameWindow(this);
+
         this.menuWindow = new MenuWindow(this);
+        this.selectedTektons = new ArrayList<>();
 
         showMenu();
+
     }
 
     /**
@@ -98,17 +101,22 @@ public class Controller {
             System.err.println("Hiba: A játékosok száma pozitív egész kell legyen.");
             return;
         }
+        map.startGame(playerCount);
+        map.mapInit();
+        map.update();
+        map.command("STATUS");
         System.out.println("Játék indítása " + playerCount + " játékossal.");
         player_ids.clear();
+
+
         for (int i = 0; i < playerCount; i++) {
             player_ids.add(i); // Játékos ID-k pl. 0, 1, 2...
         }
         currentPlayerIndex = 0; // Az első játékos kezd (ID: player_ids.get(0))
         breakTektonCounter = 0;
-
+        this.gameWindow = new GameWindow(this);
         menuWindow.dispose();
-        map.startGame(playerCount);
-        map.mapInit();
+
 
         for(Tekton tekton : map.tektons){
             TektonPanel newTektonPanel = new TektonPanel(tekton, 2);
@@ -378,5 +386,21 @@ public class Controller {
     }
     public int getCurrentPlayerScore() {
         return map.scores.get(currentPlayerIndex);
+    }
+
+    public void checkSelected(){
+        for(TektonPanel tektonPanel : gameWindow.tektonPanels){
+            if(tektonPanel.isSelected){
+                selectedTektons.add(tektonPanel.getTektonData());
+            }
+        }
+    }
+    public void resetSelectedTektons(){
+        for (TektonPanel tektonPanel: gameWindow.tektonPanels){
+            if(tektonPanel.isSelected){
+                tektonPanel.setSelected(false);
+            }
+        }
+        selectedTektons.clear();
     }
 }

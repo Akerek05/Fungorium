@@ -77,12 +77,12 @@ public class InsectCommandPanel extends BasicCommandPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("InsectCommandPanel: Mozgás gomb megnyomva.");
-                // A Controller.PlayerInsect az aktív rovart reprezentálja.
-                // A cél Tekton-t a GUI egy másik részén (pl. MapPanel kattintással)
-                // kellene kiválasztani, és az információt eljuttatni a Controller-hez
-                // (pl. a controller.selectedTektonForAction beállításával).
-                Tekton target = Controller.selectedTektonForAction; // Placeholder, ezt a GUI más része állítaná
-                Controller.move(Controller.PlayerInsect, target);
+                controller.checkSelected();
+                if (controller.selectedTektons.size() == 1) {
+                    Tekton target = controller.selectedTektons.get(0); // Placeholder, ezt a GUI más része állítaná
+                    controller.move(controller.PlayerInsect, target);
+                }
+                controller.checkSelected();
             }
         });
 
@@ -98,8 +98,13 @@ public class InsectCommandPanel extends BasicCommandPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("InsectCommandPanel: Fonálvágás gomb megnyomva.");
-                Tekton target = controller.selectedTektonForAction; // Placeholder
-                controller.cut(controller.PlayerInsect, target);
+                controller.checkSelected();
+                if (controller.selectedTektons.size() == 1) {
+                    Tekton target = controller.selectedTektons.getFirst(); // Placeholder
+                    controller.cut(controller.PlayerInsect, target);
+
+                }
+                controller.checkSelected();
             }
         });
 

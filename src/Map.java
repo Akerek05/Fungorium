@@ -566,6 +566,7 @@ public class Map implements Serializable {
                                 break;
                             }
 
+
                             Tekton t = s.disTek;
                             if (!t.arrayOfInsect.contains(getInsect(insectID)) || t.arrayOfString.contains(getShroomString(stringID))) {
                                 System.out.println("Error! Could not eat Insect: " + insectID + " by String: " + stringID);

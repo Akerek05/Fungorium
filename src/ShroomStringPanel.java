@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
 
 /**
  * A pályán lévő fonalak megjelenítéséért szolgáló panel.
@@ -15,9 +16,10 @@ public class ShroomStringPanel extends BasicPanel {
      * @param stringData A ShroomString objektum, amit ez a panel megjelenít.
      *                   Ez tartalmazza a fonal végpontjait a panel saját
      *                   koordináta-rendszerében.
+     * @param image A Tektonon megjelenitendo kep
      */
-    public ShroomStringPanel(ShroomString stringData) {
-        super(); // BasicPanel konstruktorának hívása
+    public ShroomStringPanel(ShroomString stringData, BufferedImage image) {
+        super(image); // BasicPanel konstruktorának hívása
         this.stringData = stringData;
         // Fontos, hogy a panel átlátszó legyen, hogy csak a fonal látszódjon,
         // és ne takarja ki a mögötte lévő elemeket (pl. a pályát vagy más paneleket).

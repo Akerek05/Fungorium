@@ -81,9 +81,13 @@ public class MushroomCommandPanel extends BasicCommandPanel {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("MushroomCommandPanel: Spórázás gomb megnyomva.");
                 // A cél Tekton-t a GUI-n kellene kiválasztani.
-                Tekton target = controller.selectedTekton1; // Placeholder
-                int amount = 10; // Placeholder spóra mennyiség
-                controller.spread(controller.PlayerMushroom, target, amount);
+                controller.checkSelected();
+                if (controller.selectedTektons.size() == 1) {
+                    Tekton target = controller.selectedTektons.getFirst(); // Placeholder
+                    int amount = -1; // Placeholder spóra mennyiség
+                    controller.spread(controller.PlayerMushroom, target, amount);
+                }
+                controller.resetSelectedTektons();
             }
         });
 
@@ -92,9 +96,14 @@ public class MushroomCommandPanel extends BasicCommandPanel {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("MushroomCommandPanel: Fonálnövesztés gomb megnyomva.");
                 // Két cél Tekton-t kellene a GUI-n kiválasztani.
-                Tekton target1 = controller.selectedTekton1; // Placeholder
-                Tekton target2 = controller.selectedTekton2; // Placeholder
-                controller.growString(controller.PlayerMushroom, target1, target2);
+                controller.checkSelected();
+                if(controller.selectedTektons.size() == 2)
+                {
+                    Tekton target1 = controller.selectedTektons.getFirst(); // Placeholder
+                    Tekton target2 = controller.selectedTektons.get(1); // Placeholder
+                    controller.PlayerMushroom.growString(target1, target2);
+                }
+                controller.resetSelectedTektons();
             }
         });
 
@@ -111,10 +120,14 @@ public class MushroomCommandPanel extends BasicCommandPanel {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("MushroomCommandPanel: Rovar Elkapása gomb megnyomva.");
                 // A cél Rovar-t és a kapcsolódó Tekton(oka)t a GUI-n kellene kiválasztani.
-                Tekton source = controller.selectedTekton1; // Placeholder: fonál forrása
-                Tekton insectLocation = controller.selectedTekton2; // Placeholder: rovar helye
-                Insect targetInsect = controller.targetInsect; // Placeholder
-                controller.eatInsect(source, insectLocation, targetInsect);
+                controller.checkSelected();
+                if(controller.selectedTektons.size() == 2) {
+                    Tekton source = controller.selectedTektons.getFirst(); // Placeholder: fonál forrása
+                    Tekton insectLocation = controller.selectedTektons.get(1); // Placeholder: rovar helye
+                    Insect targetInsect = insectLocation.arrayOfInsect.getFirst(); // Placeholder
+                    controller.eatInsect(source, insectLocation, targetInsect);
+                }
+                controller.resetSelectedTektons();
             }
         });
 
@@ -122,8 +135,12 @@ public class MushroomCommandPanel extends BasicCommandPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("MushroomCommandPanel: Testnövesztés gomb megnyomva.");
-                Tekton target = controller.selectedTekton1; // Placeholder
-                controller.growBody(controller.PlayerMushroom, target);
+                controller.checkSelected();
+                if (controller.selectedTektons.size() == 1) {
+                    Tekton target = controller.selectedTektons.getFirst(); // Placeholder
+                    controller.growBody(controller.PlayerMushroom, target);
+                }
+                controller.resetSelectedTektons();
             }
         });
 
@@ -149,7 +166,5 @@ public class MushroomCommandPanel extends BasicCommandPanel {
     public JButton getUpgradeButton() { return upgradeButton; }
     public JButton getEatButton() { return eatButton; }
     public JButton getGrowBodyButton() { return growBodyButton; }
-
-
 
 }

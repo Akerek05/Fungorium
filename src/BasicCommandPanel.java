@@ -17,6 +17,7 @@ public abstract class BasicCommandPanel extends JPanel {
      * Gomb, amivel a játékos jelezheti, hogy befejezte a körét.
      */
     protected JButton endTurnButton;
+    protected Controller controller;
 
     /**
      * Alapértelmezett konstruktor.
@@ -25,6 +26,17 @@ public abstract class BasicCommandPanel extends JPanel {
     public BasicCommandPanel() {
         super(); // JPanel ősosztály konstruktorának hívása
         // Alapértelmezett elrendezés beállítása (opcionális, de gyakori)
+        setLayout(new FlowLayout(FlowLayout.CENTER));
+        draw(); // Gombok kirajzolása
+    }
+
+    /**
+     * Konstrukor controller
+     * @param controller
+     */
+    public BasicCommandPanel(Controller controller) {
+        super();
+        this.controller = controller;
         setLayout(new FlowLayout(FlowLayout.CENTER));
         draw(); // Gombok kirajzolása
     }

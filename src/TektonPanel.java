@@ -10,7 +10,7 @@ import java.util.List;
  * (tektontípustól függően más-más szín).
  * Ősosztálya: BasicPanel.
  */
-public class TektonPanel extends BasicPanel {
+public class TektonPanel extends JPanel{
     private ArrayList<BasicPanel> containedItemPanels;
     /**
      * A szín határozza meg, hogy a tekton típusa milyen.
@@ -85,8 +85,8 @@ public class TektonPanel extends BasicPanel {
                     // Itt lehetne a kiválasztási logikát kezelni,
                     // pl. egy Controller értesítése.
                     // Most egyszerűen váltogatjuk a 'selected' állapotot.
-                    setSelected(!isSelected());
-                    System.out.println("TektonPanel (" + tektonData + ") kiválasztva: " + isSelected());
+                    setSelected(!isSelected);
+                    System.out.println("TektonPanel (" + tektonData + ") kiválasztva: " + isSelected);
                     // Ha a selectTekton() metódusnak kellene itt lefutnia:
                     // selectTekton(); // Bár a metódus neve inkább getter-re utal
                 }
@@ -97,6 +97,13 @@ public class TektonPanel extends BasicPanel {
         if (this.tektonData != null) {
             setToolTipText(this.tektonData.toString());
         }
+    }
+
+    public void setSelected(boolean isSelected) {
+        if(!isSelected)
+            isSelected = true;
+        else
+            isSelected = false;
     }
 
     /**
@@ -117,7 +124,6 @@ public class TektonPanel extends BasicPanel {
      * A tényleges rajzolás a paintComponent-ben történik.
      * Ez a metódus újrarajzolási kérést indít.
      */
-    @Override
     public void draw() {
         // Szín frissítése, ha a tektonData típusa megváltozhatna
         if (this.tektonData != null) {
@@ -132,7 +138,7 @@ public class TektonPanel extends BasicPanel {
             else
                 this.color = new Color(255,255,255);
         }
-        for (BasicPanel panel : panels) {
+        for (BasicPanel panel : containedItemPanels) {
             panel.draw(this);
         }
         repaint(); // Újrarajzolás kérése
@@ -154,7 +160,7 @@ public class TektonPanel extends BasicPanel {
 
 
         // Kijelölés jelzése (ha a BasicPanel nem kezelné specifikusan)
-        if (isSelected()) {
+        if (isSelected) {
             g2d.setColor(Color.YELLOW); // Vagy más kijelölő szín
             g2d.setStroke(new BasicStroke(3)); // Vastagabb vonal a kijelöléshez
             g2d.drawRect(1, 1, getWidth() - 3, getHeight() - 3); // Kicsit beljebb
