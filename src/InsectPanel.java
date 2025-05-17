@@ -76,8 +76,9 @@ public class InsectPanel extends BasicPanel {
         if (insectData != null) {
             JOptionPane.showMessageDialog(this,
                     "Rovar id-je: " + insectData.id + "\n" +
+                            "Játékos id-je: " + insectData.playerID + "\n" +
                             "Akciópontok: " + insectData.getActionPoints() + "\n" +
-                            "Játékos id-je: " + insectData.playerID,
+                            "Rovaron életben lévő effekt: " + insectData.effectType,
                     "Rovar Részletei",
                     JOptionPane.INFORMATION_MESSAGE);
         }

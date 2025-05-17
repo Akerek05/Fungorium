@@ -3,13 +3,14 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-
 /**
  * Egy mezőt jelenít meg. Feladata a mezők állapotának vizuális megjelenítése
  * (tektontípustól függően más-más szín).
  * Ősosztálya: BasicPanel.
  */
 public class TektonPanel extends JPanel{
+    public static int globalTekton = 1;
+
     private ArrayList<BasicPanel> containedItemPanels;
     /**
      * A szín határozza meg, hogy a tekton típusa milyen.
@@ -36,7 +37,7 @@ public class TektonPanel extends JPanel{
      * Azt jelzi, hogy ki van-e választva.
      * Ezt a BasicPanel `selected` attribútuma és metódusai kezelik.
      */
-    protected boolean isSelected; // A BasicPanel.selected helyettesíti
+    protected int isSelected = 0; // A BasicPanel.selected helyettesíti
 
     private Tekton tektonData; // A panelhez tartozó logikai Tekton objektum
 
@@ -99,10 +100,13 @@ public class TektonPanel extends JPanel{
     }
 
     public void setSelected() {
-        if(!isSelected)
-            isSelected = true;
-        else
-            isSelected = false;
+        if(isSelected == 0)
+            isSelected = globalTekton++;
+        else{
+            isSelected = 0;
+            globalTekton--;
+        }
+
     }
 
     /**
@@ -160,7 +164,7 @@ public class TektonPanel extends JPanel{
 
 
         // Kijelölés jelzése (ha a BasicPanel nem kezelné specifikusan)
-        if (isSelected) {
+        if (isSelected != 0) {
             g2d.setColor(Color.YELLOW); // Vagy más kijelölő szín
             g2d.setStroke(new BasicStroke(3)); // Vastagabb vonal a kijelöléshez
             g2d.drawRect(1, 1, getWidth() - 3, getHeight() - 3); // Kicsit beljebb
@@ -175,19 +179,6 @@ public class TektonPanel extends JPanel{
      * @param component A hozzáadandó komponens.
      */
     public void addItemPanel(BasicPanel component) {
-        //if (component != null) {
-        //    // Ahhoz, hogy az itemPanel-ek a TektonPanel-en belül látszódjanak,
-        //    // és a TektonPanel háttérszíne ne takarja el őket, ha az itemPanel is setOpaque(false),
-        //    // vagy a TektonPanel-nek megfelelő LayoutManager kell.
-        //    // Egy egyszerű OverlayLayout:
-        //    if (getLayout() == null || !(getLayout() instanceof OverlayLayout)) {
-        //        setLayout(new OverlayLayout(this));
-        //    }
-        //    add(component);
-        //    containedItemPanels.add(component);
-        //    revalidate();
-        //    repaint();
-        //}
         if (component != null) {
             if (getLayout() == null || !(getLayout() instanceof OverlayLayout)) {
                 setLayout(null); // fontos, hogy manuálisan pozicionálhassunk

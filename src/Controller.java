@@ -113,7 +113,6 @@ public class Controller {
         System.out.println("Játék indítása " + playerCount + " játékossal.");
         player_ids.clear();
 
-
         for (int i = 0; i < playerCount; i++) {
             player_ids.add(i); // Játékos ID-k pl. 0, 1, 2...
         }
@@ -122,50 +121,8 @@ public class Controller {
         this.gameWindow = new GameWindow(this);
         menuWindow.dispose();
 
-
-        /*for(Tekton tekton : map.tektons){
-            TektonPanel newTektonPanel = new TektonPanel(tekton, 2);
-            gameWindow.tektonPanels.add(newTektonPanel);
-            for (Mushroom mushroom : tekton.arrayOfMushroom) {
-                try {
-                    BufferedImage image = ImageIO.read(getClass().getResource("/icons/mushroomtrans.png"));
-                    newTektonPanel.addItemPanel(new MushroomPanel(mushroom, image));
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-
-            }
-            for (Insect insect : tekton.arrayOfInsect) {
-                try {
-                    BufferedImage image = ImageIO.read(getClass().getResource("/icons/insecttrans.png"));
-                    newTektonPanel.addItemPanel(new InsectPanel(insect, image));
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-            }
-            for (Spore spore : tekton.arrayOfSpore) {
-                try {
-                    BufferedImage image = ImageIO.read(getClass().getResource("/icons/sporetrans.png"));
-                    newTektonPanel.addItemPanel(new SporePanel(spore, image));
-                }
-                catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-            }
-            for (ShroomString string : tekton.arrayOfString) {
-                try {
-                    BufferedImage image = ImageIO.read(getClass().getResource("/icons/stringtrans.png"));
-                    newTektonPanel.addItemPanel(new ShroomStringPanel(string, image));
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-
-                }
-            }
-        }*/
-
         map.update();
         gamestarted = true;
-
     }
 
     /**
@@ -247,7 +204,7 @@ public class Controller {
         map.command("TIMEELAPSED 2");
         if (breakTektonCounter >= TEKTON_BREAK_NUM) {
             System.out.println("TEKTON TÖRÉS");
-            Tekton t = map.tektons.getLast();
+            Tekton t = map.tektons.get(map.tektons.size() - 1);
             breakTekton(t);
             breakTektonCounter = 0;
             gameWindow.reDraw();
@@ -308,7 +265,7 @@ public class Controller {
      */
     public void spread(Mushroom mushroom, Tekton tekton, int amount) {
         System.out.println("Akció: Spórázás - Gomba: " + mushroom + ", Cél: " + tekton + ", Mennyiség: " + amount);
-        mushroom.spreadSpore(tekton, -1, -1);
+        mushroom.spreadSpore(tekton, 15, -1);
         try {
             BufferedImage image = ImageIO.read(getClass().getResource("/icons/sporetrans.png"));
             Spore latestSpore = tekton.arrayOfSpore.get(tekton.arrayOfSpore.size() - 1); // utolsóként hozzáadott
@@ -328,6 +285,7 @@ public class Controller {
             System.out.println("Hiba a spóra kép betöltésekor: " + e.getMessage());
         }
         map.update();
+        map.command("STATUS");
         gameWindow.reDraw();
     }
 
@@ -409,8 +367,9 @@ public class Controller {
      * @param insect A spórát evő rovar. A Tekton implicit (a rovar aktuális pozíciója).
      */
     public void eatSpore(Insect insect) {
-        System.out.println("Akció: Rovar spórát eszik - Rovar: " + insect);
+
         insect.eatSpore(insect.tekton.arrayOfSpore.get(0));
+        System.out.println("Akció: Rovar spórát eszik - Rovar: " + insect.effectType);
         map.update();
         gameWindow.reDraw();
     }
@@ -440,18 +399,22 @@ public class Controller {
     }
 
     public void checkSelected(){
-        for(TektonPanel tektonPanel : gameWindow.tektonPanels){
-            if(tektonPanel.isSelected){
-                selectedTektons.add(tektonPanel.getTektonData());
+        for(int i=1; i<=TektonPanel.globalTekton; i++){
+            for(TektonPanel tektonPanel : gameWindow.tektonPanels){
+                if(tektonPanel.isSelected == i){
+                    selectedTektons.add(tektonPanel.getTektonData());
+                }
             }
         }
     }
     public void resetSelectedTektons(){
         for (TektonPanel tektonPanel: gameWindow.tektonPanels){
-            if(tektonPanel.isSelected){
-                tektonPanel.isSelected = false;
+            if(tektonPanel.isSelected != 0){
+                tektonPanel.isSelected = 0;
             }
         }
+
+        TektonPanel.globalTekton = 1;
         selectedTektons.clear();
     }
 }
