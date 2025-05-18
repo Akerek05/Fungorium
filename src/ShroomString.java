@@ -97,7 +97,8 @@ public class ShroomString implements TurnControl, Serializable {
     public void die() {
         startTek.removeString(this);
         disTek.removeString(this);
-
+        startTek.stringNeighbours.remove(disTek);
+        disTek.stringNeighbours.remove(startTek);
     }
 
     public String toString() {

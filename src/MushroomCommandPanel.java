@@ -137,7 +137,7 @@ public class MushroomCommandPanel extends BasicCommandPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("MushroomCommandPanel: Testnövesztés gomb megnyomva.");
-                //controller.checkSelected();
+                controller.checkSelected();
                 if (controller.selectedTektons.size() == 1) {
                     Tekton target = controller.selectedTektons.get(0); // Placeholder
                     controller.growBody(controller.PlayerMushroom, target);

@@ -152,7 +152,16 @@ public class StatusPanel extends JPanel {
 
     // Metódusok a labelek frissítésére
     public void updatePlayerId(int playerId) {
-        playerIdLabel.setText("Játékos: " + playerId);
+        int idNum = -1;
+        String itemName = "Nincs Kivalasztva";
+        if (controller.PlayerMushroom != null) {
+            idNum = controller.PlayerMushroom.id;
+            itemName = " MushroomId: ";
+        } else if (controller.PlayerInsect != null) {
+            idNum = controller.PlayerInsect.id;
+            itemName = " InsectId: ";
+        }
+        playerIdLabel.setText("Játékos: " + playerId + itemName + idNum);
     }
 
     public void updateScore(int score) {
@@ -176,7 +185,8 @@ public class StatusPanel extends JPanel {
     public void draw() {
         int currentPlayerId = controller.getCurrentPlayerIndex();
         int currentScore = controller.getCurrentPlayerScore(); // vagy más megfelelő getter
-        playerIdLabel.setText("Játékos: " + currentPlayerId);
+        //playerIdLabel.setText("Játékos: " + currentPlayerId);
+        updatePlayerId(currentPlayerId);
         playerScoreLabel.setText("Pontszám: " + currentScore);
     }
 

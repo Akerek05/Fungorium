@@ -28,7 +28,7 @@ public abstract class BasicCommandPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Kör vége gomb megnyomva.");
                 controller.setTurnEnded(true); // Flag beállítása
-
+                controller.resetSelectedTektons();
             }
         });
 

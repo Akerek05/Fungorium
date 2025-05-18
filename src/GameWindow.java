@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
+import java.util.List;
 
 /**
  * A fő játékképernyőt jeleníti meg ez az osztály.
@@ -172,6 +173,11 @@ public class GameWindow extends JFrame {
                 g2.setStroke(new BasicStroke(2));
 
                 for (ShroomString ss : controller.map.shroomStrings) {
+                    if (ss.isCut) {
+                        g2.setColor(Color.RED);
+                    } else {
+                        g2.setColor(Color.GREEN);
+                    }
 
                     Tekton start = ss.startTek;
                     Tekton end = ss.disTek;
@@ -203,7 +209,40 @@ public class GameWindow extends JFrame {
      */
     public void endGame() {
         //TODO: kiírja a pontokat sorba
-        controller.map.endGame();
+        this.getContentPane().removeAll();
+        this.getContentPane().revalidate();
+        this.getContentPane().repaint();
+
+        JLabel titleLabel = new JLabel("Játék vége! Végeredmény:", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
+        getContentPane().add(titleLabel, BorderLayout.NORTH);
+
+        // Lista panel (eredmények)
+        JPanel resultPanel = new JPanel();
+        resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
+
+        // Játékosok lekérése és rendezése pontszám szerint
+        List<Integer> player_ids = controller.player_ids; // Igazítsd a tényleges getterhez
+        List<Integer> scores = new ArrayList<>();
+        scores.addAll(controller.map.scores);
+        scores.sort(Collections.reverseOrder());
+        Integer player_id = -1;
+        int rank = 1;
+        for (Integer score : scores) {
+            for (Integer player : player_ids) {
+                if (controller.map.scores.get(player).equals(score) && player_id == -1) {
+                    JLabel label = new JLabel(rank + ". hely: Player " + player + ", Pont: " + score);
+                    label.setFont(new Font("Arial", Font.PLAIN, 20));
+                    label.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    resultPanel.add(label);
+                    rank++;
+                    player_id = player;
+                }
+            }
+            player_ids.remove(player_id);
+            player_id = -1;
+        }
+        getContentPane().add(resultPanel, BorderLayout.CENTER);
         goToMenu();
     }
 

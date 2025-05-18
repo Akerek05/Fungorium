@@ -106,6 +106,7 @@ public class Tekton implements TurnControl, Serializable {
      * Gomba növesztése erre a Tektonra (csak ha még nincs rajta).
      */
     public void growBody(int pid) {
+
         if (arrayOfMushroom.isEmpty()) {
             arrayOfMushroom.add(new Mushroom(this, pid));
             return;

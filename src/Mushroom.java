@@ -58,7 +58,7 @@ public class Mushroom implements TurnControl, Serializable {
      * Gomba fejlesztése egy új, erősebb változatra.
      */
     public void upgradeMushroom() {
-        if(resources > 80) {
+        if(resources > 10) {
             position.addUpgradedBody();
             resources -= 80;
             return;

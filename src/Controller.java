@@ -1,6 +1,8 @@
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
@@ -34,7 +36,7 @@ public class Controller {
     /**
      * A töréshez szükséges határérték.
      */
-    protected int TEKTON_BREAK_NUM = 20;
+    protected int TEKTON_BREAK_NUM = 30;
 
     /**
      * Kiválasztott (aktuális) játékos gombája.
@@ -106,10 +108,11 @@ public class Controller {
             System.err.println("Hiba: A játékosok száma pozitív egész kell legyen.");
             return;
         }
+
+        map.wipeMap();
         map.startGame(playerCount);
         map.mapInit();
         map.update();
-        map.command("STATUS");
         System.out.println("Játék indítása " + playerCount + " játékossal.");
         player_ids.clear();
 
@@ -129,7 +132,6 @@ public class Controller {
      * Főmenü megjelenítése.
      */
     public void showMenu() {
-        System.out.println("Főmenü megjelenítése...");
         menuWindow = new MenuWindow(this);
         menuWindow.setVisible(true);
     }
@@ -155,53 +157,65 @@ public class Controller {
             currentPlayerIndex = i;
             gameWindow.setCurrentPlayerId(currentPlayerIndex);
 
-            System.out.println("Játékos " + currentPlayerIndex + " következik.");
             turnEnded = false; // Alaphelyzetbe állítjuk a flag-et
-            for (int j = 0; j < player_ids.size()/2; j++){
-                if(map.mushrooms.get(j).playerID == currentPlayerIndex){
-                    PlayerMushroom = map.mushrooms.get(j);
+
+            for(int j = map.mushrooms.size() - 1; j >= 0; j--) {
+                Mushroom mushroom = map.mushrooms.get(j);
+                if(mushroom.playerID == currentPlayerIndex) {
+                    System.out.println("Játékos " + currentPlayerIndex + " következik." + "Gomba: " + mushroom.id);
+                    PlayerMushroom = mushroom;
+                    gameWindow.showMushroomCMD(); // Gomba parancsok megjelenítése
+                    gameWindow.reDraw();
+                    while (!turnEnded) {
+                        // Várunk a gombra... (GUI események kezelése)
+                        try {
+                            Thread.sleep(100); // Kicsit várunk, hogy ne pörögjön feleslegesen
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    turnEnded = false;
                 }
             }
-            gameWindow.showMushroomCMD(); // Gomba parancsok megjelenítése
-            gameWindow.reDraw();
-            while (!turnEnded) {
-                // Várunk a gombra... (GUI események kezelése)
-                try {
-                    Thread.sleep(100); // Kicsit várunk, hogy ne pörögjön feleslegesen
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+
         }
 
         for (int i = player_ids.size() / 2; i < player_ids.size(); i++) {
             currentPlayerIndex = i;
 
             gameWindow.setCurrentPlayerId(currentPlayerIndex);
+            turnEnded = false;
 
-            System.out.println("Játékos " + currentPlayerIndex + " következik.");
-            turnEnded = false;
-            for (int j = 0; j < player_ids.size()/2; j++){
-                if(map.insects.get(j).playerID == currentPlayerIndex){
-                    PlayerInsect = map.insects.get(j);
+            for (int j = map.insects.size() - 1; j >= 0; j--) {
+                Insect insect = map.insects.get(j);
+                if (insect.playerID == currentPlayerIndex) {
+                    System.out.println("Játékos " + currentPlayerIndex + " következik." + "Rovar: " + insect.id);
+                    PlayerInsect = insect;
+                    gameWindow.showInsectCMD(); // Rovar parancsok megjelenítése
+                    gameWindow.reDraw();
+                    while (!turnEnded) {
+                        try {
+                            Thread.sleep(100);
+                            if (insect == null) {
+                                turnEnded = true;
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    turnEnded = false;
                 }
+
             }
-            gameWindow.showInsectCMD(); // Rovar parancsok megjelenítése
-            gameWindow.reDraw();
-            while (!turnEnded) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            turnEnded = false;
+
+
         }
 
         // Kör végi események (maradnak)
         System.out.println("--- Kör vége ---");
         breakTektonCounter++;
         map.command("TIMEELAPSED 2");
+        map.update();
         if (breakTektonCounter >= TEKTON_BREAK_NUM) {
             System.out.println("TEKTON TÖRÉS");
             Tekton t = map.tektons.get(map.tektons.size() - 1);
@@ -213,6 +227,8 @@ public class Controller {
         if (currentTurn >= MAX_TURNS) {
             endGame();
         }
+
+        map.command("STATUS");
     }
 
     /**
@@ -220,10 +236,24 @@ public class Controller {
      * @param filePath A mentett játékfájl elérési útvonala.
      */
     public void load(String filePath) {
-        System.out.println("Játék betöltése innen: " + filePath);
+        JOptionPane.showMessageDialog(null, "Loaded game from: " + filePath);
+
+        if (this.gameWindow != null) {
+            this.gameWindow.dispose();
+        }
+
+        map.wipeMap();
         map.loadMap(filePath);
         map.update();
-        gameWindow.reDraw();
+
+        for (int i = 0; i < map.scores.size(); i++) {
+            player_ids.add(i); // Játékos ID-k pl. 0, 1, 2...
+        }
+        this.gameWindow = new GameWindow(this);
+        menuWindow.dispose();
+
+        map.update();
+        gamestarted = true;
     }
 
     /**
@@ -234,7 +264,6 @@ public class Controller {
 
         map.tektons.add(tekton.breakTekton(-1));
         map.update();
-        map.command("STATUS");
         gameWindow.reDraw();
     }
 
@@ -243,7 +272,7 @@ public class Controller {
      * @param filePath A fájl elérési útvonala, ahova menteni kell.
      */
     public void save(String filePath) {
-        System.out.println("Játék mentése ide: " + filePath);
+        JOptionPane.showMessageDialog(null, "Saved game as: " + filePath);
         map.saveMap(filePath);
     }
 
@@ -251,9 +280,10 @@ public class Controller {
      * Játék befejezése.
      */
     public void endGame() {
-        System.out.println("Játék vége!");
+        JOptionPane.showMessageDialog(null, "Game over!");
         map.endGame();
         gameWindow.endGame();
+        currentPlayerIndex = 0;
 
     }
 
@@ -265,27 +295,9 @@ public class Controller {
      */
     public void spread(Mushroom mushroom, Tekton tekton, int amount) {
         System.out.println("Akció: Spórázás - Gomba: " + mushroom + ", Cél: " + tekton + ", Mennyiség: " + amount);
-        mushroom.spreadSpore(tekton, 15, -1);
-        try {
-            BufferedImage image = ImageIO.read(getClass().getResource("/icons/sporetrans.png"));
-            Spore latestSpore = tekton.arrayOfSpore.get(tekton.arrayOfSpore.size() - 1); // utolsóként hozzáadott
+        mushroom.spreadSpore(tekton, 6, -1);
 
-            // Megkeressük a megfelelő TektonPanelt
-            for (TektonPanel panel : gameWindow.getTektonPanels()) {
-                if (panel.getTektonData() == tekton) {
-                    SporePanel sporePanel = new SporePanel(latestSpore, image);
-                    sporePanel.setBounds(panel.getWidth() - 34, panel.getHeight() - 34, 30, 30); // jobb alsó sarok
-                    panel.addItemPanel(sporePanel);
-                    panel.revalidate();
-                    panel.repaint();
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Hiba a spóra kép betöltésekor: " + e.getMessage());
-        }
         map.update();
-        map.command("STATUS");
         gameWindow.reDraw();
     }
 
@@ -384,7 +396,8 @@ public class Controller {
         System.out.println("Akció: Rovar fonalat vág - Rovar: " + insect + ", Fonál célpontja: " + tekton);
 
         for(int i = 0; i< map.shroomStrings.size(); i++) {
-            if(map.shroomStrings.get(i).disTek == tekton) {
+            if((map.shroomStrings.get(i).disTek == tekton && map.shroomStrings.get(i).startTek == insect.tekton)
+            || (map.shroomStrings.get(i).startTek == tekton && map.shroomStrings.get(i).disTek == insect.tekton)) {
                 insect.cutString(map.shroomStrings.get(i));
             }
         }
@@ -409,9 +422,7 @@ public class Controller {
     }
     public void resetSelectedTektons(){
         for (TektonPanel tektonPanel: gameWindow.tektonPanels){
-            if(tektonPanel.isSelected != 0){
                 tektonPanel.isSelected = 0;
-            }
         }
 
         TektonPanel.globalTekton = 1;

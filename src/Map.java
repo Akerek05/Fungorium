@@ -4,6 +4,8 @@ import java.awt.geom.Area;
 import java.io.*;
 import java.sql.Array;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * A játékban használt térképet reprezentáló osztály,
@@ -122,6 +124,7 @@ public class Map implements Serializable {
         insects.clear();
         spores.clear();
         Collections.fill(scores, 0);
+
 
         for (Tekton tekton : tektons) {
             for (Insect insect : tekton.arrayOfInsect) {
@@ -255,7 +258,7 @@ public class Map implements Serializable {
         return null;
     }
 
-    public void endGame(){
+    /*public void endGame(){
         List<Integer> order = new ArrayList<Integer>(scores);
 
         scores.sort(Collections.reverseOrder());
@@ -263,6 +266,35 @@ public class Map implements Serializable {
             int value = scores.get(i);
             int playerId = order.indexOf(value); // csak az első előfordulást adja vissza
             System.out.println((i + 1) + ". hely: " + playerId + "|Pontszám: " + value);
+        }
+    }*/
+
+    public void endGame() {
+        if (scores == null || scores.isEmpty()) {
+            System.out.println("Nincsenek pontszámok a megjelenítéshez.");
+            return;
+        }
+
+
+        // Létrehozunk egy listát az indexekből (0, 1, 2, ..., scores.size()-1)
+        List<Integer> playerIndices = IntStream.range(0, scores.size())
+                .boxed()
+                .collect(Collectors.toList());
+
+
+        // Rendezük az indexek listáját a 'scores' alapján, csökkenő sorrendben
+        // Fontos: a 'scores' lista itt nem módosul!
+        final List<Integer> finalScores = scores; // Lambda kifejezéshez 'effectively final'
+        playerIndices.sort((index1, index2) -> Integer.compare(finalScores.get(index2), finalScores.get(index1)));
+        // Vagy Comparator.comparingInt(finalScores::get).reversed()
+
+
+        System.out.println("Végeredmény:");
+        for (int i = 0; i < playerIndices.size(); i++) {
+            int rank = i + 1;
+            int playerId = playerIndices.get(i); // A rendezett listából vesszük a játékos ID-t
+            int score = finalScores.get(playerId);     // A pontszámot az eredeti scores listából olvassuk ki
+            System.out.println(rank + ". hely: Játékos " + playerId + " | Pontszám: " + score);
         }
     }
 
@@ -596,7 +628,6 @@ public class Map implements Serializable {
                         Tekton startT = s.startTek;
                         Tekton endT = s.disTek;
                         if (startT.arrayOfInsect.contains(i)){
-
                             i.cutString(s);
                             update();
                         }
