@@ -31,7 +31,7 @@ public class InsectCommandPanel extends BasicCommandPanel {
         super(controller); // Az ősosztály konstruktorának hívása a Controllerrel
 
         // Cím a panelnek
-        JLabel titleLabel = new JLabel("Rovar Parancsok");
+        JLabel titleLabel = new JLabel("Insect Commands");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(titleLabel);
@@ -52,9 +52,9 @@ public class InsectCommandPanel extends BasicCommandPanel {
         super.draw();
 
         // Rovar specifikus gombok létrehozása
-        moveButton = new JButton("Mozgás");
-        eatButton = new JButton("Spóraevés");
-        cutButton = new JButton("Fonálvágás");
+        moveButton = new JButton("Move");
+        eatButton = new JButton("Eat");
+        cutButton = new JButton("Cut");
 
         // Gombok stílusának egységesítése (opcionális)
         Font buttonFont = new Font("Arial", Font.PLAIN, 12);
@@ -82,9 +82,8 @@ public class InsectCommandPanel extends BasicCommandPanel {
                 if (controller.selectedTektons.size() == 1) {
                     Tekton target = controller.selectedTektons.get(0);
                     controller.move(controller.PlayerInsect, target);
-                } else {
-                    System.out.println("Hibás mezőválasztás! Válassz ki pontosan egy célmezőt.");
-                }
+                } else
+                    JOptionPane.showMessageDialog(null, "Error! Choose 1 tekton.");
                 controller.resetSelectedTektons(); // FONTOS: kijelölések törlése
             }
         });
@@ -108,6 +107,8 @@ public class InsectCommandPanel extends BasicCommandPanel {
                     controller.cut(controller.PlayerInsect, target);
 
                 }
+                else
+                    JOptionPane.showMessageDialog(null, "Error! Choose 1 tekton.");
                 controller.checkSelected();
             }
         });

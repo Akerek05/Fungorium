@@ -60,7 +60,7 @@ public class Mushroom implements TurnControl, Serializable {
     public void upgradeMushroom() {
         if(resources > 10) {
             position.addUpgradedBody();
-            resources -= 80;
+            resources -= 10;
             return;
         }
         System.out.println("Error! Could not upgrade mushroom");
@@ -123,7 +123,7 @@ public class Mushroom implements TurnControl, Serializable {
 
     public void timeElapsed() {
         resources += 10;
-        sporeSpawnTime += 10;
+        sporeSpawnTime += 2;
         lifeTime -= 10;
         if (lifeTime <= 0) {
             this.die();

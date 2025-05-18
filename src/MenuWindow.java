@@ -51,7 +51,7 @@ public class MenuWindow extends JFrame {
         this.controller = controller;
         this.playerCount = 4; // Alapértelmezett játékosszám
 
-        setTitle("Játék Főmenü");
+        setTitle("Main Menu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // A főmenü bezárása bezárja az alkalmazást
         setResizable(false); // Nem átméretezhető menüablak
 
@@ -67,7 +67,7 @@ public class MenuWindow extends JFrame {
      * Inicializálja a GUI komponenseket.
      */
     private void initComponents() {
-        playerCountLabel = new JLabel("Játékosok száma: " + playerCount);
+        playerCountLabel = new JLabel("Player Count: " + playerCount);
         playerCountLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 
         // JSpinner a játékosok számának beállításához (pl. 4-től 12-ig)
@@ -84,18 +84,18 @@ public class MenuWindow extends JFrame {
             @Override
             public void stateChanged(ChangeEvent e) {
                 MenuWindow.this.playerCount = (Integer) playerCountSpinner.getValue();
-                playerCountLabel.setText("Játékosok száma: " + MenuWindow.this.playerCount);
+                playerCountLabel.setText("Player Count: " + MenuWindow.this.playerCount);
             }
         });
 
 
-        startButton = new JButton("Új Játék Indítása");
+        startButton = new JButton("New Game");
         startButton.setFont(new Font("Arial", Font.BOLD, 14));
-        startButton.setToolTipText("Új játék kezdése a kiválasztott játékosszámmal.");
+        startButton.setToolTipText("Create a New Game");
 
-        loadButton = new JButton("Játék Betöltése");
+        loadButton = new JButton("Load Game");
         loadButton.setFont(new Font("Arial", Font.BOLD, 14));
-        loadButton.setToolTipText("Korábban mentett játékállás betöltése.");
+        loadButton.setToolTipText("Load a Game");
     }
 
     /**
@@ -116,7 +116,7 @@ public class MenuWindow extends JFrame {
         gbc.insets = new Insets(5, 5, 10, 5); // Térköz az elemek között
 
         // Cím
-        JLabel titleLabel = new JLabel("Gomba & Rovar Hadviselés");
+        JLabel titleLabel = new JLabel("Fungorium Game");
         titleLabel.setFont(new Font("Serif", Font.BOLD, 28));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.insets = new Insets(5, 5, 20, 5); // Nagyobb térköz a cím alatt
@@ -125,7 +125,7 @@ public class MenuWindow extends JFrame {
         // Játékosok száma beállító
         JPanel playerCountPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         playerCountPanel.setOpaque(false); // Átlátszó háttér, hogy a mainPanel háttere látszódjon
-        playerCountPanel.add(new JLabel("Válassz játékosszámot:"));
+        playerCountPanel.add(new JLabel("Player Count:"));
         playerCountPanel.add(playerCountSpinner);
         gbc.insets = new Insets(5, 5, 10, 5);
         mainPanel.add(playerCountPanel, gbc);
@@ -146,7 +146,7 @@ public class MenuWindow extends JFrame {
         mainPanel.add(loadButton, gbc);
 
         // Kilépés gomb (opcionális, de hasznos)
-        JButton exitButton = new JButton("Kilépés");
+        JButton exitButton = new JButton("Exit");
         exitButton.setFont(new Font("Arial", Font.PLAIN, 14));
         exitButton.setPreferredSize(new Dimension(200, 40));
         exitButton.addActionListener(e -> System.exit(0));

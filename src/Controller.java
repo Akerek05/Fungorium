@@ -152,7 +152,7 @@ public class Controller {
             return;
         }
         System.out.println("--- Új kör kezdődik ---");
-
+        PlayerInsect = null;
         for (int i = 0; i < player_ids.size() / 2; i++) {
             currentPlayerIndex = i;
             gameWindow.setCurrentPlayerId(currentPlayerIndex);
@@ -163,12 +163,16 @@ public class Controller {
                 Mushroom mushroom = map.mushrooms.get(j);
                 if(mushroom.playerID == currentPlayerIndex) {
                     System.out.println("Játékos " + currentPlayerIndex + " következik." + "Gomba: " + mushroom.id);
+                    JOptionPane.showMessageDialog(null, "Player: "+ currentPlayerIndex + " is next with mushroom: "+ mushroom.id);
                     PlayerMushroom = mushroom;
                     gameWindow.showMushroomCMD(); // Gomba parancsok megjelenítése
                     gameWindow.reDraw();
                     while (!turnEnded) {
                         // Várunk a gombra... (GUI események kezelése)
                         try {
+                            if (!gamestarted){
+                                return;
+                            }
                             Thread.sleep(100); // Kicsit várunk, hogy ne pörögjön feleslegesen
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -179,6 +183,7 @@ public class Controller {
             }
 
         }
+        PlayerMushroom = null;
 
         for (int i = player_ids.size() / 2; i < player_ids.size(); i++) {
             currentPlayerIndex = i;
@@ -190,11 +195,15 @@ public class Controller {
                 Insect insect = map.insects.get(j);
                 if (insect.playerID == currentPlayerIndex) {
                     System.out.println("Játékos " + currentPlayerIndex + " következik." + "Rovar: " + insect.id);
+                    JOptionPane.showMessageDialog(null, "Player: "+ currentPlayerIndex + " is next with insect: "+ insect.id);
                     PlayerInsect = insect;
                     gameWindow.showInsectCMD(); // Rovar parancsok megjelenítése
                     gameWindow.reDraw();
                     while (!turnEnded) {
                         try {
+                            if (!gamestarted){
+                                return;
+                            }
                             Thread.sleep(100);
                             if (insect == null) {
                                 turnEnded = true;
@@ -205,14 +214,13 @@ public class Controller {
                     }
                     turnEnded = false;
                 }
-
             }
-
-
+            PlayerInsect = null;
         }
 
         // Kör végi események (maradnak)
         System.out.println("--- Kör vége ---");
+        JOptionPane.showMessageDialog(null, "Round ended");
         breakTektonCounter++;
         map.command("TIMEELAPSED 2");
         map.update();
@@ -284,6 +292,7 @@ public class Controller {
         map.endGame();
         gameWindow.endGame();
         currentPlayerIndex = 0;
+        gamestarted = false;
 
     }
 
@@ -294,9 +303,7 @@ public class Controller {
      * @param amount A spórák mennyisége (a specifikációban int, de a gomba típusa is meghatározhatja).
      */
     public void spread(Mushroom mushroom, Tekton tekton, int amount) {
-        System.out.println("Akció: Spórázás - Gomba: " + mushroom + ", Cél: " + tekton + ", Mennyiség: " + amount);
         mushroom.spreadSpore(tekton, 6, -1);
-
         map.update();
         gameWindow.reDraw();
     }
@@ -308,7 +315,7 @@ public class Controller {
      * @param tekton2 A másik Tekton.
      */
     public void growString(Mushroom mushroom, Tekton tekton1, Tekton tekton2) {
-        System.out.println("Akció: Fonálnövesztés - Gomba: " + mushroom + ", Tektonok: " + tekton1 + ", " + tekton2);
+
         mushroom.growString(tekton1, tekton2);
         map.update();
         gameWindow.reDraw();
@@ -320,7 +327,7 @@ public class Controller {
      * @param tekton A Tekton, amin a testnövesztés történik.
      */
     public void growBody(Mushroom mushroom, Tekton tekton) {
-        System.out.println("Akció: Gombatest növesztés - Gomba: " + mushroom + ", Cél: " + tekton);
+
         for(int i = 0; i< map.shroomStrings.size(); i++) {
             if(map.shroomStrings.get(i).parentSrhoom == mushroom && map.shroomStrings.get(i).disTek == tekton) {
                 map.shroomStrings.get(i).growMushroom();
@@ -336,8 +343,9 @@ public class Controller {
      * @param mushroom A fejlesztendő gomba.
      */
     public void upgradeMushroom(Mushroom mushroom) {
-        System.out.println("Akció: Gomba fejlesztése - Gomba: " + mushroom);
+        Tekton position = mushroom.position;
         mushroom.upgradeMushroom();
+        PlayerMushroom = position.arrayOfMushroom.get(0);
         map.update();
         gameWindow.reDraw();
     }

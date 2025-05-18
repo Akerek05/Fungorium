@@ -39,7 +39,7 @@ public class MushroomCommandPanel extends BasicCommandPanel {
         super(controller); // Az ősosztály konstruktorának hívása a Controllerrel
 
         // Cím a panelnek
-        JLabel titleLabel = new JLabel("Gomba Parancsok");
+        JLabel titleLabel = new JLabel("Mushroom Commands");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(titleLabel);
@@ -59,11 +59,11 @@ public class MushroomCommandPanel extends BasicCommandPanel {
         super.draw();
 
         // Gomba specifikus gombok létrehozása
-        spreadButton = new JButton("Spórázás");
-        growStringButton = new JButton("Fonálnövesztés");
-        upgradeButton = new JButton("Fejlesztés");
-        eatButton = new JButton("Rovar Elkapása"); // Nevét pontosítottam
-        growBodyButton = new JButton("Testnövesztés");
+        spreadButton = new JButton("Spread Spore");
+        growStringButton = new JButton("Grow String");
+        upgradeButton = new JButton("Upgrade");
+        eatButton = new JButton("Eat Insect"); // Nevét pontosítottam
+        growBodyButton = new JButton("Grow Body");
 
         // Gombok stílusának egységesítése (opcionális)
         Font buttonFont = new Font("Arial", Font.PLAIN, 12);
@@ -88,6 +88,8 @@ public class MushroomCommandPanel extends BasicCommandPanel {
                     int amount = -1; // Placeholder spóra mennyiség
                     controller.spread(controller.PlayerMushroom, target, amount);
                 }
+                else
+                    JOptionPane.showMessageDialog(null, "Error! Choose 1 tekton.");
                 controller.resetSelectedTektons();
             }
         });
@@ -105,6 +107,8 @@ public class MushroomCommandPanel extends BasicCommandPanel {
                     controller.growString(controller.PlayerMushroom,target1, target2);
 
                 }
+                else
+                    JOptionPane.showMessageDialog(null, "Error! Choose 2 tekton.");
                 controller.resetSelectedTektons();
             }
         });
@@ -129,6 +133,8 @@ public class MushroomCommandPanel extends BasicCommandPanel {
                     Insect targetInsect = insectLocation.arrayOfInsect.get(0); // Placeholder
                     controller.eatInsect(source, insectLocation, targetInsect);
                 }
+                else
+                    JOptionPane.showMessageDialog(null, "Error! Choose 2 tektons.");
                 controller.resetSelectedTektons();
             }
         });
@@ -142,6 +148,8 @@ public class MushroomCommandPanel extends BasicCommandPanel {
                     Tekton target = controller.selectedTektons.get(0); // Placeholder
                     controller.growBody(controller.PlayerMushroom, target);
                 }
+                else
+                    JOptionPane.showMessageDialog(null, "Error! Choose 1 tekton.");
                 controller.resetSelectedTektons();
             }
         });

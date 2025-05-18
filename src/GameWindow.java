@@ -28,7 +28,7 @@ public class GameWindow extends JFrame {
      */
     public GameWindow(Controller controller) {
         this.controller = controller;
-        setTitle("Game Window");
+        setTitle("Fungorium");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null); // Képernyő közepére
@@ -133,6 +133,12 @@ public class GameWindow extends JFrame {
                     MushroomPanel mp = new MushroomPanel(mushroom, image);
                     mp.setBounds(4, 4, 30, 30); // bal felső
                     panel.add(mp);
+                    if (mushroom.equals(controller.PlayerMushroom)){
+                        mp.selected = true;
+                    } else {
+                        mp.selected = false;
+                    }
+
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -145,6 +151,11 @@ public class GameWindow extends JFrame {
                     InsectPanel ip = new InsectPanel(insect, image);
                     ip.setBounds(size - 34, 4, 30, 30); // jobb felső
                     panel.add(ip);
+                    if (insect.equals(controller.PlayerInsect)){
+                        ip.selected = true;
+                    } else {
+                        ip.selected = false;
+                    }
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -213,7 +224,7 @@ public class GameWindow extends JFrame {
         this.getContentPane().revalidate();
         this.getContentPane().repaint();
 
-        JLabel titleLabel = new JLabel("Játék vége! Végeredmény:", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Game Over! Results:", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
         getContentPane().add(titleLabel, BorderLayout.NORTH);
 
@@ -231,7 +242,7 @@ public class GameWindow extends JFrame {
         for (Integer score : scores) {
             for (Integer player : player_ids) {
                 if (controller.map.scores.get(player).equals(score) && player_id == -1) {
-                    JLabel label = new JLabel(rank + ". hely: Player " + player + ", Pont: " + score);
+                    JLabel label = new JLabel(rank + ". place: Player" + player + ", Points: " + score);
                     label.setFont(new Font("Arial", Font.PLAIN, 20));
                     label.setAlignmentX(Component.CENTER_ALIGNMENT);
                     resultPanel.add(label);

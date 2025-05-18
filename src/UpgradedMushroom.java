@@ -1,7 +1,4 @@
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Fejlesztett gomba, amely spórákat képes terjeszteni nemcsak szomszédos,
@@ -28,27 +25,53 @@ public class UpgradedMushroom extends Mushroom {
      */
     public void spreadSpore(Tekton tekton, int rnd, int calories) {
         String error = "Error! Could not spread Spore to Tekton:"+tekton.id+" from Mushroom:"+id;
-        if (sporeSpawnTime > 4) {
-            Set<Tekton> visited = new HashSet<>();
-            Queue<Tekton> queue = new LinkedList<>();
 
-            queue.add(tekton);
-            visited.add(tekton);
+        Tekton mushroomTekton = this.position;
+        if (sporeSpawnTime > 2) {
+            List<Tekton> queue = new ArrayList<>();
+            queue.add(mushroomTekton);
+            int level = 0;
+            int nodesInCurrentLevel = 1;
+            while (!queue.isEmpty() && level < 2) {
+                Tekton current = queue.remove(0);
+                nodesInCurrentLevel--;
 
-            while (!queue.isEmpty()) {
-                Tekton current = queue.poll();
-
-                for (Tekton neighbour : current.neighbours) {
-                    if (!visited.contains(neighbour)) {
-                        neighbour.addSpore(playerID, rnd, calories);
-                        visited.add(neighbour);
-                        queue.add(neighbour);
+                for (Tekton currentNeighbour : current.neighbours) {
+                    if (currentNeighbour.equals(tekton)) {
+                        tekton.addSpore(playerID, rnd, calories);
                         return;
                     }
+                    queue.add(currentNeighbour);
                 }
-                System.out.println(error);
+                if (nodesInCurrentLevel == 0) {
+                    level++;
+                    nodesInCurrentLevel = queue.size();
+                }
             }
         }
+
+
+//        if (sporeSpawnTime > 4) {
+//            Set<Tekton> visited = new HashSet<>();
+//            Queue<Tekton> queue = new LinkedList<>();
+//
+//            queue.add(tekton);
+//            visited.add(tekton);
+//
+//            while (!queue.isEmpty()) {
+//                Tekton current = queue.poll();
+//
+//                for (Tekton neighbour : current.neighbours) {
+//                    if (!visited.contains(neighbour)) {
+//                        neighbour.addSpore(playerID, rnd, calories);
+//                        visited.add(neighbour);
+//                        queue.add(neighbour);
+//                        return;
+//                    }
+//                }
+//                System.out.println(error);
+//            }
+//        }
         else
             System.out.println(error);
 

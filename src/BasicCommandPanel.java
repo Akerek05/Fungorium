@@ -22,7 +22,7 @@ public abstract class BasicCommandPanel extends JPanel {
     }
 
     public void draw() {
-        endTurnButton = new JButton("Kör vége");
+        endTurnButton = new JButton("End Turn");
         endTurnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -19,7 +19,7 @@ public class MushroomPanel extends BasicPanel {
      */
     protected JPopupMenu list; // A specifikáció 'list'-nek nevezi, de 'contextMenu' jobb lenne
     private Mushroom mushroomData; // A panelhez tartozó gomba adatai
-
+    protected boolean selected = false;
     /**
      * Konstruktor a MushroomPanel számára.
      * @param mushroom Az Mushroom objektum, amit ez a panel megjelenít.
@@ -34,32 +34,38 @@ public class MushroomPanel extends BasicPanel {
         // JPopupMenu (kontextus menü) inicializálása
         list = new JPopupMenu();
 
-        // Egér eseménykezelő a kontextus menü megjelenítéséhez (jobb klikk)
-        // és a panel kiválasztásához (bal klikk)
+        if (selected) {
+
+        } else {
+
+        }
+
+        setLayout(null); // nem kell semmilyen layout, mert kézzel rajzolunk
+
+        list = new JPopupMenu();
+        JMenuItem detailsItem = new JMenuItem("Details...");
+        detailsItem.addActionListener(e -> showMushroomDetails());
+        list.add(detailsItem);
+
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger()) { // Jobb klikk
-                    list.show(e.getComponent(), e.getX(), e.getY());
-                } else if (SwingUtilities.isLeftMouseButton(e)) { // Bal klikk
-                    // Itt lehetne logikát hozzáadni a panel "kiválasztásához"
-                    // Például a Controller értesítése, hogy ez a gomba lett kiválasztva
-                    // és a BasicPanel selected állapotának beállítása.
-                    setSelected(!isSelected()); // Toggle selection
-                    System.out.println(mushroomData.id + " kiválasztva: " + isSelected());
-                    // A Controller értesítése, ha szükséges
-                    // if (controller != null) controller.selectMushroom(mushroomData, isSelected());
-                }
+                maybeShowPopup(e);
             }
 
-            // A maybeShowPopup külön kezelése a cross-platform jobb klikkhez
             @Override
             public void mouseReleased(MouseEvent e) {
+                maybeShowPopup(e);
+            }
+
+            private void maybeShowPopup(MouseEvent e) {
                 if (e.isPopupTrigger()) {
                     list.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
+
+        draw();
     }
 
     /**
@@ -70,7 +76,37 @@ public class MushroomPanel extends BasicPanel {
      */
     @Override
     public void draw() {
+        repaint();
+    }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        if (icon != null) {
+            int iconSize = Math.min(getWidth(), getHeight()) / 2; // pl. 40x40, ha panel 80x80
+            int x = getWidth() - iconSize - 2; // jobb felső sarok, 2px margó
+            int y = 2;
+            g.drawImage(icon, x, y, iconSize, iconSize, this);
+        }
+
+        if (selected) {
+            g.setColor(Color.BLUE);
+            g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+        }
+    }
+
+    private void showMushroomDetails() {
+        if (mushroomData != null) {
+            JOptionPane.showMessageDialog(this,
+                    "Player id: " + mushroomData.playerID + "\n" +
+                            "Mushroom id: " + mushroomData.id + "\n" +
+                            "Type: " +  mushroomData.getClass()+ "\n" +
+                            "HP: " + mushroomData.lifeTime+ "\n"+
+                            "Spore Spread: "+ mushroomData.sporeSpawnTime+ "\n",
+                    "Mushroom Details",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     // Getter a gomba adataihoz

@@ -120,9 +120,17 @@ public class ShroomString implements TurnControl, Serializable {
      */
     public void growMushroom() {
         String error = "Error! Could not grow mushroom by String:" + id + " at Tekton:" + disTek.id;
-        if (!growing && isConnected) {
+        Spore remSpore = null;
+        for (Spore spore : disTek.arrayOfSpore) {
+            if (spore.playerid == this.parentSrhoom.playerID) {
+                remSpore = spore;
+                break;
+            }
+        }
+        if (!growing && isConnected && remSpore != null) {
             try {
                 disTek.growBody(this.parentSrhoom.playerID);
+                disTek.arrayOfSpore.remove(remSpore);
             } catch (Exception e) {
                 System.out.println(error);
             }
@@ -132,9 +140,17 @@ public class ShroomString implements TurnControl, Serializable {
     }
 
     public void eatInsect(Insect insect){
+        String error = "Error! Could not grow mushroom by String:" + id + " at Tekton:" + disTek.id;
         if (insect.effectType == Effect.PARALYZE) {
             insect.die();
-            growMushroom();
+            if (!growing && isConnected) {
+                try {
+                    disTek.growBody(this.parentSrhoom.playerID);
+                } catch (Exception e) {
+                    System.out.println(error);
+                }
+                return;
+            }
         }
         else
             System.out.println("Error! Could not eat Insect:" + insect.id + " by String:" + this.id);

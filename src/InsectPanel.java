@@ -12,6 +12,8 @@ public class InsectPanel extends BasicPanel {
 
     protected JPopupMenu list;
     private Insect insectData;
+    protected boolean selected = false;
+
 
     public InsectPanel(Insect insect, BufferedImage icon) {
         super(icon);
@@ -21,7 +23,7 @@ public class InsectPanel extends BasicPanel {
         setLayout(null); // nem kell semmilyen layout, mert kézzel rajzolunk
 
         list = new JPopupMenu();
-        JMenuItem detailsItem = new JMenuItem("Részletek...");
+        JMenuItem detailsItem = new JMenuItem("Details...");
         detailsItem.addActionListener(e -> showInsectDetails());
         list.add(detailsItem);
 
@@ -75,11 +77,11 @@ public class InsectPanel extends BasicPanel {
     private void showInsectDetails() {
         if (insectData != null) {
             JOptionPane.showMessageDialog(this,
-                    "Rovar id-je: " + insectData.id + "\n" +
-                            "Játékos id-je: " + insectData.playerID + "\n" +
-                            "Akciópontok: " + insectData.getActionPoints() + "\n" +
-                            "Rovaron életben lévő effekt: " + insectData.effectType,
-                    "Rovar Részletei",
+                            "Player id: " + insectData.playerID + "\n" +
+                                    "Insect id: " + insectData.id + "\n" +
+                            "Action Points: " + insectData.getActionPoints() + "\n" +
+                            "Effect: " + insectData.effectType,
+                    "Insect Details",
                     JOptionPane.INFORMATION_MESSAGE);
         }
     }

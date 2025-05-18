@@ -89,6 +89,7 @@ public class TektonPanel extends JPanel{
                     System.out.println("TektonPanel (" + tektonData + ") kiválasztva: " + isSelected);
                     // Ha a selectTekton() metódusnak kellene itt lefutnia:
                     // selectTekton(); // Bár a metódus neve inkább getter-re utal
+                    draw();
                 }
             }
         });
@@ -165,9 +166,9 @@ public class TektonPanel extends JPanel{
 
         // Kijelölés jelzése (ha a BasicPanel nem kezelné specifikusan)
         if (isSelected != 0) {
-            g2d.setColor(Color.YELLOW); // Vagy más kijelölő szín
+            g2d.setColor(Color.darkGray); // Vagy más kijelölő szín
             g2d.setStroke(new BasicStroke(3)); // Vastagabb vonal a kijelöléshez
-            g2d.drawRect(1, 1, getWidth() - 3, getHeight() - 3); // Kicsit beljebb
+            g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1); // Kicsit beljebb
         }
 
         g2d.dispose();

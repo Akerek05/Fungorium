@@ -60,23 +60,24 @@ public class StatusPanel extends JPanel {
     private void initComponents() {
         Font labelFont = new Font("Arial", Font.PLAIN, 12);
         Font buttonFont = new Font("Arial", Font.BOLD, 11);
-        Dimension buttonSize = new Dimension(90, 25);
+        Dimension buttonSize = new Dimension(120, 25);
 
-        playerIdLabel = new JLabel("Játékos: -");
+        playerIdLabel = new JLabel("Player: -");
         playerIdLabel.setFont(labelFont);
+        playerIdLabel.setPreferredSize(new Dimension(150, 25));
 
-        playerScoreLabel = new JLabel("Pontszám: -");
+        playerScoreLabel = new JLabel("Points: -");
         playerScoreLabel.setFont(labelFont);
 
-        endButton = new JButton("Kilépés");
+        endButton = new JButton("End Game");
         endButton.setFont(buttonFont);
         endButton.setPreferredSize(buttonSize);
-        endButton.setToolTipText("Kilépés a játékból.");
+        endButton.setToolTipText("Exit from the game");
 
-        saveButton = new JButton("Mentés");
+        saveButton = new JButton("Save Game");
         saveButton.setFont(buttonFont);
         saveButton.setPreferredSize(buttonSize);
-        saveButton.setToolTipText("Játékállás mentése.");
+        saveButton.setToolTipText("Save the game");
     }
 
     /**
@@ -93,30 +94,10 @@ public class StatusPanel extends JPanel {
         buttonPanel.add(saveButton);
         buttonPanel.add(endButton);
 
-        // Hozzáadunk egy "rugót", hogy a gombok a jobb szélre kerüljenek
-        // Ehhez a fő panel elrendezését módosítani kellene BoxLayout-ra,
-        // vagy a buttonPanel-t a BorderLayout.EAST-be tenni, ha a StatusPanel BorderLayout-ot használna.
-        // FlowLayout esetén a gombok egyszerűen a többi elem után következnek.
-        // Ha a gombokat mindenképp jobbra akarjuk, a StatusPanel elrendezését kell átgondolni.
-        // Most maradjunk a FlowLayout-nál, a gombok a labelek után jönnek.
-
-        // Alternatíva: BorderLayout a StatusPanelnek
-        //setLayout(new BorderLayout());
-        //JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 5));
-        //infoPanel.setOpaque(false);
-        //infoPanel.add(playerIdLabel);
-        //infoPanel.add(Box.createHorizontalStrut(20));
-        //infoPanel.add(playerScoreLabel);
-        //add(infoPanel, BorderLayout.WEST);
-        //add(buttonPanel, BorderLayout.EAST);
-
-        // Maradva az eredeti FlowLayout-nál, a gombokat is hozzáadjuk
-        add(Box.createHorizontalGlue()); // Ez megpróbálja kitolni a következő elemeket, de FlowLayout-ban nem így működik
-        // Inkább csak egyszerűen hozzáadjuk őket.
+        add(Box.createHorizontalGlue());
         add(saveButton);
         add(endButton);
     }
-
 
     /**
      * Eseménykezelőket csatol a gombokhoz.
@@ -130,7 +111,7 @@ public class StatusPanel extends JPanel {
                     // Egy egyszerűbb mentés, a fájlnevet a Controller generálhatja,
                     // vagy egy fix nevet használunk.
                     // Egy komplexebb megoldás JFileChooser-t használna.
-                    String defaultSaveName = "jatekmentes_" + System.currentTimeMillis() + ".sav";
+                    String defaultSaveName = "savegame_" + System.currentTimeMillis() + ".sav";
                     controller.save(defaultSaveName);
                 }
             }
@@ -153,7 +134,7 @@ public class StatusPanel extends JPanel {
     // Metódusok a labelek frissítésére
     public void updatePlayerId(int playerId) {
         int idNum = -1;
-        String itemName = "Nincs Kivalasztva";
+        String itemName = "";
         if (controller.PlayerMushroom != null) {
             idNum = controller.PlayerMushroom.id;
             itemName = " MushroomId: ";
@@ -161,11 +142,14 @@ public class StatusPanel extends JPanel {
             idNum = controller.PlayerInsect.id;
             itemName = " InsectId: ";
         }
-        playerIdLabel.setText("Játékos: " + playerId + itemName + idNum);
+        if (idNum != -1) {
+            playerIdLabel.setText("Player: " + playerId + itemName + idNum);
+        } else {
+            playerIdLabel.setText("Player: " + playerId);
+        }
     }
-
     public void updateScore(int score) {
-        playerScoreLabel.setText("Pontszám: " + score);
+        playerScoreLabel.setText("Points: " + score);
     }
 
     // Getterek a komponensekhez (ha szükséges, pl. teszteléshez)
@@ -174,20 +158,11 @@ public class StatusPanel extends JPanel {
     public JButton getEndButton() { return endButton; }
     public JButton getSaveButton() { return saveButton; }
 
-
-   //public void draw() {
-   //    updatePlayerId(controller.getCurrentPlayerIndex());
-   //    updateScore(controller.getCurrentPlayerScore());
-
-   //    repaint();
-   //}
-
     public void draw() {
         int currentPlayerId = controller.getCurrentPlayerIndex();
         int currentScore = controller.getCurrentPlayerScore(); // vagy más megfelelő getter
         //playerIdLabel.setText("Játékos: " + currentPlayerId);
         updatePlayerId(currentPlayerId);
-        playerScoreLabel.setText("Pontszám: " + currentScore);
+        playerScoreLabel.setText("Points: " + currentScore);
     }
-
 }
