@@ -60,20 +60,25 @@ public class InsectCommandPanel extends BasicCommandPanel {
         Font buttonFont = new Font("Arial", Font.PLAIN, 12);
         Dimension buttonMaxSize = new Dimension(Integer.MAX_VALUE, new JButton("Minta").getPreferredSize().height + 5);
 
+        //Mozgatás gomb kinézetének beállítása
         moveButton.setFont(buttonFont);
         moveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         moveButton.setMaximumSize(buttonMaxSize);
 
+        //Evés gomb kinézetének beállítása
         eatButton.setFont(buttonFont);
         eatButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         eatButton.setMaximumSize(buttonMaxSize);
 
+        //Vágó gomb kinézetének beállítása
         cutButton.setFont(buttonFont);
         cutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         cutButton.setMaximumSize(buttonMaxSize);
 
 
         // Eseménykezelők hozzáadása a rovarspecifikus gombokhoz
+
+        //ActionListener a mozgás gombhoz
         moveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -88,7 +93,7 @@ public class InsectCommandPanel extends BasicCommandPanel {
             }
         });
 
-
+        //ActionListener a spóraevés gombhoz
         eatButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -97,6 +102,7 @@ public class InsectCommandPanel extends BasicCommandPanel {
             }
         });
 
+        //ActionListener a fonalvágás gombhoz
         cutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

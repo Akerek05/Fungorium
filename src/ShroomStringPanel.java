@@ -86,6 +86,10 @@ public class ShroomStringPanel extends BasicPanel {
         draw(); // Újrarajzolás az új adatokkal
     }
 
+    /**
+     * string visszaadasa
+     * @return
+     */
     public ShroomString getStringData() {
         return stringData;
     }

@@ -31,6 +31,11 @@ public class StatusPanel extends JPanel {
      */
     protected JButton saveButton;
 
+    /**
+     * Annak kiirasa hogy hanyadik kor van
+     */
+    protected JLabel roundLaber;
+
     private Controller controller; // Referencia a játék vezérlőjére
 
     /**
@@ -61,23 +66,25 @@ public class StatusPanel extends JPanel {
         Font labelFont = new Font("Arial", Font.PLAIN, 12);
         Font buttonFont = new Font("Arial", Font.BOLD, 11);
         Dimension buttonSize = new Dimension(120, 25);
-
+        //playerIdLabel betu es meret beallitasai
         playerIdLabel = new JLabel("Player: -");
         playerIdLabel.setFont(labelFont);
         playerIdLabel.setPreferredSize(new Dimension(150, 25));
-
+        //playerScoreLabel beallitasai
         playerScoreLabel = new JLabel("Points: -");
         playerScoreLabel.setFont(labelFont);
-
+        //endButton beallitasai
         endButton = new JButton("End Game");
         endButton.setFont(buttonFont);
         endButton.setPreferredSize(buttonSize);
         endButton.setToolTipText("Exit from the game");
-
+        //saveButton beallitasai
         saveButton = new JButton("Save Game");
         saveButton.setFont(buttonFont);
         saveButton.setPreferredSize(buttonSize);
         saveButton.setToolTipText("Save the game");
+
+        roundLaber = new JLabel("Round: -");
     }
 
     /**
@@ -97,12 +104,16 @@ public class StatusPanel extends JPanel {
         add(Box.createHorizontalGlue());
         add(saveButton);
         add(endButton);
+        add(roundLaber);
     }
 
     /**
      * Eseménykezelőket csatol a gombokhoz.
      */
     private void attachActionListeners() {
+        /**
+         * saveButton-re, ha lenyomodik, akkor elmenteni a majd a map-beli allast
+         */
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -116,7 +127,9 @@ public class StatusPanel extends JPanel {
                 }
             }
         });
-
+        /**
+         * Az endGame button-re hallgato, ha lenyomodik, akkorvege a jateknak
+         */
         endButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -131,7 +144,11 @@ public class StatusPanel extends JPanel {
         });
     }
 
-    // Metódusok a labelek frissítésére
+    /***
+     * Metódusok a labelek frissítésére
+     *
+     * @param playerId
+     */
     public void updatePlayerId(int playerId) {
         int idNum = -1;
         String itemName = "";
@@ -148,21 +165,38 @@ public class StatusPanel extends JPanel {
             playerIdLabel.setText("Player: " + playerId);
         }
     }
+
+    /**
+     * Frissiti a kiirt score-t
+     * @param score
+     */
     public void updateScore(int score) {
         playerScoreLabel.setText("Points: " + score);
     }
 
-    // Getterek a komponensekhez (ha szükséges, pl. teszteléshez)
+    /**
+     * A roundLaber szovegenek frissitese
+     * @param round
+     */
+    public void updateRound(int round) {
+        roundLaber.setText("Round: " + round);
+    }
+    //// Getterek a komponensekhez (ha szükséges, pl. teszteléshez)
     public JLabel getPlayerIdLabel() { return playerIdLabel; }
     public JLabel getPlayerScoreLabel() { return playerScoreLabel; }
     public JButton getEndButton() { return endButton; }
     public JButton getSaveButton() { return saveButton; }
 
+    /**
+     * Frissiti a kiirt dolgokat
+     */
     public void draw() {
         int currentPlayerId = controller.getCurrentPlayerIndex();
         int currentScore = controller.getCurrentPlayerScore(); // vagy más megfelelő getter
+        int round = controller.currentTurn;
         //playerIdLabel.setText("Játékos: " + currentPlayerId);
         updatePlayerId(currentPlayerId);
+        updateRound(round);
         playerScoreLabel.setText("Points: " + currentScore);
     }
 }

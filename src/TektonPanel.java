@@ -9,6 +9,7 @@ import java.util.ArrayList;
  * Ősosztálya: BasicPanel.
  */
 public class TektonPanel extends JPanel{
+    ///
     public static int globalTekton = 1;
 
     private ArrayList<BasicPanel> containedItemPanels;
@@ -100,6 +101,11 @@ public class TektonPanel extends JPanel{
         }
     }
 
+    /**
+     * Beallitja, hogy kivan-e valsztva
+     * ha kivan akkor > 0 es a globalTekton szerint kap egy szamot hogy a kivalsztas sorrendjet meg lehessen mondani
+     * ha nincs akkor 0
+     */
     public void setSelected() {
         if(isSelected == 0)
             isSelected = globalTekton++;
@@ -149,6 +155,10 @@ public class TektonPanel extends JPanel{
         repaint(); // Újrarajzolás kérése
     }
 
+    /***
+     * Kirajzolasert felelos
+     * @param g the <code>Graphics</code> object to protect
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // Meghívja a BasicPanel paintComponent-jét
@@ -202,17 +212,6 @@ public class TektonPanel extends JPanel{
             repaint();
         }
     }
-
-    public void removeItemPanel(BasicPanel component) {
-        if (component != null) {
-            remove(component);
-            containedItemPanels.remove(component);
-            revalidate();
-            repaint();
-        }
-    }
-
-
     // Getter a Tekton adatokhoz
     public Tekton getTektonData() {
         return tektonData;

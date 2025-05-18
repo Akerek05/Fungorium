@@ -84,6 +84,10 @@ public class SporePanel extends BasicPanel {
         draw(); // Újrarajzolás az új adatokkal
     }
 
+    /**
+     * A spora adatanak visszaadasa
+     * @return
+     */
     public Spore getSporeData() {
         return sporeData;
     }

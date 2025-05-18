@@ -14,12 +14,15 @@ import java.util.Random;
  */
 public class Controller {
 
+    //Játék kezdetét jelző flag
+    boolean gamestarted=false;
     /**
      * A körök maximális száma.
      */
-    boolean gamestarted=false;
     protected int MAX_TURNS = 100;
-
+    /**
+     * A jelenlegi kör száma
+     */
     protected int currentTurn = 0;
 
     /**
@@ -46,6 +49,7 @@ public class Controller {
      */
     protected Mushroom PlayerMushroom = null;
 
+    //Kiválasztott tektonokat tároló lista
     protected ArrayList<Tekton> selectedTektons = new ArrayList<>();
     /**
      * Kiválasztott (aktuális) játékos rovarja.
@@ -54,7 +58,7 @@ public class Controller {
      */
     protected Insect PlayerInsect = null;
 
-    // Belső állapot a játékosok sorrendjének kezeléséhez
+    /// Belső állapot a játékosok sorrendjének kezeléséhez
     private int currentPlayerIndex = 0;
 
     /**
@@ -77,13 +81,17 @@ public class Controller {
      * Inicializálja a Controller állapotát.
      */
     public Controller(Map map) {
+        //Játékos azonosítókat tároló lista létrehozása
         this.player_ids = new ArrayList<>();
+        //Térkép beállítása kapott paraméter alapján
         this.map = map;
 
-
+        //Menüablak létrehozása
         this.menuWindow = new MenuWindow(this);
+        //Kijelölt tektonokat tároló lista létrehozása
         this.selectedTektons = new ArrayList<>();
 
+        //Menü beállítása
         showMenu();
 
     }
@@ -101,30 +109,47 @@ public class Controller {
      * @param playerCount A játékosok száma.
      */
     public void startGame(int playerCount) {
+        //Esetleg meglévő ablak törlése
         if (this.gameWindow != null) {
             this.gameWindow.dispose();
         }
+        //Játékosok számának ellenőrzése
         if (playerCount <= 0) {
             System.err.println("Hiba: A játékosok száma pozitív egész kell legyen.");
             return;
         }
-
+        //Térkép adatainak alaphelyzetbe állítása(törlése)
         map.wipeMap();
+        //Játék indítása
         map.startGame(playerCount);
+        //Térkép inícializálása
         map.mapInit();
+        //Térkép frissítése
         map.update();
+        //Jelzés a felhasználó felé a játék indításáról
         System.out.println("Játék indítása " + playerCount + " játékossal.");
+
+        //Játékosok azanosítójának alaphelyzetbe állítása
         player_ids.clear();
 
+        //Játékosok azanosítójának beállítása
         for (int i = 0; i < playerCount; i++) {
             player_ids.add(i); // Játékos ID-k pl. 0, 1, 2...
         }
-        currentPlayerIndex = 0; // Az első játékos kezd (ID: player_ids.get(0))
+
+        // Az első játékos kezd (ID: player_ids.get(0))
+        currentPlayerIndex = 0;
+        // Tektontörés visszaszámláló alaphelyzetbe állítása
         breakTektonCounter = 0;
+        // Új játékablak létrehozása
         this.gameWindow = new GameWindow(this);
+        //Menüablak törlése
         menuWindow.dispose();
 
+        //Térkép frissítése
         map.update();
+
+        //Játék futását jelző flag beállítása
         gamestarted = true;
     }
 
@@ -132,44 +157,66 @@ public class Controller {
      * Főmenü megjelenítése.
      */
     public void showMenu() {
+        // Menüablak létrehozásA
         menuWindow = new MenuWindow(this);
+
+        //Menüablak láthatóságának beállítása
         menuWindow.setVisible(true);
     }
 
-    /**
-     * Egy teljes kör lefutása. Ebben van a Playerek sorrendje.
-     */
+    //Kör végét jelző flag
     private boolean turnEnded = false;
 
+    //Kör végét jelző flag átállító függvénye
     public void setTurnEnded(boolean turnEnded) {
         this.turnEnded = turnEnded;
     }
 
+
+    /**
+     * Egy teljes kör lefutása. Ebben van a Playerek sorrendje.
+     */
     public void oneRound() {
+        //Jelenlegi kört tároló számláló növelése
         currentTurn++;
+        //Ellenőrizzük, hogy vannak-e játékosok, ha nincsenek, akkor nem indul el a kör
         if (player_ids.isEmpty()) {
             System.out.println("Nincsenek játékosok, a kör nem indul el.");
             return;
         }
+        //Új kör kezdésének jelzése a felhasználó felé
         System.out.println("--- Új kör kezdődik ---");
+        //Járékos által jelenleg kijelölt/használt rovar
         PlayerInsect = null;
+        //Gombász játékosok ciklusa(ők vannak az első felében tárolva a tömbben)
         for (int i = 0; i < player_ids.size() / 2; i++) {
+            //Jelenlegi játékos indexének beállítása
             currentPlayerIndex = i;
             gameWindow.setCurrentPlayerId(currentPlayerIndex);
 
-            turnEnded = false; // Alaphelyzetbe állítjuk a flag-et
+            // Alaphelyzetbe állítjuk a kör végét jelző flag-et
+            turnEnded = false;
 
+            //Végigmegyünk az összes játékban lévő gombán
             for(int j = map.mushrooms.size() - 1; j >= 0; j--) {
+                //A ciklusban a jelenlegi indexen lévő gomba beállítása
                 Mushroom mushroom = map.mushrooms.get(j);
+                //Hogyha a jelenlegi gomba az éppen soron lévő játékoshoz tartozik, akkor:
                 if(mushroom.playerID == currentPlayerIndex) {
+                    //Jelezzük a felhasználonak, hogy mely játékos következik melyik gombályával
                     System.out.println("Játékos " + currentPlayerIndex + " következik." + "Gomba: " + mushroom.id);
                     JOptionPane.showMessageDialog(null, "Player: "+ currentPlayerIndex + " is next with mushroom: "+ mushroom.id);
+                    //Soron lévő játékos jelenlegi gombályának beállítása
                     PlayerMushroom = mushroom;
-                    gameWindow.showMushroomCMD(); // Gomba parancsok megjelenítése
+                    // Gomba parancsok megjelenítése
+                    gameWindow.showMushroomCMD();
+                    // Játékablak újrarajzolása
                     gameWindow.reDraw();
+                    //Ameddig a flag nem jelez
                     while (!turnEnded) {
                         // Várunk a gombra... (GUI események kezelése)
                         try {
+                            //Ha nem indult el a játék visszatér a függvény
                             if (!gamestarted){
                                 return;
                             }
@@ -178,32 +225,47 @@ public class Controller {
                             e.printStackTrace();
                         }
                     }
+                    //Kör végét jelző flag beállítása
                     turnEnded = false;
                 }
             }
 
         }
+        //Jelenlegi játékos gombájának törlése
         PlayerMushroom = null;
 
+        //Rovarász játékosok cilusa(második felében vannak tárolva a listában)
         for (int i = player_ids.size() / 2; i < player_ids.size(); i++) {
+            //Jelenlegi játékos indexének beállítása
             currentPlayerIndex = i;
-
             gameWindow.setCurrentPlayerId(currentPlayerIndex);
+
+            //Kör végét jelző flag alaphelyzetbe állítása
             turnEnded = false;
 
+            //Térképen lévő összes rovaron végigmegyünk
             for (int j = map.insects.size() - 1; j >= 0; j--) {
+                //Ciklusban a jelenlegi indexen lévő rovar beállítása
                 Insect insect = map.insects.get(j);
+                //Ha a jelenlegi rovar a soron lévő játékosé, akkor
                 if (insect.playerID == currentPlayerIndex) {
+                    //Jelezzük a felhasználonak, hogy mely játékos következik melyik rovarral
                     System.out.println("Játékos " + currentPlayerIndex + " következik." + "Rovar: " + insect.id);
                     JOptionPane.showMessageDialog(null, "Player: "+ currentPlayerIndex + " is next with insect: "+ insect.id);
+                    //Soron lévő játékos jelenlegi rovarának beállítása
                     PlayerInsect = insect;
-                    gameWindow.showInsectCMD(); // Rovar parancsok megjelenítése
+                    // Rovar parancsok megjelenítése
+                    gameWindow.showInsectCMD();
+                    // Játékablak újrarajzolása
                     gameWindow.reDraw();
+                    //Amíg nincs vége a körnek
                     while (!turnEnded) {
                         try {
+                            //Ha nincsen elindítva a játék visszatér a függvény
                             if (!gamestarted){
                                 return;
                             }
+
                             Thread.sleep(100);
                             if (insect == null) {
                                 turnEnded = true;
@@ -212,30 +274,45 @@ public class Controller {
                             e.printStackTrace();
                         }
                     }
+                    //Kör végét jelző flag beállítása
                     turnEnded = false;
                 }
             }
+            //Soron lévő játékos rovarának alaphelyzetbe állítása
             PlayerInsect = null;
         }
 
         // Kör végi események (maradnak)
+
+        //Jelezzük a felhasználó felé, hogy a körnek vége van
         System.out.println("--- Kör vége ---");
         JOptionPane.showMessageDialog(null, "Round ended");
+        //Tektontörés visszaszámláló növelése
         breakTektonCounter++;
+        //Térkép számára jelezzük a kör végét
         map.command("TIMEELAPSED 2");
+        //Térkép frissítése
         map.update();
+        //Elérte-e a tektonszámláló a megszabott határt, ha igen
         if (breakTektonCounter >= TEKTON_BREAK_NUM) {
+            //Jelezzük a felhasználó számára, hogy tektontörés történt
             System.out.println("TEKTON TÖRÉS");
+            //Legutolsó tekton kiválasztása
             Tekton t = map.tektons.get(map.tektons.size() - 1);
+            //Tekton törése
             breakTekton(t);
+            //Tektontörés számláló alaphelyzetbe állítása
             breakTektonCounter = 0;
+            //Játékablak újrarajzolása
             gameWindow.reDraw();
         }
 
+        //Ha elértük a maximális körszámot, vége a játéknak
         if (currentTurn >= MAX_TURNS) {
             endGame();
         }
 
+        //Jelenlegi helyzet kiírása STATUS paranccsal
         map.command("STATUS");
     }
 
@@ -244,12 +321,13 @@ public class Controller {
      * @param filePath A mentett játékfájl elérési útvonala.
      */
     public void load(String filePath) {
+
         JOptionPane.showMessageDialog(null, "Loaded game from: " + filePath);
 
         if (this.gameWindow != null) {
             this.gameWindow.dispose();
         }
-
+        currentTurn = 0;
         map.wipeMap();
         map.loadMap(filePath);
         map.update();
@@ -292,6 +370,7 @@ public class Controller {
         map.endGame();
         gameWindow.endGame();
         currentPlayerIndex = 0;
+        currentTurn = 0;
         gamestarted = false;
 
     }
@@ -412,13 +491,25 @@ public class Controller {
         map.update();
         gameWindow.reDraw();
     }
+
+    /**
+     * Vissza adja a currentPlayerIndex-t.
+     * @return
+     */
     public int getCurrentPlayerIndex() {
         return currentPlayerIndex;
     }
+
+    /**
+     * Vissza adja a currentPlayerScore-t.
+     * @return
+     */
     public int getCurrentPlayerScore() {
         return map.scores.get(currentPlayerIndex);
     }
-
+    /**
+     * Megkeresi a kiálasztott tektonokat és hozzáadja a listához.
+     */
     public void checkSelected(){
         for(int i=1; i<=TektonPanel.globalTekton; i++){
             for(TektonPanel tektonPanel : gameWindow.tektonPanels){
@@ -428,6 +519,10 @@ public class Controller {
             }
         }
     }
+
+    /**
+     * Torli a kivalasztott tektonok listaja-t a selectedTektons-t
+     */
     public void resetSelectedTektons(){
         for (TektonPanel tektonPanel: gameWindow.tektonPanels){
                 tektonPanel.isSelected = 0;

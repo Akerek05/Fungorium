@@ -79,6 +79,14 @@ public class MushroomPanel extends BasicPanel {
         repaint();
     }
 
+    /**
+     * Custom paintComponent method to handle painting of the panel, including the icon
+     * and selection indicator. If an icon exists, it is drawn in the upper-right corner
+     * of the panel with a fixed margin. If the panel is marked as selected, a blue
+     * border is drawn around it.
+     *
+     * @param g The Graphics object used to draw the component.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -96,6 +104,18 @@ public class MushroomPanel extends BasicPanel {
         }
     }
 
+    /**
+     * Displays a dialog with detailed information about the mushroom associated with the panel.
+     * The information includes:
+     * - Player ID
+     * - Mushroom ID
+     * - Mushroom Type (class)
+     * - Mushroom HP (lifeTime)
+     * - Spore spawn time
+     *
+     * If no mushroom data is available (mushroomData is null), the method does nothing.
+     * The information is displayed in a JOptionPane with an informational message type.
+     */
     private void showMushroomDetails() {
         if (mushroomData != null) {
             JOptionPane.showMessageDialog(this,
@@ -109,7 +129,11 @@ public class MushroomPanel extends BasicPanel {
         }
     }
 
-    // Getter a gomba adataihoz
+    /**
+     * Retrieves the mushroom data associated with the panel.
+     *
+     * @return The mushroom object contained in this panel, or null if no mushroom data is available.
+     */
     public Mushroom getMushroomData() {
         return mushroomData;
     }
